@@ -1,6 +1,6 @@
 const express = require("express");
 const crypto = require("crypto");
-const { items_db, users_db } = require("../models/database.js");
+const { items_db, users_db, carts_db } = require("../models/database.js");
 
 const router = express.Router();
 
@@ -122,6 +122,20 @@ router.post("/items/upload",
       });
     }
     res.send(await items_db.getAllItems());
-})
+});
+
+router.get("/carts/list",
+  async (req, res) => {
+    res.send(await carts_db.getAllCarts());
+});
+
+router.get("/carts/download",
+async (req, res) => {
+  let datetime = new Date();
+
+  res.attachment('carts_list_' + datetime.getFullYear() + '_' + datetime.getMonth() + "_" + datetime.getDate() + '.json');
+  res.type('json');
+  res.send(JSON.stringify(await carts_db.getAllCarts(), null, 4));
+});
 
 module.exports = router;
