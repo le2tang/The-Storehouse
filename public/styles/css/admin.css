@@ -1,0 +1,21 @@
+.items-list {
+  display: block;
+  orientation: portrait;
+}
+
+.item-card {
+  display: list-item;
+  background: lightblue;
+  border: 1px gray;
+  border-radius: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.item-card-info {
+  display: inline;
+}
