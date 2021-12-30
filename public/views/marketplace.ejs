@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace</title>
+  <%- include("../partials/head"); %>
+  <link rel="stylesheet" href="../styles/css/marketplace.css">
+  <script src="./scripts/cart.js"></script>
+</head>
+<body>
+  <header>
+    <%- include("../partials/header"); %>
+  </header>
+  
+  <div class="split-screen">
+    <div class="items-list">
+      <h2>Items</h2>
+      <% for (let i of items) {%>
+        <div id="item-card-<%= i.id%>" class="item-card">
+          <button class="item-add" onclick="tryAddItem('<%= i.id%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
+          <label for="item-itemname">Name: </label> 
+          <span class="item-itemname"><%= i.itemname%></span>
+          <label for="item-quantity">Quantity: </label>
+          <span class="item-quantity"><%= i.quantity%></span>
+          <% if (i.description && i.description.length > 0) {%>
+            <button class="item-expand" onclick="expandItem(this)">Expand</button>
+            <p class="item-description" hidden>Description: <%= i.description%></p>
+          <% }%>
+        </div>
+      <% }%>
+    </div>
+
+    <div id="cart-details" class="cart-details-container">
+      <h1>My Info</h1>
+      <div class="cart-content">
+        <div>
+          <label for="cart-username">Name
+            <span class="required-field">*</span>
+          </label>
+          <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name">  
+        </div>
+        <div>
+          <label for="cart-address">Address</label>
+          <input id="cart-address" class="cart-details-input" type="text" name="address" placeholder="House No./Unit No./Street">
+        </div>
+        <div>
+          <label for="cart-arrival">When do you arrive?</label>
+          <input id="cart-arrival" class="cart-details-input" type="date" name="arrival">
+        </div>
+        <div>
+          <label for="cart-contact-method">How can we contact you?
+            <span class="required-field">*</span>
+          </label>
+          <select id="cart-contact-method" class="cart-details-input" name="contact-method">
+            <option value="fcb">Facebook</option>
+            <option value="txt">Text</option>
+            <option value="eml">Email</option>
+          </select>
+        </div>
+        <div>
+          <label id="cart-contact-address-label" for="cart-contact-address">What is your name on Facebook?
+            <span class="required-field">*</span>
+          </label>
+          <input id="cart-contact-address" class="cart-details-input" name="contact-address">  
+        </div>
+        <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
+      </div>
+    </div>
+
+    <div id="cart-list" class="cart-list-container">
+      <h1>My Cart</h1>
+      <div class="cart-content">
+        <p id="cart-empty-warning">Your cart is currently empty</p>
+        <div id="cart-items-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="add-to-cart-modal" class="modal">
+    <div class="modal-content">
+      <span id="add-to-cart-close" class="modal-close">&times;</span>
+      <span id="add-to-cart-itemname"></span>
+      <input id="add-to-cart-quantity" type="number" min="1" value="1">
+      <button id="add-to-cart-confirm">Add</button>
+    </div>
+  </div>
+</body>
+</html>
