@@ -4,10 +4,11 @@ const { items_db, users_db } = require("../models/database.js");
 
 const router = express.Router();
 
-// router.get("/",
-//   async (req, res) => {
-//     res.render("admin", { items: await items_db.getAllItems() });
-// });
+router.get("/",
+  async (req, res) => {
+    res.render("admin", { items: [] });
+    // res.render("admin", { items: await items_db.getAllItems() });
+});
 
 // router.post("/items/add",
 //   async (req, res) => {
