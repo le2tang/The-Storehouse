@@ -3,6 +3,10 @@
   grid-template-columns: 2fr 1fr 1fr;
 }
 
+#items-list-header {
+  color: white;
+}
+
 .items-list {
   grid-row-start: 1;
   grid-column-start: 1;
@@ -13,13 +17,15 @@
 .cart-details-container {
   grid-row-start: 1;
   grid-column-start: 2;
-  background: gray;
+  background: slategray;
+  padding: 10px;
 }
 
 .cart-list-container {
   grid-row-start: 1;
   grid-column-start: 3;
-  background: orange;
+  background: slategray;
+  padding: 10px;
 }
 
 .cart-content {
@@ -27,7 +33,6 @@
   border: 2px solid black;
   border-radius: 10px;
   padding: 10px;
-  margin: 10px;
   position: sticky;
   top: 10px;
 }
@@ -38,7 +43,7 @@
 
 .item-card {
   display: block;
-  background: lightblue;
+  background: var(--yellow);
   border: 1px gray;
   border-radius: 10px;
   padding-left: 10px;

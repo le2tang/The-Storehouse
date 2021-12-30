@@ -12,7 +12,7 @@
   
   <div class="split-screen">
     <div class="items-list">
-      <h2>Items</h2>
+      <h2 id="items-list-header">Items</h2>
       <% for (let i of items) {%>
         <div id="item-card-<%= i.id%>" class="item-card">
           <button class="item-add" onclick="tryAddItem('<%= i.id%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
