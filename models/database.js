@@ -41,7 +41,7 @@ class ItemsDatabase {
   }
 
   async setItemQuantity(id, quantity) {
-    let sql = "UPDATE items SET quantity=$2, WHERE id=$1";
+    let sql = "UPDATE items SET quantity=$2 WHERE id=$1";
     return await this.source.query(sql, [id, quantity]);
   }
 

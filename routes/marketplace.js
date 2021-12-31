@@ -26,15 +26,17 @@ async function reserveItems(cart_items) {
   let reserved_items = {};
   for (let ci in cart_items) {
     let item = await items_db.getItemById(ci);
-    if (cart_items[ci] < item.quantity) {
-      reserved_items[ci] = cart_items[ci];
-
-      let new_item_quantity = item.quantity - cart_items[ci];
-      await items_db.setItemQuantity(ci, new_item_quantity);
-    }
-    else {
-      reserved_items[ci] = item.quantity;
-      await items_db.removeItemById(ci);
+    if (item.quantity > 0) {
+      if (cart_items[ci] < item.quantity) {
+        reserved_items[ci] = cart_items[ci];
+  
+        let new_item_quantity = item.quantity - cart_items[ci];
+        await items_db.setItemQuantity(ci, new_item_quantity);
+      }
+      else {
+        reserved_items[ci] = item.quantity;
+        await items_db.setItemQuantity(ci, 0);
+      }
     }
   }
   let num_items = Object.values(reserved_items).reduce((x, y) => x + y);
