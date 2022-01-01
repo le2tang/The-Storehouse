@@ -14,17 +14,19 @@
     <div class="items-list">
       <h2 id="items-list-header">Items</h2>
       <% for (let i of items) {%>
-        <div id="item-card-<%= i.id%>" class="item-card">
-          <button class="item-add" onclick="tryAddItem('<%= i.id%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
-          <label for="item-itemname">Name: </label> 
-          <span class="item-itemname"><%= i.itemname%></span>
-          <label for="item-quantity">Quantity: </label>
-          <span class="item-quantity"><%= i.quantity%></span>
-          <% if (i.description && i.description.length > 0) {%>
-            <button class="item-expand" onclick="expandItem(this)">Expand</button>
-            <p class="item-description" hidden>Description: <%= i.description%></p>
-          <% }%>
-        </div>
+        <% if (i.quantity > 0) {%>
+          <div id="item-card-<%= i.id%>" class="item-card">
+            <button class="item-add" onclick="tryAddItem('<%= i.id%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
+            <label for="item-itemname">Name: </label> 
+            <span class="item-itemname"><%= i.itemname%></span>
+            <label for="item-quantity">Quantity: </label>
+            <span class="item-quantity"><%= i.quantity%></span>
+            <% if (i.description && i.description.length > 0) {%>
+              <button class="item-expand" onclick="expandItem(this)">Expand</button>
+              <p class="item-description" hidden>Description: <%= i.description%></p>
+            <% }%>
+          </div>
+        <% }%>
       <% }%>
     </div>
 
