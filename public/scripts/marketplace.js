@@ -61,7 +61,7 @@ function addItemModal(id, itemname, max_quantity) {
 
   document.getElementById("add-to-cart-itemname").innerHTML = itemname;
   document.getElementById("add-to-cart-quantity").value = 1;
-  document.getElementById("add-to-cart-quantity").max = max_quantity;
+  document.getElementById("add-to-cart-quantity").max = new Number(max_quantity);
 
   modal.style.display = "block";
 
@@ -76,7 +76,15 @@ function addItemModal(id, itemname, max_quantity) {
   }
 
   confirm_modal.onclick = () => {
-    addItemToCart(id, itemname, document.getElementById("add-to-cart-quantity").value);
+    let desired_quantity = document.getElementById("add-to-cart-quantity").value;
+    if (desired_quantity > max_quantity) {
+      desired_quantity = max_quantity;
+    }
+    else if (desired_quantity < 1) {
+      desired_quantity = 1;
+    }
+    
+    addItemToCart(id, itemname, desired_quantity);
   }
 }
 
