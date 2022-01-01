@@ -110,15 +110,13 @@ router.post("/items/upload",
     if (req.body.items) {
       let items = JSON.parse(req.body.items);
       items.forEach(i => {
-        if (i.quantity > 0) {
-          items_db.addItem(
-            i.id,
-            i.itemname,
-            new Number(i.quantity),
-            i.description,
-            i.tags
-          );
-        }
+        items_db.addItem(
+          i.id,
+          i.itemname,
+          new Number(i.quantity),
+          i.description,
+          i.tags
+        );
       });
     }
     res.send(await items_db.getAllItems());
@@ -140,7 +138,7 @@ router.post("/carts",
         items: await getCartItemsDetails(cart.items)
       });
     }
-})
+});
 
 router.get("/carts/list",
   async (req, res) => {
