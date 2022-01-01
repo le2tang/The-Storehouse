@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/",
   async (req, res) => {
-    res.render("admin", { items: [] });
-    // res.render("admin", { items: await items_db.getAllItems() });
+    // res.render("admin", { items: [] });
+    res.render("admin", { items: await items_db.getAllItems() });
 });
 
 // router.post("/items/add",
@@ -124,9 +124,42 @@ router.post("/items/upload",
     res.send(await items_db.getAllItems());
 });
 
+router.post("/carts",
+  async (req, res) => {
+    let cart = await carts_db.getCartByUsername(req.body.username);
+    if (!cart) {
+      res.status(404).send("Cart not found");
+    }
+    else {
+      res.render("cart_details", {
+        username: cart.username,
+        address: cart.address,
+        arrival: cart.arrival,
+        contact_method: cart.contact_method,
+        contact_address: cart.contact_address,
+        items: await getCartItemsDetails(cart.items)
+      });
+    }
+})
+
 router.get("/carts/list",
   async (req, res) => {
-    res.send(await carts_db.getAllCarts());
+    let carts = await carts_db.getAllCarts();
+    let carts_details = await Promise.all(carts.map(
+      async (cart) => {
+        let items = await getCartItemsDetails(cart.items);
+        console.log(cart, items);
+        let cart_details = {
+          username: cart.username,
+          address: cart.address,
+          arrival: cart.arrival,
+          contact_method: cart.contact_method,
+          contact_address: cart.contact_address,
+          items: items
+        };
+        return cart_details;
+    }));
+    res.send(carts_details);
 });
 
 router.get("/carts/download",
@@ -137,5 +170,15 @@ async (req, res) => {
   res.type('json');
   res.send(JSON.stringify(await carts_db.getAllCarts(), null, 4));
 });
+
+async function getCartItemsDetails(item_ids) {
+  let items = await Promise.all(Object.keys(item_ids).map(
+    async (id) => {
+      let item = await items_db.getItemById(id);
+      item.quantity = item_ids[id];
+      return item;
+  }));
+  return items;
+}
 
 module.exports = router;
