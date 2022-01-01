@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.get("/",
   async (req, res) => {
-    // res.render("admin", { items: [] });
-    res.render("admin", { items: await items_db.getAllItems() });
+    res.render("admin", { items: [] });
+    // res.render("admin", { items: await items_db.getAllItems() });
 });
 
 // router.post("/items/add",
