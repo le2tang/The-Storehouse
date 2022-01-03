@@ -39,7 +39,7 @@ async function reserveItems(cart_items) {
       }
     }
   }
-  let num_items = Object.values(reserved_items).reduce((x, y) => x + y);
+  let num_items = Object.values(reserved_items).reduce((x, y) => x + y, 0);
 
   let reservation = {
     num_items: num_items,

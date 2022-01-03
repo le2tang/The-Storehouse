@@ -1,6 +1,6 @@
 const express = require("express");
 const crypto = require("crypto");
-const { items_db, users_db, carts_db } = require("../models/database.js");
+const { items_db, carts_db } = require("../models/database.js");
 
 const router = express.Router();
 
@@ -122,31 +122,12 @@ router.post("/items/upload",
     res.send(await items_db.getAllItems());
 });
 
-router.post("/carts",
-  async (req, res) => {
-    let cart = await carts_db.getCartByUsername(req.body.username);
-    if (!cart) {
-      res.status(404).send("Cart not found");
-    }
-    else {
-      res.render("cart_details", {
-        username: cart.username,
-        address: cart.address,
-        arrival: cart.arrival,
-        contact_method: cart.contact_method,
-        contact_address: cart.contact_address,
-        items: await getCartItemsDetails(cart.items)
-      });
-    }
-});
-
 router.get("/carts/list",
   async (req, res) => {
     let carts = await carts_db.getAllCarts();
     let carts_details = await Promise.all(carts.map(
       async (cart) => {
         let items = await getCartItemsDetails(cart.items);
-        console.log(cart, items);
         let cart_details = {
           username: cart.username,
           address: cart.address,
@@ -173,7 +154,18 @@ async function getCartItemsDetails(item_ids) {
   let items = await Promise.all(Object.keys(item_ids).map(
     async (id) => {
       let item = await items_db.getItemById(id);
-      item.quantity = item_ids[id];
+      if (!item) {
+        item = {
+          id: id,
+          itemname: id,
+          quantity: 0,
+          description: "Unknown item",
+          tags: []
+        }
+      }
+      else {
+        item.quantity = item_ids[id];
+      }
       return item;
   }));
   return items;

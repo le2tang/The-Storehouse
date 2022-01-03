@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 
 const admin_router = require("./routes/admin.js");
+const carts_router = require("./routes/carts.js");
 // const login_router = require("./routes/login.js");
 const marketplace_router = require("./routes/marketplace.js");
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/admin", admin_router);
+app.use("/carts", carts_router);
 // app.use("/login", login_router);
 app.use("/marketplace", marketplace_router);
 
