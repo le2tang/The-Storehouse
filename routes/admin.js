@@ -6,7 +6,11 @@ const router = express.Router();
 
 router.get("/",
   async (req, res) => {
-    res.render("admin", { items: [] });
+    let carts = await carts_db.getAllCarts();
+    res.render("admin", {
+      items: [],
+      cart_usernames: carts.map(cart => cart.username)
+  });
     // res.render("admin", { items: await items_db.getAllItems() });
 });
 
