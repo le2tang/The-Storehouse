@@ -5,14 +5,19 @@ router = express.Router();
 
 router.post("/details",
   async (req, res) => {
-    let cart = await carts_db.getCartByUsername(req.body.username);
-    if (!cart) {
+    let carts = await carts_db.getAllCartsByUsername(req.body.username);
+    if (!carts) {
       res.status(404).send("Cart not found");
     }
     else {
       res.render("cart_details", {
-        username: cart.username,
-        items: await getCartItemsDetails(cart.items)
+        carts: await Promise.all(carts.map(
+          async (cart) => {
+            return {
+              username: cart.username,
+              items: await getCartItemsDetails(cart.items)
+            };
+        }))
       });
     }
 });

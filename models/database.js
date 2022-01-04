@@ -67,6 +67,12 @@ class CartsDatabase {
     return result[0];
   }
 
+  async getAllCartsByUsername(username) {
+    let sql = "SELECT * from carts WHERE username=$1";
+    let result = await this.source.query(sql, [username]);
+    return result;
+  }
+
   async addCart(username, address, arrival, contact_method, contact_address, items) {
     if (address && address.length == 0) {
       address = null;

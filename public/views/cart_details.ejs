@@ -8,22 +8,23 @@
     <%- include("../partials/header"); %>
   </header>
 
-  <h1><%= username%></h1>
-
-  <div class="items-list">
-    <h2 id="items-list-header">Items</h2>
-    <% for (let i of items) {%>
-      <div id="item-card-<%= i.id%>" class="item-card">
-        <label for="item-itemname">Name: </label> 
-        <span class="item-itemname"><%= i.itemname%></span>
-        <label for="item-quantity">Quantity: </label>
-        <span class="item-quantity"><%= i.quantity%></span>
-        <% if (i.description && i.description.length > 0) {%>
-          <button class="item-expand" onclick="expandItem(this)">Expand</button>
-          <p class="item-description" hidden>Description: <%= i.description%></p>
-        <% }%>
-      </div>
-    <% }%>
-  </div>
+  <% for (let c of carts) {%>
+    <h1><%= c.username%></h1>
+    <div class="items-list">
+      <h2 id="items-list-header">Items</h2>
+      <% for (let i of c.items) {%>
+        <div id="item-card-<%= i.id%>" class="item-card">
+          <label for="item-itemname">Name: </label> 
+          <span class="item-itemname"><%= i.itemname%></span>
+          <label for="item-quantity">Quantity: </label>
+          <span class="item-quantity"><%= i.quantity%></span>
+          <% if (i.description && i.description.length > 0) {%>
+            <button class="item-expand" onclick="expandItem(this)">Expand</button>
+            <p class="item-description" hidden>Description: <%= i.description%></p>
+          <% }%>
+        </div>
+      <% }%>
+    </div>
+  <% }%>
 </body>
 </html>
