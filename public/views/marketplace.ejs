@@ -37,11 +37,11 @@
           <label for="cart-username">Name
             <span class="required-field">*</span>
           </label>
-          <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name">  
+          <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name" maxlength="20">  
         </div>
         <div>
           <label for="cart-address">Address</label>
-          <input id="cart-address" class="cart-details-input" type="text" name="address" placeholder="House No./Unit No./Street">
+          <input id="cart-address" class="cart-details-input" type="text" name="address" placeholder="House No./Unit No./Street" maxlength="30">
         </div>
         <div>
           <label for="cart-arrival">When do you arrive?</label>
@@ -61,7 +61,7 @@
           <label id="cart-contact-address-label" for="cart-contact-address">What is your name on Facebook?
             <span class="required-field">*</span>
           </label>
-          <input id="cart-contact-address" class="cart-details-input" name="contact-address">  
+          <input id="cart-contact-address" class="cart-details-input" name="contact-address" maxlength="20">  
         </div>
         <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
       </div>
