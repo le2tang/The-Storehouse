@@ -150,33 +150,33 @@ router.post("/items/upload",
     res.send(await items_db.getAllItems());
 });
 
-router.get("/carts/list",
-  async (req, res) => {
-    let carts = await carts_db.getAllCarts();
-    let carts_details = await Promise.all(carts.map(
-      async (cart) => {
-        let items = await getCartItemsDetails(cart.items);
-        let cart_details = {
-          username: cart.username,
-          address: cart.address,
-          arrival: cart.arrival,
-          contact_method: cart.contact_method,
-          contact_address: cart.contact_address,
-          items: items
-        };
-        return cart_details;
-    }));
-    res.send(carts_details);
-});
+// router.get("/carts/list",
+//   async (req, res) => {
+//     let carts = await carts_db.getAllCarts();
+//     let carts_details = await Promise.all(carts.map(
+//       async (cart) => {
+//         let items = await getCartItemsDetails(cart.items);
+//         let cart_details = {
+//           username: cart.username,
+//           address: cart.address,
+//           arrival: cart.arrival,
+//           contact_method: cart.contact_method,
+//           contact_address: cart.contact_address,
+//           items: items
+//         };
+//         return cart_details;
+//     }));
+//     res.send(carts_details);
+// });
 
-router.get("/carts/download",
-async (req, res) => {
-  let datetime = new Date();
+// router.get("/carts/download",
+// async (req, res) => {
+//   let datetime = new Date();
 
-  res.attachment('carts_list_' + datetime.getFullYear() + '_' + datetime.getMonth() + "_" + datetime.getDate() + '.json');
-  res.type('json');
-  res.send(JSON.stringify(await carts_db.getAllCarts(), null, 4));
-});
+//   res.attachment('carts_list_' + datetime.getFullYear() + '_' + datetime.getMonth() + "_" + datetime.getDate() + '.json');
+//   res.type('json');
+//   res.send(JSON.stringify(await carts_db.getAllCarts(), null, 4));
+// });
 
 async function getCartItemsDetails(item_ids) {
   let items = await Promise.all(Object.keys(item_ids).map(
