@@ -112,15 +112,39 @@ router.get("/items/download",
 router.post("/items/upload", 
   async (req, res) => {
     if (req.body.items) {
+      let existing_items = await items.getAllItems();
+      let existing_item_names = existing_items.map(item => item.itemname);
+
       let items = JSON.parse(req.body.items);
-      items.forEach(i => {
-        items_db.addItem(
-          i.id,
-          i.itemname,
-          new Number(i.quantity),
-          i.description,
-          i.tags
-        );
+      items.forEach((item, index) => {
+        if (existing_item_names.includes(item.itemname)){
+          let existing_item_index = existing_items.findIndex(exsiting_item => existing_item.itemname == item.itemname);
+
+          if (item.description == existing_items[existing_item_index].description) {
+            items_db.setItemQuantity(
+              item.id,
+              new Number(existing_items[existing_item_index].quantity) + new Number(item.quantity)
+            );
+          }
+          else {
+            items_db.addItem(
+              item.id,
+              item.itemname,
+              new Number(item.quantity),
+              item.description,
+              item.tags
+            );
+          }
+        }
+        else {
+          items_db.addItem(
+            item.id,
+            item.itemname,
+            new Number(item.quantity),
+            item.description,
+            item.tags
+          );
+        }
       });
     }
     res.send(await items_db.getAllItems());
