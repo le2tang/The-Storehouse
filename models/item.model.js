@@ -1,7 +1,7 @@
 const db = require("./db.js")
 
-class ItemList {
-  static create(item, callback) {
+var ItemList = {
+  create(item, callback) {
     var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
     db.query(query, [item.uid, item.name, item.quantity, item.description, [item.tags]], (err, res) => {
       if (err) {
@@ -13,9 +13,9 @@ class ItemList {
         callback(null, {id: res.insertId, ...item})
       }
     })
-  }
+  },
 
-  static getAll(callback) {
+  getAll(callback) {
     var query = "SELECT * FROM items"
     db.query(query, (err, res) => {
       if (err) {
@@ -27,9 +27,9 @@ class ItemList {
         callback(null, res.rows)
       }
     })
-  }
+  },
 
-  static removeAll(callback) {
+  removeAll(callback) {
     var query = "DELETE FROM items"
     db.query(query, (err, res) => {
       if (err) {
@@ -41,9 +41,9 @@ class ItemList {
         callback(null, res)
       }
     })
-  }
+  },
 
-  static getByUid(uid, callback) {
+  getByUid(uid, callback) {
     var query = `SELECT * FROM items WHERE uid='${uid}'`
     db.query(query, (err, res) => {
       console.log(res)
@@ -59,9 +59,9 @@ class ItemList {
         callback({kind: "not_found"}, null)
       }
     })
-  }
+  },
 
-  static updateByUid(item, callback) {
+  updateByUid(item, callback) {
     var query = "UPDATE items SET name=?, quantity=?, description=?, tags=? WHERE id=?"
     db.query(query, [item.name, item.quantity, item.description, item.tags, item.uid], (err, res) => {
       if (err) {
@@ -76,9 +76,9 @@ class ItemList {
         callback({kind: "not_found"}, null)
       }
     })
-  }
+  },
 
-  static removeByUid(uid, callback) {
+  removeByUid(uid, callback) {
     var query = `DELETE FROM items WHERE id=${uid}`
     db.query(query, (err, res) => {
       if (err) {
