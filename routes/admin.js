@@ -4,7 +4,11 @@ const { items_db, carts_db } = require("../models/database.js");
 
 const router = express.Router();
 
-router.get("/",
+router.get("/", (req, res) => {
+  res.render("login");
+});
+
+router.get("/login/password",
   async (req, res) => {
     let carts = await carts_db.getAllCarts();
     res.render("admin", {

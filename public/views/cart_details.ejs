@@ -10,6 +10,9 @@
 
   <% for (let c of carts) {%>
     <h1><%= c.username%></h1>
+    <% if (c.admin == "admin") {%>
+      <h2><%= c.address%></h2>
+    <% }%>
     <div class="items-list">
       <h2 id="items-list-header">Items</h2>
       <% for (let i of c.items) {%>

@@ -13,6 +13,7 @@
 
   <div>
     <form id="get-cart" action="/carts/details" method="post">
+      <input type="hidden" name="admin" value="user">
       <label for="get-cart-name">Find My Cart</label>
       <input id="get-cart-name" type="text" name="username" placeholder="Name" required>
       <input type="submit" value="Get Cart">

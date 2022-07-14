@@ -13,8 +13,11 @@ router.post("/details",
       res.render("cart_details", {
         carts: await Promise.all(carts.map(
           async (cart) => {
+            console.log(req.body.admin, cart.address);
             return {
+              admin: req.body.admin,
               username: cart.username,
+              address: (req.body.admin ? cart.address : null),
               items: await getCartItemsDetails(cart.items)
             };
         }))

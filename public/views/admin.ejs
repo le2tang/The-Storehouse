@@ -13,14 +13,6 @@
     <%- include("../partials/header"); %>
   </header>
 
-  <div>
-    <form id="get-cart" action="/carts/details" method="post">
-      <label for="get-cart-name">Get Cart</label>
-      <input id="get-cart-name" type="text" name="username" placeholder="Name" required>
-      <input type="submit" value="Get Cart">
-    </form>
-  </div>
-
   <form id="create-new-item" action="/admin/items/add" method="post">
     <label for="new-item-itemname">Name</label>
     <input id="new-item-itemname" type="text" name="itemname" placeholder="Name" autofocus required>
@@ -40,6 +32,7 @@
   <div id="carts-list">
     <% for (let username of cart_usernames) {%>
       <form action="/carts/details" method="post">
+        <input type="hidden" name="admin" value="admin">
         <label for="cart-username">Cart: <%= username%></label>
         <input id="cart-username" type="hidden" name="username" value="<%= username%>">
         <input type="submit" value="Go to Cart">
