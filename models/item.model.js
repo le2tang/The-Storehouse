@@ -1,9 +1,9 @@
 const db = require("./db.js")
 
 class ItemList {
-  create(item, callback) {
-    var query = "INSERT INTO items SET ?"
-    db.query(query, item, (err, res) => {
+  static create(item, callback) {
+    var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
+    db.query(query, [item.uid, item.name, item.quantity, item.description, [item.tags]], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
@@ -15,7 +15,7 @@ class ItemList {
     })
   }
 
-  getAll(callback) {
+  static getAll(callback) {
     var query = "SELECT * FROM items"
     db.query(query, (err, res) => {
       if (err) {
@@ -23,13 +23,13 @@ class ItemList {
         callback(err, null)
       }
       else {
-        console.log(`Found items: ${res}`)
-        callback(null, res)
+        console.log(`Found items: ${res.rows}`)
+        callback(null, res.rows)
       }
     })
   }
 
-  removeAll(callback) {
+  static removeAll(callback) {
     var query = "DELETE FROM items"
     db.query(query, (err, res) => {
       if (err) {
@@ -43,16 +43,17 @@ class ItemList {
     })
   }
 
-  getByUid(uid, callback) {
-    var query = `SELECT * FROM items WHERE uid=${uid}`
+  static getByUid(uid, callback) {
+    var query = `SELECT * FROM items WHERE uid='${uid}'`
     db.query(query, (err, res) => {
+      console.log(res)
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
-      else if (res.length > 0) {
-        console.log(`Found item: ${res[0]}`)
-        callback(null, res[0])
+      else if (res.rowCount > 0) {
+        console.log(`Found item: ${res.rows[0]}`)
+        callback(null, res.rows[0])
       }
       else {
         callback({kind: "not_found"}, null)
@@ -60,7 +61,7 @@ class ItemList {
     })
   }
 
-  updateByUid(item, callback) {
+  static updateByUid(item, callback) {
     var query = "UPDATE items SET name=?, quantity=?, description=?, tags=? WHERE id=?"
     db.query(query, [item.name, item.quantity, item.description, item.tags, item.uid], (err, res) => {
       if (err) {
@@ -77,7 +78,7 @@ class ItemList {
     })
   }
 
-  removeByUid(uid, callback) {
+  static removeByUid(uid, callback) {
     var query = `DELETE FROM items WHERE id=${uid}`
     db.query(query, (err, res) => {
       if (err) {

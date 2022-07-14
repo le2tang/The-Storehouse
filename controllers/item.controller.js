@@ -1,4 +1,4 @@
-const item_model = require("../models/item.model.js")
+const ItemList = require("../models/item.model.js")
 
 // Create and save a new item
 exports.createNew = (req, res) => {
@@ -6,8 +6,7 @@ exports.createNew = (req, res) => {
     res.status(400).send({message: "Invalid request"})
   }
 
-  const new_item = new Item(req.body)
-  item_model.create(new_item, (err, data) => {
+  ItemList.create(req.body, (err, data) => {
     if (err) {
       res.send({message: err.message})
     }
@@ -18,7 +17,7 @@ exports.createNew = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
-  item_model.getAll((err, data) => {
+  ItemList.getAll((err, data) => {
     if (err) {
       res.send({message: err.message})
     }
@@ -29,7 +28,7 @@ exports.getAll = (req, res) => {
 }
 
 exports.removeAll = (req, res) => {
-  item_model.removeAll((err, data) => {
+  ItemList.removeAll((err, data) => {
     if (err) {
       res.send({message: err.message})
     }
@@ -40,7 +39,7 @@ exports.removeAll = (req, res) => {
 }
 
 exports.getByUid = (req, res) => {
-  item_model.getByUid(req.params.uid, (err, data) => {
+  ItemList.getByUid(req.params.uid, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
         res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
@@ -56,7 +55,7 @@ exports.getByUid = (req, res) => {
 }
 
 exports.updateByUid = (req, res) => {
-  item_model.updateByUid(req.params.uid, new Item(req.body), (err, data) => {
+  ItemList.updateByUid(req.params.uid, req.body, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
         res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
@@ -72,7 +71,7 @@ exports.updateByUid = (req, res) => {
 }
 
 exports.removeByUid = (req, res) => {
-  item_model.removeByUid(req.params.uid, (err, data) => {
+  ItemList.removeByUid(req.params.uid, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
         res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
