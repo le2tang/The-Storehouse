@@ -1,9 +1,9 @@
 const db = require("./db.js")
 
-class ItemList {
+var ItemList = {
   create(item, callback) {
-    var query = "INSERT INTO items SET ?"
-    db.query(query, item, (err, res) => {
+    var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
+    db.query(query, [item.uid, item.name, item.quantity, item.description, [item.tags]], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
@@ -13,7 +13,7 @@ class ItemList {
         callback(null, {id: res.insertId, ...item})
       }
     })
-  }
+  },
 
   getAll(callback) {
     var query = "SELECT * FROM items"
@@ -27,7 +27,7 @@ class ItemList {
         callback(null, res)
       }
     })
-  }
+  },
 
   removeAll(callback) {
     var query = "DELETE FROM items"
@@ -41,10 +41,10 @@ class ItemList {
         callback(null, res)
       }
     })
-  }
+  },
 
   getByUid(uid, callback) {
-    var query = `SELECT * FROM items WHERE uid=${uid}`
+    var query = `SELECT * FROM items WHERE uid='${uid}'`
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
@@ -58,7 +58,7 @@ class ItemList {
         callback({kind: "not_found"}, null)
       }
     })
-  }
+  },
 
   updateByUid(item, callback) {
     var query = "UPDATE items SET name=?, quantity=?, description=?, tags=? WHERE id=?"
@@ -75,7 +75,7 @@ class ItemList {
         callback({kind: "not_found"}, null)
       }
     })
-  }
+  },
 
   removeByUid(uid, callback) {
     var query = `DELETE FROM items WHERE id=${uid}`
