@@ -3,6 +3,9 @@
 <head>
   <%- include("../partials/head"); %>
   <link rel="stylesheet" href="../styles/css/marketplace.css">
+  <link rel="stylesheet" href="../styles/css/item_list.css">
+  <link rel="stylesheet" href="../styles/css/cart_details.css">
+  <link rel="stylesheet" href="../styles/css/cart_list.css">
   <script src="./scripts/marketplace.js"></script>
 </head>
 <body>
@@ -15,16 +18,10 @@
       <h2 id="items-list-header">Items</h2>
       <% for (let i of items) {%>
         <% if (i.quantity > 0) {%>
-          <div id="item-card-<%= i.uid%>" class="item-card">
-            <button class="item-add" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
-            <label for="item-itemname">Name: </label> 
-            <span class="item-itemname"><%= i.itemname%></span>
-            <label for="item-quantity">Quantity: </label>
-            <span class="item-quantity"><%= i.quantity%></span>
-            <% if (i.description && i.description.length > 0) {%>
-              <button class="item-expand" onclick="expandItem(this)">Expand</button>
-              <p class="item-description" hidden>Description: <%= i.description%></p>
-            <% }%>
+          <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">
+            <h1 class="item-quantity"><%= i.quantity%></h1>
+            <h2 class="item-itemname"><%= i.itemname%></h2>
+            <p class="item-description"><%= i.description%></p>
           </div>
         <% }%>
       <% }%>
@@ -79,7 +76,7 @@
   <div id="add-to-cart-modal" class="modal">
     <div class="modal-content">
       <span id="add-to-cart-close" class="modal-close">&times;</span>
-      <span id="add-to-cart-itemname"></span>
+      <h1 id="add-to-cart-itemname"></h1>
       <input id="add-to-cart-quantity" type="number" min="1" value="1">
       <button id="add-to-cart-confirm">Add</button>
     </div>

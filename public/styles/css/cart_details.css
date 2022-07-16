@@ -1,0 +1,15 @@
+.cart-details-container {
+  grid-row-start: 1;
+  grid-column-start: 2;
+  background: slategray;
+  padding: 10px;
+}
+
+.cart-content {
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  position: sticky;
+  top: 10px;
+}

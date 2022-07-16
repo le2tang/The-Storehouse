@@ -1,0 +1,6 @@
+.cart-list-container {
+  grid-row-start: 1;
+  grid-column-start: 3;
+  background: lightblue;
+  padding: 10px;
+}

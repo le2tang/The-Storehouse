@@ -3,59 +3,8 @@
   grid-template-columns: 2fr 1fr 1fr;
 }
 
-#items-list-header {
-  color: white;
-}
-
-.items-list {
-  grid-row-start: 1;
-  grid-column-start: 1;
-  background: darkslategray;
-  padding: 10px;
-}
-
-.cart-details-container {
-  grid-row-start: 1;
-  grid-column-start: 2;
-  background: slategray;
-  padding: 10px;
-}
-
-.cart-list-container {
-  grid-row-start: 1;
-  grid-column-start: 3;
-  background: slategray;
-  padding: 10px;
-}
-
-.cart-content {
-  background-color: white;
-  border: 2px solid black;
-  border-radius: 10px;
-  padding: 10px;
-  position: sticky;
-  top: 10px;
-}
-
 .required-field {
   color: red;
-}
-
-.item-card {
-  display: block;
-  background: var(--yellow);
-  border: 1px gray;
-  border-radius: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  margin-top: 4px;
-  margin-bottom: 4px;
-}
-
-.item-card-info {
-  display: inline;
 }
 
 .modal {
@@ -73,14 +22,18 @@
 
 .modal-content {
   background: white;
+  align-items: center;
   margin: 15% auto;
   padding: 20px;
-  border: 2px black;
-  border-radius: 4px;
+  border: 2px solid black;
+  border-radius: 10px;
   width: 20%;
 }
 
 .modal-close {
+  position: absolute;
+  left: 5%;
+  top: 5%;
   color: red;
   float: right;
   font-size: 28px;
