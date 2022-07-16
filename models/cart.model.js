@@ -1,57 +1,57 @@
 const db = require("./db.js")
 
-var ItemList = {
-  create(item, callback) {
-    var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
-    db.query(query, [item.uid, item.name, item.quantity, item.description, item.tags], (err, res) => {
+var CartList = {
+  create(cart, callback) {
+    var query = "INSERT INTO carts (username, address, arrival, contact_method, contact_address, items) VALUES ($1, $2, $3, $4, $5, $6)"
+    db.query(query, [cart.username, cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else {
-        console.log(`Created new item: ${res.insertId} ${item}`)
-        callback(null, {id: res.insertId, ...item})
+        console.log(`Created new cart: ${res.insertId} ${user}`)
+        callback(null, {id: res.insertId, ...cart})
       }
     })
   },
 
   getAll(callback) {
-    var query = "SELECT * FROM items"
+    var query = "SELECT * FROM carts"
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else {
-        console.log(`Found items: ${res}`)
+        console.log(`Found carts: ${res}`)
         callback(null, res)
       }
     })
   },
 
   removeAll(callback) {
-    var query = "DELETE FROM items"
+    var query = "DELETE FROM carts"
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else {
-        console.log(`Deleted items: ${res}`)
+        console.log(`Deleted carts: ${res}`)
         callback(null, res)
       }
     })
   },
 
-  getByUid(uid, callback) {
-    var query = `SELECT * FROM items WHERE uid=${uid}`
+  getByUsername(username, callback) {
+    var query = `SELECT * FROM carts WHERE username='${username}'`
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else if (res.length > 0) {
-        console.log(`Found item: ${res[0]}`)
+        console.log(`Found cart: ${res[0]}`)
         callback(null, res[0])
       }
       else {
@@ -60,16 +60,16 @@ var ItemList = {
     })
   },
 
-  updateByUid(item, callback) {
-    var query = "UPDATE items SET name=?, quantity=?, description=?, tags=? WHERE uid=?"
-    db.query(query, [item.name, item.quantity, item.description, item.tags, item.uid], (err, res) => {
+  updateByUsername(cart, callback) {
+    var query = "UPDATE carts SET address=?, arrival=?, contact_method=?, contact_address=?, items=? WHERE username=?"
+    db.query(query, [cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.username], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else if (res.affectedRows > 0) {
-        console.log(`Updated item: ${item}`)
-        callback(null, item)
+        console.log(`Updated cart: ${cart}`)
+        callback(null, cart)
       }
       else {
         callback({kind: "not_found"}, null)
@@ -77,15 +77,15 @@ var ItemList = {
     })
   },
 
-  removeByUid(uid, callback) {
-    var query = `DELETE FROM items WHERE uid=${uid}`
+  removeByUsername(username, callback) {
+    var query = `DELETE FROM carts WHERE username=${username}`
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else if (res.affectedRows > 0) {
-        console.log(`Removed item: ${uid}`)
+        console.log(`Removed cart: ${username}`)
         callback(null, res)
       }
       else {
@@ -95,4 +95,4 @@ var ItemList = {
   }
 }
 
-module.exports = ItemList
+module.exports = CartList

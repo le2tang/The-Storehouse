@@ -1,6 +1,5 @@
 const item_model = require("../models/item.model.js")
 
-// Create and save a new item
 exports.createNew = (req, res) => {
   if (!req.body) {
     res.status(400).send({message: "Invalid request"})
