@@ -1,11 +1,11 @@
-const item_model = require("../models/item.model.js")
+const user_model = require("../models/user.model.js")
 
 exports.createNew = (req, res) => {
   if (!req.body) {
     res.status(400).send({message: "Invalid request"})
   }
 
-  item_model.create(req.body, (err, data) => {
+  user_model.create(req.body, (err, data) => {
     if (err) {
       res.send({message: err.message})
     }
@@ -16,7 +16,7 @@ exports.createNew = (req, res) => {
 }
 
 exports.getAll = (req, res) => {
-  item_model.getAll((err, data) => {
+  user_model.getAll((err, data) => {
     if (err) {
       res.send({message: err.message})
     }
@@ -27,21 +27,21 @@ exports.getAll = (req, res) => {
 }
 
 exports.removeAll = (req, res) => {
-  item_model.removeAll((err, data) => {
+  user_model.removeAll((err, data) => {
     if (err) {
       res.send({message: err.message})
     }
     else {
-      res.send({message: "All items removed"})
+      res.send({message: "All users removed"})
     }
   })
 }
 
-exports.getByUid = (req, res) => {
-  item_model.getByUid(req.params.uid, (err, data) => {
+exports.getByUsername = (req, res) => {
+  user_model.getByUsername(req.params.username, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
-        res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
+        res.status(404).send({message: `User with username: ${req.params.username} not found`})
       }
       else {
         res.status(500).send({message: err.message})
@@ -53,11 +53,11 @@ exports.getByUid = (req, res) => {
   })
 }
 
-exports.updateByUid = (req, res) => {
-  item_model.updateByUid(req.params.uid, req.body, (err, data) => {
+exports.updateByUsername = (req, res) => {
+  user_model.updateByUsername(req.params.username, req.body, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
-        res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
+        res.status(404).send({message: `User with username: ${req.params.username} not found`})
       }
       else {
         res.status(500).send({message: err.message})
@@ -69,18 +69,18 @@ exports.updateByUid = (req, res) => {
   })
 }
 
-exports.removeByUid = (req, res) => {
-  item_model.removeByUid(req.params.uid, (err, data) => {
+exports.removeByUsername = (req, res) => {
+  user_model.removeByUsername(req.params.username, (err, data) => {
     if (err) {
       if (err.kind == "not_found") {
-        res.status(404).send({message: `Item with UID: ${req.params.uid} not found`})
+        res.status(404).send({message: `User with username: ${req.params.username} not found`})
       }
       else {
         res.status(500).send({message: err.message})
       }
     }
     else {
-      res.send({message: `Removed item with UID: ${req.params.uid}`})
+      res.send({message: `Removed user with username: ${req.params.username}`})
     }
   })
 }

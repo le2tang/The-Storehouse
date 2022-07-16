@@ -2,8 +2,8 @@ const db = require("./db.js")
 
 var CartList = {
   create(cart, callback) {
-    var query = "INSERT INTO carts (username, address, arrival, contact_method, contact_address, items) VALUES ($1, $2, $3, $4, $5, $6)"
-    db.query(query, [cart.username, cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items], (err, res) => {
+    var query = "INSERT INTO carts (username, address, arrival, contact_method, contact_address, items, status) VALUES ($1, $2, $3, $4, $5, $6)"
+    db.query(query, [cart.username, cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.status], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
@@ -61,8 +61,8 @@ var CartList = {
   },
 
   updateByUsername(cart, callback) {
-    var query = "UPDATE carts SET address=?, arrival=?, contact_method=?, contact_address=?, items=? WHERE username=?"
-    db.query(query, [cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.username], (err, res) => {
+    var query = "UPDATE carts SET address=?, arrival=?, contact_method=?, contact_address=?, items=?, status=? WHERE username=?"
+    db.query(query, [cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.status, cart.username], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)

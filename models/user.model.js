@@ -2,8 +2,8 @@ const db = require("./db.js")
 
 var UserList = {
   create(user, callback) {
-    var query = "INSERT INTO users (name, password, level) VALUES ($1, $2, $3)"
-    db.query(query, [user.name, user.password, user.level], (err, res) => {
+    var query = "INSERT INTO users (username, password, level) VALUES ($1, $2, $3)"
+    db.query(query, [user.username, user.password, user.level], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
@@ -43,8 +43,8 @@ var UserList = {
     })
   },
 
-  getByName(name, callback) {
-    var query = `SELECT * FROM users WHERE name='${name}'`
+  getByUsername(username, callback) {
+    var query = `SELECT * FROM users WHERE username='${username}'`
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
@@ -60,9 +60,9 @@ var UserList = {
     })
   },
 
-  updateByName(user, callback) {
-    var query = "UPDATE users SET password=?, level=? WHERE name=?"
-    db.query(query, [user.password, user.level, user.name], (err, res) => {
+  updateByUsername(user, callback) {
+    var query = "UPDATE users SET password=?, level=? WHERE username=?"
+    db.query(query, [user.password, user.level, user.username], (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
@@ -77,15 +77,15 @@ var UserList = {
     })
   },
 
-  removeByName(name, callback) {
-    var query = `DELETE FROM users WHERE name=${name}`
+  removeByUsername(username, callback) {
+    var query = `DELETE FROM users WHERE username=${username}`
     db.query(query, (err, res) => {
       if (err) {
         console.log(`Error: ${err}`)
         callback(err, null)
       }
       else if (res.affectedRows > 0) {
-        console.log(`Removed user: ${name}`)
+        console.log(`Removed user: ${username}`)
         callback(null, res)
       }
       else {
