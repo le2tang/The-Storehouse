@@ -16,7 +16,7 @@
     <div class="items-list">
       <h2 id="items-list-header">Items</h2>
       <% for (let i of c.items) {%>
-        <div id="item-card-<%= i.id%>" class="item-card">
+        <div id="item-card-<%= i.uid%>" class="item-card">
           <label for="item-itemname">Name: </label> 
           <span class="item-itemname"><%= i.itemname%></span>
           <label for="item-quantity">Quantity: </label>

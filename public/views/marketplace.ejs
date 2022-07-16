@@ -15,8 +15,8 @@
       <h2 id="items-list-header">Items</h2>
       <% for (let i of items) {%>
         <% if (i.quantity > 0) {%>
-          <div id="item-card-<%= i.id%>" class="item-card">
-            <button class="item-add" onclick="tryAddItem('<%= i.id%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
+          <div id="item-card-<%= i.uid%>" class="item-card">
+            <button class="item-add" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">Add</button>
             <label for="item-itemname">Name: </label> 
             <span class="item-itemname"><%= i.itemname%></span>
             <label for="item-quantity">Quantity: </label>

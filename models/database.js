@@ -10,13 +10,13 @@ class ItemsDatabase {
     return await this.source.query(sql);
   }
 
-  async getItemById(id) {
-    let sql = "SELECT * FROM items WHERE id=$1";
-    let result = await this.source.query(sql, [id]);
+  async getItemByUid(uid) {
+    let sql = "SELECT * FROM items WHERE uid=$1";
+    let result = await this.source.query(sql, [uid]);
     return result[0];
   }
 
-  async addItem(id, itemname, quantity, description, tags) {
+  async addItem(uid, itemname, quantity, description, tags) {
     if (description && description.length == 0) {
       description = null;
     }
@@ -24,11 +24,11 @@ class ItemsDatabase {
       tags = null;
     }
 
-    let sql = "INSERT INTO items (id, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)";
-    return await this.source.query(sql, [id, itemname, quantity, description, tags]);
+    let sql = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)";
+    return await this.source.query(sql, [uid, itemname, quantity, description, tags]);
   }
 
-  async updateItem(id, itemname, quantity, description, tags) {
+  async updateItem(uid, itemname, quantity, description, tags) {
     if (description && description.length == 0) {
       description = null;
     }
@@ -36,18 +36,18 @@ class ItemsDatabase {
       tags = null;
     }
     
-    let sql = "UPDATE items SET itemname=$2, quantity=$3, description=$4, tags=$5 WHERE id=$1";
-    return await this.source.query(sql, [id, itemname, quantity, description, tags]);
+    let sql = "UPDATE items SET itemname=$2, quantity=$3, description=$4, tags=$5 WHERE uid=$1";
+    return await this.source.query(sql, [uid, itemname, quantity, description, tags]);
   }
 
-  async setItemQuantity(id, quantity) {
-    let sql = "UPDATE items SET quantity=$2 WHERE id=$1";
-    return await this.source.query(sql, [id, quantity]);
+  async setItemQuantity(uid, quantity) {
+    let sql = "UPDATE items SET quantity=$2 WHERE uid=$1";
+    return await this.source.query(sql, [uid, quantity]);
   }
 
-  async removeItemById(id) {
-    let sql = "DELETE FROM items WHERE id=$1";
-    return await this.source.query(sql, [id]);
+  async removeItemByUid(uid) {
+    let sql = "DELETE FROM items WHERE uid=$1";
+    return await this.source.query(sql, [uid]);
   }
 }
 

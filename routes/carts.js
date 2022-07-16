@@ -27,19 +27,19 @@ router.post("/details",
 
 async function getCartItemsDetails(item_ids) {
   let items = await Promise.all(Object.keys(item_ids).map(
-    async (id) => {
-      let item = await items_db.getItemById(id);
+    async (uid) => {
+      let item = await items_db.getItemByUid(uid);
       if (!item) {
         item = {
-          id: id,
-          itemname: id,
+          uid: uid,
+          itemname: uid,
           quantity: 0,
           description: "Unknown item",
           tags: []
         }
       }
       else {
-        item.quantity = item_ids[id];
+        item.quantity = item_ids[uid];
       }
       return item;
   }));

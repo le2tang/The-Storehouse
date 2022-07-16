@@ -8,25 +8,25 @@ class Cart {
     this.items = {};
   }
 
-  addItem(id, quantity) {
-    if (this.items[id]) {
-      this.items[id] = this.items[id] + new Number(quantity);
+  addItem(uid, quantity) {
+    if (this.items[uid]) {
+      this.items[uid] = this.items[uid] + new Number(quantity);
     }
     else {
-      this.items[id] = new Number(quantity);
+      this.items[uid] = new Number(quantity);
     }
   }
 
-  removeItem(id, quantity) {
-    if (this.items[id]) {
+  removeItem(uid, quantity) {
+    if (this.items[uid]) {
       if (quantity) {
-        this.items[id] = this.items[id] - new Number(quantity);
-        if (this.items[id] < 1) {
-          delete this.items[id];
+        this.items[uid] = this.items[uid] - new Number(quantity);
+        if (this.items[uid] < 1) {
+          delete this.items[uid];
         }
       }
       else {
-        delete this.items[id];
+        delete this.items[uid];
       }
     }
   }
@@ -45,16 +45,16 @@ class Cart {
 
 let my_cart = new Cart();
 
-function tryAddItem(id, itemname, max_quantity) {
+function tryAddItem(uid, itemname, max_quantity) {
   if (new Number(max_quantity) > 1) {
-    addItemModal(id, itemname, max_quantity);
+    addItemModal(uid, itemname, max_quantity);
   }
   else {
-    addItemToCart(id, itemname, 1);
+    addItemToCart(uid, itemname, 1);
   }
 }
 
-function addItemModal(id, itemname, max_quantity) {
+function addItemModal(uid, itemname, max_quantity) {
   let modal = document.getElementById("add-to-cart-modal");
   let close_modal = document.getElementById("add-to-cart-close");
   let confirm_modal = document.getElementById("add-to-cart-confirm");
@@ -84,7 +84,7 @@ function addItemModal(id, itemname, max_quantity) {
       desired_quantity = 1;
     }
     
-    addItemToCart(id, itemname, desired_quantity);
+    addItemToCart(uid, itemname, desired_quantity);
   }
 }
 
@@ -92,35 +92,35 @@ function closeModal() {
   document.getElementById("add-to-cart-modal").style.display = "none";
 }
 
-function addItemToCart(id, itemname, quantity) {
+function addItemToCart(uid, itemname, quantity) {
   let cart_list = document.getElementById("cart-items-list");
-  let list_item = document.getElementById(`item-card-${id}`);
+  let list_item = document.getElementById(`item-card-${uid}`);
   let list_item_quantity = list_item.getElementsByClassName("item-quantity")[0];
 
-  let item_in_cart = my_cart.items[id];
-  my_cart.addItem(id, quantity);
+  let item_in_cart = my_cart.items[uid];
+  my_cart.addItem(uid, quantity);
 
   if (item_in_cart) {
-    let cart_item = document.getElementById(`cart-item-${id}`);
-    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = my_cart.items[id];
+    let cart_item = document.getElementById(`cart-item-${uid}`);
+    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = my_cart.items[uid];
   }
   else {
     let cart_item = document.createElement("li");  
     cart_item.classList.add("cart-item");
-    cart_item.id = `cart-item-${id}`;
+    cart_item.uid = `cart-item-${uid}`;
     
     let cart_item_contents = `
-      <span class="cart-item-id" hidden>${id}</span>
+      <span class="cart-item-uid" hidden>${uid}</span>
       <span class="cart-item-itemname">${itemname}</span>
       <span>: </span>
-      <span class="cart-item-quantity">${my_cart.items[id]}</span>
+      <span class="cart-item-quantity">${my_cart.items[uid]}</span>
       <button class="cart-item-remove">&times;</button>`;
     
     cart_item.innerHTML = cart_item_contents;
     cart_list.append(cart_item);
 
     cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {      
-      my_cart.removeItem(id);
+      my_cart.removeItem(uid);
       
       event.target.parentElement.remove();
 

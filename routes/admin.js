@@ -18,20 +18,20 @@ router.get("/login/password",
     // res.render("admin", { items: await items_db.getAllItems() });
 });
 
-// router.post("/items/add",
-//   async (req, res) => {
-//     await items_db.addItem(
-//       crypto.randomBytes(8).toString("hex"),
-//       req.body.itemname,
-//       new Number(req.body.quantity),
-//       req.body.description,
-//       req.body.tags
-//     );
-//     res.redirect("/admin");
-// });
+router.post("/items/add",
+  async (req, res) => {
+    await items_db.addItem(
+      crypto.randomBytes(8).toString("hex"),
+      req.body.itemname,
+      new Number(req.body.quantity),
+      req.body.description,
+      req.body.tags
+    );
+    res.redirect("/admin");
+});
 
 // router.get("/items/edit/:id", (req, res) => {
-//   let item = items_db.getItemById(req.params.id);
+//   let item = items_db.getItemByUid(req.params.id);
 //   if (!item) {
 //     res.status(404).send("Item not found");
 //   }
@@ -54,7 +54,7 @@ router.get("/login/password",
 
 // router.post("/items/edit/quantity/add",
 //   async (req, res) => {
-//     let item = items_db.getItemById(req.body.id);
+//     let item = items_db.getItemByUid(req.body.id);
 //     if (!item) {
 //       res.status(404).send("Item not found");
 //     }
@@ -72,7 +72,7 @@ router.get("/login/password",
 
 // router.post("/items/edit/quantity/sub",
 //   async (req, res) => {
-//     let item = items_db.getItemById(req.body.id);
+//     let item = items_db.getItemByUid(req.body.id);
 //     if (!item) {
 //       res.status(404).send("Item not found");
 //     }
@@ -185,7 +185,7 @@ router.get("/carts/list",
 async function getCartItemsDetails(item_ids) {
   let items = await Promise.all(Object.keys(item_ids).map(
     async (id) => {
-      let item = await items_db.getItemById(id);
+      let item = await items_db.getItemByUid(id);
       if (!item) {
         item = {
           id: id,

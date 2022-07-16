@@ -45,13 +45,13 @@
       <div class="item-card">
         <span class="item-itemname item-card-info"><%= i.itemname%></span>
         <form class="item-incr-quantity item-card-info" action="/admin/items/edit/quantity/add" method="post">
-          <input type="hidden" name="id" value="<%= i.id%>">
+          <input type="hidden" name="uid" value="<%= i.uid%>">
           <input type="hidden" name="incr-quantity" value="1">
           <button type="submit">+</button>
         </form>
         <span class="item-quantity item-card-info"><%= i.quantity%></span>
         <form class="item-decr-quantity item-card-info" action="/admin/items/edit/quantity/sub" method="post">
-          <input type="hidden" name="id" value="<%= i.id%>">
+          <input type="hidden" name="uid" value="<%= i.uid%>">
           <input type="hidden" name="decr-quantity" value="1">
           <button type="submit">-</button>
         </form>
@@ -64,7 +64,7 @@
           </div>
         <% }%>
         <form class="item-remove item-card-info" action="/admin/items/remove" method="post">
-          <input type="hidden" name="id" value="<%= i.id%>">
+          <input type="hidden" name="uid" value="<%= i.uid%>">
           <button type="submit">x</button>
         </form>
       </div>

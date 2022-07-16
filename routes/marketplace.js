@@ -25,7 +25,7 @@ router.post("/cart/submit",
 async function reserveItems(cart_items) {
   let reserved_items = {};
   for (let ci in cart_items) {
-    let item = await items_db.getItemById(ci);
+    let item = await items_db.getItemByUid(ci);
     if (item.quantity > 0) {
       if (cart_items[ci] < item.quantity) {
         reserved_items[ci] = cart_items[ci];
