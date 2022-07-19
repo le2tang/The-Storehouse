@@ -15,7 +15,7 @@
   
   <div class="split-screen">
     <div class="items-list">
-      <h2 id="items-list-header">Items</h2>
+      <h1 id="items-list-header">Items</h1>
       <% for (let i of items) {%>
         <% if (i.quantity > 0) {%>
           <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">
@@ -28,12 +28,10 @@
     </div>
 
     <div id="cart-details" class="cart-details-container">
-      <h1>My Info</h1>
+      <h1 id="cart-details-header">My Info</h1>
       <div class="cart-content">
-        <div>
-          <label for="cart-username">Name
-            <span class="required-field">*</span>
-          </label>
+        <div class="cart-details">
+          <label for="cart-username">Name<span class="required-field">*</span></label>
           <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name" maxlength="20">  
         </div>
         <div>
@@ -45,9 +43,7 @@
           <input id="cart-arrival" class="cart-details-input" type="date" name="arrival">
         </div>
         <div>
-          <label for="cart-contact-method">How would you prefer to be contacted?
-            <span class="required-field">*</span>
-          </label>
+          <label for="cart-contact-method">How would you prefer to be contacted?<span class="required-field">*</span></label>
           <select id="cart-contact-method" class="cart-details-input" name="contact-method">
             <option value="fcb">Facebook</option>
             <option value="txt">Text</option>
@@ -65,7 +61,7 @@
     </div>
 
     <div id="cart-list" class="cart-list-container">
-      <h1>My Cart</h1>
+      <h1 id="cart-list-header">My Cart</h1>
       <div class="cart-content">
         <p id="cart-empty-warning">Your cart is currently empty</p>
         <div id="cart-items-list"></div>

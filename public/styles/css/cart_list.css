@@ -4,3 +4,7 @@
   background: lightblue;
   padding: 10px;
 }
+
+#cart-list-header {
+  width: 100%;
+}
