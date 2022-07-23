@@ -14,7 +14,7 @@
   </header>
   
   <div class="split-screen">
-    <div class="items-list">
+    <div class="items-list-container">
       <h1 id="items-list-header">Items</h1>
       <% for (let i of items) {%>
         <% if (i.quantity > 0) {%>
@@ -29,7 +29,7 @@
 
     <div id="cart-details" class="cart-details-container">
       <h1 id="cart-details-header">My Info</h1>
-      <div class="cart-content">
+      <div class="cart-details-content">
         <div class="cart-details">
           <label for="cart-username">Name<span class="required-field">*</span></label>
           <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name" maxlength="20">  
@@ -62,7 +62,7 @@
 
     <div id="cart-list" class="cart-list-container">
       <h1 id="cart-list-header">My Cart</h1>
-      <div class="cart-content">
+      <div class="cart-list-content">
         <p id="cart-empty-warning">Your cart is currently empty</p>
         <div id="cart-items-list"></div>
       </div>

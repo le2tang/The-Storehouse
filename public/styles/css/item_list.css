@@ -3,11 +3,13 @@
   width: 100%
 }
 
-.items-list {
+.items-list-container {
   grid-row-start: 1;
   grid-column-start: 1;
   background: lightblue;
   padding: 10px;
+  margin: 10px;
+  box-shadow: 3px 2px 2px gray;
   justify-content: space-evenly;
   display: inline-flex;
   flex-direction: row;
@@ -19,9 +21,10 @@
   min-height: 150px;
   padding: 10px;
   margin: 10px;
+  box-shadow: 3px 2px 2px gray;
   text-align: center;
   background: white;
-  border-radius: 10px;
+  border-radius: 8px;
   transition-duration: 0.4s;
   display: grid;
   grid-template-columns: 70% 30%;
