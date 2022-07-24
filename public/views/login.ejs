@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include("../partials/head"); %>
+  <link rel="stylesheet" href="../styles/css/login.css">
+</head>
+<body>
+  <header>
+    <%- include("../partials/header"); %>
+  </header>
+  <div class="login-container">
+    <input type="checkbox" id="login-type-switch" aria-hidden="true">
+    <div class="login-signup-container">
+      <form id="login-signup">
+        <label for="login-type-switch" aria-hidden="true">Sign up</label>
+        <input id="login-username-entry" type="text" name="username" placeholder="Username">
+        <input id="login-password-entry" type="password" name="password" placeholder="Password">
+        <input id="login-confirm-password-entry" type="password" name="confirm_password" placeholder="Confirm Password">
+        <input id="login-submit-entry" type="submit" value="Submit">
+      </form>
+    </div>
+    <div class="login-login-container">
+      <form id="login-login">
+        <label for="login-type-switch" aria-hidden="true">Login</label>
+        <input id="login-username-entry" type="text" name="username" placeholder="Username">
+        <input id="login-password-entry" type="password" name="password" placeholder="Password">
+        <input id="login-submit-entry" type="submit" value="Submit">
+      </form>
+    </div>
+  </div>
+</body>
