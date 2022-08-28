@@ -1,80 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <%- include("../partials/head"); %>
-  <link rel="stylesheet" href="../styles/css/marketplace.css">
-  <link rel="stylesheet" href="../styles/css/item_list.css">
-  <link rel="stylesheet" href="../styles/css/cart_details.css">
-  <link rel="stylesheet" href="../styles/css/cart_list.css">
-  <script src="./scripts/marketplace.js"></script>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Marketplace</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="/styles/css/colors.css">
+  <link rel="stylesheet" href="/styles/css/marketplace.css">
+  <script src="/scripts/marketplace.js"></script>
 </head>
 <body>
   <header>
-    <%- include("../partials/header"); %>
+    <%- include("../partials/navbar") %>
   </header>
-  
-  <div class="split-screen">
-    <div class="items-list-container">
-      <h1 id="items-list-header">Items</h1>
-      <% for (let i of items) {%>
-        <% if (i.quantity > 0) {%>
-          <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">
-            <h1 class="item-quantity"><%= i.quantity%></h1>
-            <h2 class="item-itemname"><%= i.itemname%></h2>
-            <p class="item-description"><%= i.description%></p>
-          </div>
+  <div class="container">
+    <div class="marketplace-item-list-container">
+      <h1>Marketplace</h1>
+      <div id="marketplace-item-list" class="marketplace-item-list">
+        <% for (var i of items) {%>
+          <% if (i.quantity > 0) {%>
+            <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">
+              <span class="item-card-itemname"><%= i.itemname%></span>
+              <span class="item-card-quantity"><%= i.quantity%></span>
+              <span class="item-card-description"><%= i.description%></span>
+            </div>
+          <% }%>
         <% }%>
-      <% }%>
-    </div>
-
-    <div id="cart-details" class="cart-details-container">
-      <h1 id="cart-details-header">My Info</h1>
-      <div class="cart-details-content">
-        <div class="cart-details">
-          <label for="cart-username">Name<span class="required-field">*</span></label>
-          <input id="cart-username" class="cart-details-input" type="text" name="username" placeholder="Preferred Name" maxlength="20">  
-        </div>
-        <div>
-          <label for="cart-address">Address</label>
-          <input id="cart-address" class="cart-details-input" type="text" name="address" placeholder="House No./Unit No./Street" maxlength="30">
-        </div>
-        <div>
-          <label for="cart-arrival">When do you arrive?</label>
-          <input id="cart-arrival" class="cart-details-input" type="date" name="arrival">
-        </div>
-        <div>
-          <label for="cart-contact-method">How would you prefer to be contacted?<span class="required-field">*</span></label>
-          <select id="cart-contact-method" class="cart-details-input" name="contact-method">
-            <option value="fcb">Facebook</option>
-            <option value="txt">Text</option>
-            <option value="eml">Email</option>
-          </select>
-        </div>
-        <div>
-          <label id="cart-contact-address-label" for="cart-contact-address">What is your name on Facebook?
-            <span class="required-field">*</span>
-          </label>
-          <input id="cart-contact-address" class="cart-details-input" name="contact-address" maxlength="20">  
-        </div>
-        <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
       </div>
     </div>
-
-    <div id="cart-list" class="cart-list-container">
-      <h1 id="cart-list-header">My Cart</h1>
-      <div class="cart-list-content">
+  
+    <div class="marketplace-cart-container">
+      <div id="marketplace-cart-info" class="marketplace-cart-info">
+        <h1>Reservation</h1>
+        <div id="cart-contact-info" class="cart-contact-info">
+          <input id="cart-contact-username" type="text" name="username" placeholder="Name" required="required" maxlength=20>
+          <input id="cart-contact-address" type="text" name="address" placeholder="Address" maxlength=20>
+          <label>When do You Arrive?</label>
+          <input id="cart-contact-arrival" type="date" name="arrival">
+          <select id="cart-contact-method-select" name="contact-method" required="required">
+            <option value="wha">WhatsApp</option>
+            <option value="txt">Text</option>
+            <option value="fcb">Facebook</option>
+            <option value="eml">Email</option>
+          </select>
+          <input id="cart-contact-profile" type="text" name="contact-address" placeholder="Phone Number" required="required" maxlength=20>
+          <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
+        </div>
+      </div>
+      <div class="marketplace-cart-list-container">
         <p id="cart-empty-warning">Your cart is currently empty</p>
-        <div id="cart-items-list"></div>
+        <div id="marketplace-cart-list" class="marketplace-cart-list"></div>
       </div>
     </div>
   </div>
-
-  <div id="add-to-cart-modal" class="modal">
-    <div class="modal-content">
+  
+  <div id="add-to-cart-background" class="modal-background">
+    <div id="add-to-cart-modal" class="modal">
       <span id="add-to-cart-close" class="modal-close">&times;</span>
       <h1 id="add-to-cart-itemname"></h1>
-      <input id="add-to-cart-quantity" type="number" min="1" value="1">
-      <button id="add-to-cart-confirm">Add</button>
+      <input id="add-to-cart-quantity" type="number" min=1 value=1>
+      <button id="add-to-cart-confirm">Add to cart</button>
     </div>
   </div>
 </body>

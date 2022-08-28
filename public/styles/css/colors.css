@@ -1,0 +1,45 @@
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+@charset "UTF-8";
+
+:root {
+  --primary-dark: rgb(110, 90, 54);
+  --primary-light: rgb(241, 227, 189);
+  --on-primary-dark: rgb(249, 250, 253);
+  --on-primary-light: rgb(15, 15, 15);
+  --secondary-dark: rgb(44, 54, 57);
+  --secondary-light: rgb(201, 207, 207);
+  --on-secondary-dark: rgb(231, 233, 233);
+  --on-secondary-light: rgb(15, 15, 15);
+  --accent-dark: rgb(201, 26, 26);
+  --accent-light: rgb(255, 225, 0);
+  --font-family-sans-serif: "Nunito", sans-serif;
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+html {
+  font-family: sans-serif;
+}
+
+.container {
+  width: 96%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  background: var(--secondary-light);
+}
+
+body {
+  background: var(--secondary-dark);
+  margin: 0;
+  font-family: "Nunito", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+div {
+  background: var(--primary-dark);
+  color: var(--on-primary-dark);
+  box-shadow: 2px 2px 4px rgb(15, 15, 15);
+}

@@ -1,52 +1,94 @@
-class Cart {
-  constructor() {
-    this.username = null;
-    this.address = null;
-    this.arrival = null;
-    this.contact_method = null;
-    this.contact_address = null;
-    this.items = {};
-  }
-
-  addItem(uid, quantity) {
-    if (this.items[uid]) {
-      this.items[uid] = this.items[uid] + new Number(quantity);
-    }
-    else {
-      this.items[uid] = new Number(quantity);
-    }
-  }
-
-  removeItem(uid, quantity) {
-    if (this.items[uid]) {
-      if (quantity) {
-        this.items[uid] = this.items[uid] - new Number(quantity);
-        if (this.items[uid] < 1) {
-          delete this.items[uid];
-        }
-      }
-      else {
-        delete this.items[uid];
-      }
-    }
-  }
+var cart = {
+  username: null,
+  address: null,
+  arrival: null,
+  contact_method: null,
+  contact_address: null,
+  items: {},
+  status: 0,
 
   isReady() {
     return (this.username != null) &&
-      (this.contact_method != null) &&
-      (this.contact_address != null) &&
-      Object.values(this.items).length > 0;
-  }
-
-  isEmpty() {
-    return Object.values(this.items).length == 0;
+           (this.contact_method != null) &&
+           (this.contact_address != null) &&
+           Object.values(this.items).length > 0
   }
 }
 
-let my_cart = new Cart();
+function addItemModal(uid, itemname, max_quantity) {
+  var modal_background = document.getElementById("add-to-cart-background")
+  var close_modal = document.getElementById("add-to-cart-close")
+  var confirm_modal = document.getElementById("add-to-cart-confirm")
+
+  document.getElementById("add-to-cart-itemname").innerHTML = itemname
+  document.getElementById("add-to-cart-quantity").value = 1
+  document.getElementById("add-to-cart-quantity").max = max_quantity
+  document.getElementById("add-to-cart-quantity").min = 1
+
+  modal_background.style.display = "block";
+
+  close_modal.onclick = () => {
+    modal_background.style.display = "none"
+  }
+
+  window.onclick = (event) => {
+    if (event.target == modal_background) {
+      modal_background.style.display = "none"
+    }
+  }
+
+  confirm_modal.onclick = () => {
+    desired_quantity = document.getElementById("add-to-cart-quantity").value
+    addItemToCart(uid, itemname, desired_quantity)
+  }
+}
+
+function addItemToCart(uid, itemname, desired_quantity) {
+  desired_quantity = Number(desired_quantity)
+  if (uid in cart.items) {
+    cart.items[uid] += desired_quantity
+
+    var cart_item = document.getElementById(`cart-item-${uid}`)
+    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = cart.items[uid]
+  }
+  else {
+    cart.items[uid] = desired_quantity
+
+    var cart_item = document.createElement("div")  
+    cart_item.classList.add("cart-item")
+    cart_item.id = `cart-item-${uid}`
+    
+    var cart_item_contents = `
+      <span class="cart-item-uid" hidden>${uid}</span>
+      <span class="cart-item-quantity">${cart.items[uid]}</span>
+      <span class="cart-item-itemname">${itemname}</span>
+      <button class="cart-item-remove">&times;</button>`
+    cart_item.innerHTML = cart_item_contents
+    document.getElementById("marketplace-cart-list").append(cart_item)
+
+    cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {           
+      event.target.parentElement.remove()
+
+      var list_item = document.getElementById(`item-card-${uid}`)
+      var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
+      list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) + cart.items[uid]
+
+      delete cart.items[uid]
+    }
+  }
+
+  document.getElementById("cart-empty-warning").hidden = Object.keys(cart.items).length > 0
+
+  var list_item = document.getElementById(`item-card-${uid}`)
+  var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
+  list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) - Number(desired_quantity)
+  list_item.hidden = list_item_quantity.value > 0
+
+  document.getElementById("add-to-cart-background").style.display = "none"
+}
 
 function tryAddItem(uid, itemname, max_quantity) {
-  if (new Number(max_quantity) > 1) {
+  if (max_quantity > 1) {
     addItemModal(uid, itemname, max_quantity);
   }
   else {
@@ -54,113 +96,21 @@ function tryAddItem(uid, itemname, max_quantity) {
   }
 }
 
-function addItemModal(uid, itemname, max_quantity) {
-  let modal = document.getElementById("add-to-cart-modal");
-  let close_modal = document.getElementById("add-to-cart-close");
-  let confirm_modal = document.getElementById("add-to-cart-confirm");
-
-  document.getElementById("add-to-cart-itemname").innerHTML = itemname;
-  document.getElementById("add-to-cart-quantity").value = 1;
-  document.getElementById("add-to-cart-quantity").max = new Number(max_quantity);
-
-  modal.style.display = "block";
-
-  close_modal.onclick = () => {
-    closeModal();
-  }
-
-  window.onclick = (event) => {
-    if (event.target == modal) {
-      closeModal();
-    }
-  }
-
-  confirm_modal.onclick = () => {
-    let desired_quantity = document.getElementById("add-to-cart-quantity").value;
-    if (desired_quantity > max_quantity) {
-      desired_quantity = max_quantity;
-    }
-    else if (desired_quantity < 1) {
-      desired_quantity = 1;
-    }
-    
-    addItemToCart(uid, itemname, desired_quantity);
-  }
-}
-
-function closeModal() {
-  document.getElementById("add-to-cart-modal").style.display = "none";
-}
-
-function addItemToCart(uid, itemname, quantity) {
-  let cart_list = document.getElementById("cart-items-list");
-  let list_item = document.getElementById(`item-card-${uid}`);
-  let list_item_quantity = list_item.getElementsByClassName("item-quantity")[0];
-
-  let item_in_cart = my_cart.items[uid];
-  my_cart.addItem(uid, quantity);
-
-  if (item_in_cart) {
-    let cart_item = document.getElementById(`cart-item-${uid}`);
-    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = my_cart.items[uid];
-  }
-  else {
-    let cart_item = document.createElement("li");  
-    cart_item.classList.add("cart-item");
-    cart_item.uid = `cart-item-${uid}`;
-    
-    let cart_item_contents = `
-      <span class="cart-item-uid" hidden>${uid}</span>
-      <span class="cart-item-itemname">${itemname}</span>
-      <span>: </span>
-      <span class="cart-item-quantity">${my_cart.items[uid]}</span>
-      <button class="cart-item-remove">&times;</button>`;
-    
-    cart_item.innerHTML = cart_item_contents;
-    cart_list.append(cart_item);
-
-    cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {      
-      my_cart.removeItem(uid);
-      
-      event.target.parentElement.remove();
-
-      list_item_quantity.innerHTML = new Number(list_item_quantity.innerHTML) + new Number(quantity);
-      if (list_item_quantity.innerHTML > 0) {
-        list_item.hidden = false;
-      }
-
-      document.getElementById("cart-empty-warning").hidden = !my_cart.isEmpty();
-      document.getElementById("cart-submit").disabled = !my_cart.isReady();
-    }
-  }
-
-  list_item_quantity.innerHTML -= quantity;
-  if (list_item_quantity.innerHTML < 1) {
-    list_item.hidden = true;
-  }
-
-  document.getElementById("cart-empty-warning").hidden = !my_cart.isEmpty();
-  document.getElementById("cart-submit").disabled = !my_cart.isReady();
-  
-  closeModal();
-}
-
 function clearCart() {
-  my_cart.items = {};
+  cart.items = {}
 
-  let cart_list = document.getElementById("cart-items-list");
+  let cart_list = document.getElementById("marketplace-cart-list");
   while (cart_list.childElementCount > 0) {
     cart_list.firstChild.remove();
   }
 
-  document.getElementById("cart-empty-warning").hidden = !my_cart.isEmpty();
-  document.getElementById("cart-submit").disabled = !my_cart.isReady();
+  document.getElementById("cart-empty-warning").hidden = false;
+  document.getElementById("cart-submit").disabled = true;
 }
 
 function cartSubmitSuccess(data) {
-  alert("Cart has been submitted! Thanks");
+  alert("Your reservation has been submitted! Thanks");
   clearCart();
-  return data;
 }
 
 function cartSubmitFail(err) {
@@ -169,29 +119,25 @@ function cartSubmitFail(err) {
 }
 
 async function submitCart() {
-  let res = await fetch("/marketplace/cart/submit", {
+  if (!cart.isReady()) {
+    return
+  }
+
+  await fetch("/admin/carts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: my_cart.username,
-      address: my_cart.address,
-      arrival: my_cart.arrival,
-      contact_method: my_cart.contact_method,
-      contact_address: my_cart.contact_address,
-      items: my_cart.items
-    })
+    body: JSON.stringify(cart)
   })
-  .then(res => res.json())
   .then(data => cartSubmitSuccess(data))
   .catch(err => cartSubmitFail(err));
 }
 
-function initializeCallbacks() {
-  let cart_username = document.getElementById("cart-username");
-  let cart_address = document.getElementById("cart-address");
-  let cart_arrival = document.getElementById("cart-arrival");
-  let cart_contact_method = document.getElementById("cart-contact-method");
-  let cart_contact_address = document.getElementById("cart-contact-address");
+function initCallbacks() {
+  var cart_contact_username = document.getElementById("cart-contact-username")
+  var cart_contact_address = document.getElementById("cart-contact-address")
+  var cart_contact_arrival = document.getElementById("cart-contact-arrival")
+  var cart_contact_method = document.getElementById("cart-contact-method-select")
+  var cart_contact_profile = document.getElementById("cart-contact-profile")
 
   function validateInput(val) {
     if (val && val.length > 0) {
@@ -202,46 +148,49 @@ function initializeCallbacks() {
     }
   }
 
-  cart_username.onchange = () => {
-    my_cart.username = validateInput(cart_username.value);
-    document.getElementById("cart-submit").disabled = !my_cart.isReady();
+  cart_contact_username.onchange = () => {
+    cart.username = validateInput(cart_contact_username.value);
+    document.getElementById("cart-submit").disabled = !cart.isReady(cart);
   }
-  cart_address.onchange = () => {
-    my_cart.address = validateInput(cart_address.value);
-    document.getElementById("cart-submit").disabled = !my_cart.isReady();
+  cart_contact_address.onchange = () => {
+    cart.address = validateInput(cart_contact_address.value);
+    document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-  cart_arrival.onchange = () => {
-    my_cart.arrival = validateInput(cart_arrival.value);
-    document.getElementById("cart-submit").disabled = !my_cart.isReady();
+  cart_contact_arrival.onchange = () => {
+    cart.arrival = validateInput(cart_contact_arrival.value);
+    document.getElementById("cart-submit").disabled = !cart.isReady();
   }
   cart_contact_method.onchange = () => {
     if (cart_contact_method.value == "fcb") {
-      document.getElementById("cart-contact-address-label").innerHTML = "What is your name on Facebook?";
+      cart_contact_profile.placeholder = "Facebook Profile Name"
+    }
+    else if (cart_contact_method.value == "wha") {
+      cart_contact_profile.placeholder = "Phone Number"
     }
     else if (cart_contact_method.value == "txt") {
-      document.getElementById("cart-contact-address-label").innerHTML = "What is your number?";
+      cart_contact_profile.placeholder = "Text Number"
     }
     else if (cart_contact_method.value == "eml") {
-      document.getElementById("cart-contact-address-label").innerHTML = "What is your email address?";
+      cart_contact_profile.placeholder = "Email Address"
     }
-    
-    my_cart.contact_method = validateInput(cart_contact_method.value);
+
+    cart.contact_method = validateInput(cart_contact_method.value);
     
     cart_contact_address.value = "";
-    my_cart.contact_address = null;
-    
-    document.getElementById("cart-submit").disabled = !my_cart.isReady();
+    cart.contact_address = null;
+
+    document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-  cart_contact_address.onchange = () => {
-    my_cart.contact_method = validateInput(cart_contact_method.value);
-    my_cart.contact_address = validateInput(cart_contact_address.value);
-    document.getElementById("cart-submit").disabled = !my_cart.isReady();
+  cart_contact_profile.onchange = () => {
+    cart.contact_method = validateInput(cart_contact_method.value)
+    cart.contact_address = validateInput(cart_contact_profile.value)
+    document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-}
+ }
 
 if (document.readyState == "loading") {
-  document.addEventListener("DOMContentLoaded", initializeCallbacks);
+  document.addEventListener("DOMContentLoaded", initCallbacks);
 }
 else {
-  initializeCallbacks();
+  initCallbacks();
 }

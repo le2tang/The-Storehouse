@@ -1,0 +1,34 @@
+.admin-navbar-links {
+  position: relative;
+  width: 100vw;
+
+  background: var(--secondary-dark);
+
+  display: flex;
+  justify-content: flex-start;
+}
+
+.admin-navbar-link-button {
+  background: var(--secondary-dark);
+  color: var(--on-secondary-dark);
+
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.admin-navbar-link-button:first-of-type {
+  margin: 0 0 0 25px;
+}
+
+.admin-navbar-link-button:last-of-type {
+  margin: 0 25px 0 0;
+}
+
+.admin-navbar-link-button:hover {
+  background: var(--accent-light);
+  color: var(--on-primary-light);
+  cursor: pointer;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Carts</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="/styles/css/colors.css">
+  <link rel="stylesheet" href="/styles/css/admin_carts.css">
+</head>
+<body>
+  <header>
+    <%- include("../partials/navbar") %>
+    <%- include("../partials/admin_navbar") %>
+  </header>
+  <div class="container">
+    <h1>Manage Carts</h1>
+    <div id="admin-cart-list" class="admin-cart-list">
+      <% for (var c of carts) {%>
+        <a class="cart-card" href="/admin/carts/<%= c.username%>">
+          <h2><%= c.username%>: Cart <%= c.index%></h2>
+          <p><%= c.status%></p>
+          <% for (var i of c.items) {%>
+            <div id="item-card-<%= i.uid%>" class="item-card">
+              <span><%= i.itemname%></span>
+              <span><%= i.quantity%></span>
+              <span><%= i.description%></span>
+            </div>
+          <% }%>
+        </a>
+      <% }%>
+    </div>
+  </div>
+</body>
+</html>

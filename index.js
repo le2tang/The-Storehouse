@@ -1,32 +1,26 @@
-const express = require("express");
-const app = express();
+const express = require("express")
+const path = require("path")
+const session = require("express-session")
+const app_config = require("./config/app_config.js")
 
-const admin_router = require("./routes/admin.js");
-const carts_router = require("./routes/carts.js");
-// const login_router = require("./routes/login.js");
-const marketplace_router = require("./routes/marketplace.js");
+const app = express()
 
-const path = require("path");
+const pages_router = require("./routes/pages.js")
 
-const PORT = process.env.PORT || 3000;
-
-app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "public")));
-app.set("views", path.join(__dirname, "public/views"));
+app.set("view engine", "ejs")
+app.use(express.static(path.join(app_config.cwd, "public")))
+app.set("views", path.join(app_config.cwd, "public/views"))
+app.use(session({
+	secret: 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
 app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+app.use(express.json())
 
-app.get("/", (req, res) => {
-  res.render("index");
-});
-
-app.use("/admin", admin_router);
-app.use("/carts", carts_router);
-// app.use("/login", login_router);
-app.use("/marketplace", marketplace_router);
-
+app.use("", pages_router)
 app.use((req, res) => {
-  res.status(404).send("Page not found");
-});
+  res.status(404).send("Page not found")
+})
 
-app.listen(PORT, () => { console.log("Listening on ", PORT); });
+app.listen(app_config.port, () => { console.log("Listening on ", app_config.port) })

@@ -1,0 +1,168 @@
+const app_config = require("../config/app_config.js")
+const carts_model = require("../models/carts_model.js")
+const items_model = require("../models/items_model.js")
+const users_model = require("../models/users_model.js")
+
+var router = require("express").Router()
+
+router.get("/", async function(req, res) {
+  res.render("marketplace", { paths: app_config.paths, items: await items_model.getAll() })
+})
+
+router.get("/admin/login", function(req, res) {
+  if (!req.session.loggedin) {
+    res.render("login", { paths: app_config.paths })
+  }
+  else {
+    res.redirect("/admin/carts")
+  }
+})
+router.post("/admin/login", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  var user = await users_model.getUserByUsername(req.body.username)
+  if (user == null) {
+    res.send({ message: `User ${req.body.username} does not exist` })
+  }
+  else if (req.body.password != user.password) {
+    res.send({ message: "Incorrect password" })
+  }
+  else {
+    req.session.loggedin = true
+
+    res.redirect("/admin/carts")
+  }
+})
+
+router.get("/admin/logout", function(req, res) {
+  req.session.loggedin = false
+  res.redirect("/")
+})
+
+router.get("/admin/items", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.redirect("/admin/login")
+  }
+  else {
+    res.render("admin_items", { paths: app_config.paths, items: await items_model.getAll() })
+  }
+})
+router.get("/admin/items/edit", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.redirect("/admin/login")
+  }
+  else {
+    res.render("admin_items_edit", { paths: app_config.paths, item: await items_model.getItemByUid(req.body.uid) })
+  }
+})
+router.post("/admin/items/new", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.status(401).send({ message: "Unauthorized" })
+  }
+  else {
+    items_model.create(req.body)
+
+    res.send(await items_model.getAll())
+  }
+})
+router.put("/admin/items/edit", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.status(401).send({ message: "Unauthorized" })
+  }
+  else {
+    items_model.updateItemByUid(req.body)
+  
+    res.send(await items_model.getAll())
+  }
+})
+
+router.get("/admin/carts", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.redirect("/admin/login")
+  }
+  else {
+    var carts = await carts_model.getAll()
+    carts = await Promise.all(carts.map(async function(cart) {
+      cart.status = carts_model.status_msg[cart.status]
+      cart.items = await items_model.getItemsByUids(Object.keys(cart.items))
+      return cart
+    }))
+
+    res.render("admin_carts", { paths: app_config.paths, carts: carts })
+  }
+})
+router.post("/admin/carts", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+  
+  var carts = await carts_model.getCartsByUsername(req.body.username)
+  var index = 0
+  if (carts != null) {
+    index = carts.length
+  }
+
+  req.body.index = index
+  await carts_model.create(req.body)
+
+  res.send(await carts_model.getAll())
+})
+
+router.get("/admin/carts/:username", async function(req, res) {
+  if (!req.session.loggedin) {
+    res.redirect("/admin/login")
+  }
+  else {
+    var carts = await carts_model.getCartsByUsername(req.params.username)
+    if (carts == null) {
+      res.status(404).send({ message: `No carts for ${req.params.username} found` })
+    }
+    else {
+      carts = await Promise.all(carts.map(async function(cart) {
+        cart.status = carts_model.status_msg[cart.status]
+        cart.items = await items_model.getItemsByUids(Object.keys(cart.items))
+        cart.contact_method = carts_model.contact_method_msg[cart.contact_method]
+        return cart
+      }))
+      
+      res.render("admin_carts_view", { paths: app_config.paths, carts: carts })
+    }
+  }  
+})
+router.post("/admin/carts/:username", async function(req, res) {  
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+  
+  if (!req.session.loggedin) {
+    res.status(401).send({ message: "Unauthorized" })
+  }
+  else {
+    carts_model.updateCartStatusByUsername(req.params.username, req.body.index, req.body.status)
+    res.redirect("/admin/carts")
+  }
+})
+
+module.exports = router
