@@ -17,9 +17,9 @@
     <h1>Manage Items</h1>
     <div id="admin-item-add-containter">
       <h2>Add Item</h2>
-      <form class="admin-item-add-form" action="/admin/items/new" method="post">
+      <form class="admin-item-add-form" action="/admin/items" method="post">
         <input type="text" name="itemname" placeholder="Name">
-        <input type="number" name="quantity" placeholder=1 min=1>
+        <input type="number" name="quantity" min=1 value=1>
         <input type="text" name="description" placeholder="Description">
         <input type="text" name="tags" placeholder="Tags">
         <input type="submit" value="Submit">
@@ -29,12 +29,12 @@
       <h2>Manage Items</h2>
       <div class="admin-item-list">
         <% for (var i of items) {%>
-          <div id="item-card-<%= i.uid%>" class="item-card">
+          <a id="item-card-<%= i.uid%>" class="item-card" href="/admin/items/<%= i.uid%>">
             <span><%= i.itemname%></span>
             <span><%= i.quantity%></span>
             <span><%= i.description%></span>
             <span class="item-remove">&times;</span>
-          </div>
+          </a>
         <% }%>
       </div>
     </div>

@@ -41,15 +41,30 @@ body {
 
   position: relative;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
   background: var(--secondary-light);
   color: var(--on-secondary-light);
   border-radius: 10px;
   box-shadow: 2px 2px 4px rgb(15, 15, 15);
+  text-decoration: none;
 
   transition-duration: 0.5s;
+}
+
+.admin-item-list .item-card span {
+  width: 20%;
+}
+
+.admin-item-list .item-card span:first-of-type {
+  text-align: left;
+  margin-left: 25px;
+}
+
+.admin-item-list .item-card span:nth-last-of-type(2) {
+  text-align: right;
+  margin-right: 100px;
 }
 
 .admin-item-list .item-card .item-remove {

@@ -7,8 +7,9 @@ var items_model = {
         item[elem] = null
       }
     }
+    console.log(item)
     var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
-    var result = await database.query(query, [item.uid, item.name, item.quantity, item.description, item.tags])
+    var result = await database.query(query, [item.uid, item.itemname, item.quantity, item.description, item.tags])
     return result
   },
 
@@ -36,13 +37,13 @@ var items_model = {
         item[elem] = null
       }
     }
-    var query = "UPDATE items SET name=?, quantity=?, description=?, tags=? WHERE uid=?"
-    var result = await database.query(query, [item.name, item.quantity, item.description, item.tags, item.uid])
+    var query = "UPDATE items SET itemname=$1, quantity=$2, description=$3, tags=$4 WHERE uid=$5"
+    var result = await database.query(query, [item.itemname, item.quantity, item.description, item.tags, item.uid])
     return result
   },
 
   async removeItemByUid(uid) {
-    var query = `DELETE FROM items WHERE uid=${uid}`
+    var query = `DELETE FROM items WHERE uid='${uid}'`
     var result = await database.query(query)
     return result
   }

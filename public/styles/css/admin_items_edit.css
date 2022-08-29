@@ -7,16 +7,14 @@ body {
 }
 
 .container {
-  width: 25%;
-
-  background: rgb(245, 250, 255);
-  border-radius: 10px;
-  box-shadow: 2px 2px 4px rgb(15, 15, 15);
+  background: var(--secondary-light);
+  color: var(--on-secondary-light);
 }
 
 .container form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .container input {
@@ -24,4 +22,12 @@ body {
   margin: 10px;
   border-radius: 10px;
   border: none;
+}
+
+.container input[type=number] {
+  width: 50px;
+}
+
+.container input[type=text] {
+  width: 200px;
 }

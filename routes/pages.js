@@ -3,6 +3,7 @@ const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const users_model = require("../models/users_model.js")
 
+const crypto = require("crypto")
 var router = require("express").Router()
 
 router.get("/", async function(req, res) {
@@ -53,7 +54,24 @@ router.get("/admin/items", async function(req, res) {
     res.render("admin_items", { paths: app_config.paths, items: await items_model.getAll() })
   }
 })
-router.get("/admin/items/edit", async function(req, res) {
+router.post("/admin/items", async function(req, res) {
+  if (!req.body) {
+    res.status(400).send({ message: "Invalid request" })
+  }
+
+  if (!req.session.loggedin) {
+    res.status(401).send({ message: "Unauthorized" })
+  }
+  else {
+    req.body.uid = crypto.randomBytes(8).toString("hex")
+    req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
+    items_model.create(req.body)
+
+    res.send(await items_model.getAll())
+  }
+})
+
+router.get("/admin/items/:uid", async function(req, res) {
   if (!req.body) {
     res.status(400).send({ message: "Invalid request" })
   }
@@ -62,10 +80,19 @@ router.get("/admin/items/edit", async function(req, res) {
     res.redirect("/admin/login")
   }
   else {
-    res.render("admin_items_edit", { paths: app_config.paths, item: await items_model.getItemByUid(req.body.uid) })
+    var items = await items_model.getItemsByUids([req.params.uid])
+    if (items == null) {
+      res.status(404).send({ message: "Item not found" })
+    }
+    else {
+      res.render("admin_items_edit", {
+        paths: app_config.paths,
+        item: items[0]
+      })
+    }
   }
 })
-router.post("/admin/items/new", async function(req, res) {
+router.post("/admin/items/:uid", async function(req, res) {
   if (!req.body) {
     res.status(400).send({ message: "Invalid request" })
   }
@@ -74,23 +101,10 @@ router.post("/admin/items/new", async function(req, res) {
     res.status(401).send({ message: "Unauthorized" })
   }
   else {
-    items_model.create(req.body)
-
-    res.send(await items_model.getAll())
-  }
-})
-router.put("/admin/items/edit", async function(req, res) {
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
-
-  if (!req.session.loggedin) {
-    res.status(401).send({ message: "Unauthorized" })
-  }
-  else {
+    req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
     items_model.updateItemByUid(req.body)
-  
-    res.send(await items_model.getAll())
+
+    res.redirect(`/admin/items/${req.params.uid}`)
   }
 })
 
@@ -161,7 +175,7 @@ router.post("/admin/carts/:username", async function(req, res) {
   }
   else {
     carts_model.updateCartStatusByUsername(req.params.username, req.body.index, req.body.status)
-    res.redirect("/admin/carts")
+    res.redirect(`/admin/carts/${req.params.username}`)
   }
 })
 
