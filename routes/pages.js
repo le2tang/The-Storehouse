@@ -67,7 +67,7 @@ router.post("/admin/items", async function(req, res) {
     req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
     items_model.create(req.body)
 
-    res.send(await items_model.getAll())
+    res.redirect("/admin/items")
   }
 })
 
@@ -140,6 +140,12 @@ router.post("/admin/carts", async function(req, res) {
 
   req.body.index = index
   await carts_model.create(req.body)
+
+  var items_from_cart = await items_model.getItemsByUids(Object.keys(req.body.items))
+  items_from_cart.forEach(function(item) {
+    item.quantity -= req.body.items[item.uid]
+    items_model.updateItemByUid(item)
+  })
 
   res.send(await carts_model.getAll())
 })
