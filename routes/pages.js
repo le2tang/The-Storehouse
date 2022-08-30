@@ -120,7 +120,14 @@ router.get("/admin/carts", async function(req, res) {
     var carts = await carts_model.getAll()
     carts = await Promise.all(carts.map(async function(cart) {
       cart.status = carts_model.status_msg[cart.status]
-      cart.items = await items_model.getItemsByUids(Object.keys(cart.items))
+      
+      var items_from_cart = await items_model.getItemsByUids(Object.keys(cart.items))
+      items_from_cart = await Promise.all(items_from_cart.map(async function (item) {
+        item.quantity = cart.items[item.uid]
+        return item
+      }))
+      cart.items = items_from_cart
+      
       return cart
     }))
 
@@ -147,7 +154,7 @@ router.post("/admin/carts", async function(req, res) {
     items_model.updateItemByUid(item)
   })
 
-  res.send(await carts_model.getAll())
+  res.redirect("/")
 })
 
 router.get("/admin/carts/:username", async function(req, res) {
@@ -162,8 +169,15 @@ router.get("/admin/carts/:username", async function(req, res) {
     else {
       carts = await Promise.all(carts.map(async function(cart) {
         cart.status = carts_model.status_msg[cart.status]
-        cart.items = await items_model.getItemsByUids(Object.keys(cart.items))
         cart.contact_method = carts_model.contact_method_msg[cart.contact_method]
+
+        var items_from_cart = await items_model.getItemsByUids(Object.keys(cart.items))
+        items_from_cart = await Promise.all(items_from_cart.map(async function (item) {
+          item.quantity = cart.items[item.uid]
+          return item
+        }))
+        cart.items = items_from_cart
+
         return cart
       }))
       

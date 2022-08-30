@@ -7,7 +7,6 @@ var items_model = {
         item[elem] = null
       }
     }
-    console.log(item)
     var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
     var result = await database.query(query, [item.uid, item.itemname, item.quantity, item.description, item.tags])
     return result
