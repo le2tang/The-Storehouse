@@ -19,7 +19,7 @@
       <form action="/admin/items/<%= item.uid%>" method="post">
         <input type="hidden" name="uid" value="<%= item.uid%>">
         <input type="text" name="itemname" value="<%= item.itemname%>">
-        <input type="number" name="quantity" min="1" value="<%= item.quantity%>">
+        <input type="number" name="quantity" min="0" value="<%= item.quantity%>">
         <input type="text" name="description" value="<%= item.description%>">
         <input type="text" name="tags" value="<%= item.tags%>">
         <input type="submit" value="Update">
