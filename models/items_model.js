@@ -3,7 +3,7 @@ const database = require("./database.js")
 var items_model = {
   async create(item) {
     for (elem in item) {
-      if (item[elem].length == 0) {
+      if (item[elem] != null && item[elem].length == 0) {
         item[elem] = null
       }
     }
@@ -32,7 +32,7 @@ var items_model = {
 
   async updateItemByUid(item) {
     for (elem in item) {
-      if (item[elem].length == 0) {
+      if (item[elem] != null && item[elem].length == 0) {
         item[elem] = null
       }
     }

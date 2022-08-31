@@ -148,19 +148,19 @@ function initCallbacks() {
     }
   }
 
-  cart_contact_username.onchange = () => {
+  cart_contact_username.oninput = () => {
     cart.username = validateInput(cart_contact_username.value);
     document.getElementById("cart-submit").disabled = !cart.isReady(cart);
   }
-  cart_contact_address.onchange = () => {
+  cart_contact_address.oninput = () => {
     cart.address = validateInput(cart_contact_address.value);
     document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-  cart_contact_arrival.onchange = () => {
+  cart_contact_arrival.oninput = () => {
     cart.arrival = validateInput(cart_contact_arrival.value);
     document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-  cart_contact_method.onchange = () => {
+  cart_contact_method.oninput = () => {
     if (cart_contact_method.value == "fcb") {
       cart_contact_profile.placeholder = "Facebook Profile Name"
     }
@@ -181,7 +181,7 @@ function initCallbacks() {
 
     document.getElementById("cart-submit").disabled = !cart.isReady();
   }
-  cart_contact_profile.onchange = () => {
+  cart_contact_profile.oninput = () => {
     cart.contact_method = validateInput(cart_contact_method.value)
     cart.contact_address = validateInput(cart_contact_profile.value)
     document.getElementById("cart-submit").disabled = !cart.isReady();
