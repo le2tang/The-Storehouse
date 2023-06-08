@@ -24,7 +24,7 @@ var carts_model = {
     var result = await database.query(query)
     return result.rows
   },
-  
+
   async updateCartByUsername(cart, index) {
     var query = "UPDATE carts SET address=?, arrival=?, contact_method=?, contact_address=?, items=?, status=? WHERE username=? AND index=?"
     var result = await database.query(query, [cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.status, cart.username, cart.index])
@@ -43,8 +43,27 @@ var carts_model = {
     return result
   },
 
+  async setupCartsTable() {
+    var query = `CREATE TABLE IF NOT EXISTS carts (
+      username VARCHAR(32) PRIMARY KEY NOT NULL,
+      address VARCHAR(32) NOT NULL,
+      arrival DATE,
+      contact_method CHAR(3) NOT NULL,
+      contact_address VARCHAR (32) NOT NULL,
+      items JSON,
+      status VARCHAR (9) DEFAULT 'Pending' NOT NULL,
+      index serial)`
+    var result = await database.query(query)
+    
+    console.log(result)
+
+    return result
+  },
+
   status_msg: ["Pending", "Packed", "Delivered"],
   contact_method_msg: { "eml": "Email", "fcb": "Facebook", "txt": "Text", "wha": "WhatsApp" }
 }
+
+carts_model.setupCartsTable()
 
 module.exports = carts_model

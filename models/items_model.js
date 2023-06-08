@@ -7,8 +7,8 @@ var items_model = {
         item[elem] = null
       }
     }
-    var query = "INSERT INTO items (uid, itemname, quantity, description, tags) VALUES ($1, $2, $3, $4, $5)"
-    var result = await database.query(query, [item.uid, item.itemname, item.quantity, item.description, item.tags])
+    var query = "INSERT INTO items (itemname, quantity, description, tags) VALUES ($1, $2, $3, $4)"
+    var result = await database.query(query, [item.itemname, item.quantity, item.description, item.tags])
     return result
   },
 
@@ -45,7 +45,23 @@ var items_model = {
     var query = `DELETE FROM items WHERE uid='${uid}'`
     var result = await database.query(query)
     return result
+  },
+
+  async setupItemsTable() {
+    var query = `CREATE TABLE IF NOT EXISTS items (
+      uid SERIAL PRIMARY KEY NOT NULL,
+      itemname VARCHAR (20) NOT NULL,
+      quantity INT NOT NULL,
+      description VARCHAR (32),
+      tags VARCHAR (32))`
+    var result = await database.query(query)
+
+    console.log(result)
+
+    return result
   }
 }
+
+items_model.setupItemsTable()
 
 module.exports = items_model
