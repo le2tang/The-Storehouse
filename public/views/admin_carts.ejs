@@ -7,6 +7,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel="stylesheet" href="/styles/css/colors.css">
   <link rel="stylesheet" href="/styles/css/admin_carts.css">
+  <script src="/scripts/admin_carts.js"></script>
 </head>
 <body>
   <header>
@@ -16,10 +17,19 @@
   <div class="container">
     <h1>Manage Carts</h1>
     <div id="admin-summary-container">
-      <p>Pending: <%= summary.pending%></p>
-      <p>Packed: <%= summary.packed%></p>
-      <p>Total: <%= summary.total%></p>
-    </div>
+      <div id="admin-summary-text">
+        <p>Pending: <%= summary.pending%></p>
+        <p>Packed: <%= summary.packed%></p>
+        <p>Total: <%= summary.total%></p>  
+      </div>
+      <div id="admin-summary-selectors">
+        <span>Filter by: </span>
+        <select id="admin-summary-filter">
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="packed">Packed</option>
+        </select>
+      </div>
     <div id="admin-cart-list" class="admin-cart-list">
       <% for (var c of carts) {%>
         <a class="cart-card" href="/admin/carts/<%= c.username%>">
@@ -28,13 +38,6 @@
             <p class="pending" ><%= c.status%></p>
           <% } else if (c.status == "Packed") {%>
             <p class="packed" ><%= c.status%></p>
-          <% }%>
-          <% for (var i of c.items) {%>
-            <div id="item-card-<%= i.uid%>" class="item-card">
-              <span><%= i.itemname%></span>
-              <span><%= i.quantity%></span>
-              <span><%= i.description%></span>
-            </div>
           <% }%>
         </a>
       <% }%>
