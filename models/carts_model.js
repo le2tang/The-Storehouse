@@ -85,17 +85,17 @@ var carts_model = {
   groupCartsByUsername(carts) {
     unique_usernames = {}
 
-    for (var cart in carts) {
-      if (unique_usernames[carts[cart].username] == "undefined") {
-        unique_usernames[carts[cart].username] = [carts[cart]]
+    for (var cart of carts) {
+      if (unique_usernames[cart.username] == "undefined") {
+        unique_usernames[cart.username] = [cart]
       }
       else {
-        unique_usernames[carts[cart].username].push(carts[cart])
+        unique_usernames[cart.username].push(cart)
       }
     }
 
-    for (var username in unique_usernames) {
-      unique_usernames[username] = this.sortCarts(unique_usernames[username])
+    for (var username of unique_usernames) {
+      username = this.sortCarts(username)
     }
 
     return unique_usernames
@@ -113,8 +113,8 @@ var carts_model = {
       "total": 0
     }
     
-    for (var cart in carts) {
-      switch(carts[cart].status) {
+    for (var cart of carts) {
+      switch(cart.status) {
         case "Pending":
           counts.pending += 1
           break
@@ -127,7 +127,6 @@ var carts_model = {
       }
       counts.total += 1
     }
-
     return counts
   },
 
