@@ -71,7 +71,11 @@ function addItemToCart(uid, itemname, desired_quantity) {
 
       var stock_item = document.getElementById(`item-card-${uid}`)
       var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
-      stock_item_quantity.innerHTML = Number(stock_item_quantity.innerHTML) + cart.items[uid]
+      const new_stock_quantity = Number(stock_item_quantity.innerHTML) + cart.items[uid]
+      stock_item_quantity.innerHTML = new_stock_quantity
+      if (new_stock_quantity > 0) {
+        stock_item.style.display = ""
+      }
 
       delete cart.items[uid]
     }
@@ -81,8 +85,11 @@ function addItemToCart(uid, itemname, desired_quantity) {
 
   var stock_item = document.getElementById(`item-card-${uid}`)
   var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
-  stock_item_quantity.innerHTML = Number(stock_item_quantity.innerHTML) - Number(desired_quantity)
-  stock_item.hidden = stock_item_quantity.value > 0
+  const new_stock_quantity = Number(stock_item_quantity.innerHTML) - Number(desired_quantity)
+  stock_item_quantity.innerHTML = new_stock_quantity
+  if (new_stock_quantity < 1) {
+    stock_item.style.display = "none"
+  }
 
   document.getElementById("add-to-cart-background").style.display = "none"
 }
