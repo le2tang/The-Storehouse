@@ -69,9 +69,9 @@ function addItemToCart(uid, itemname, desired_quantity) {
     cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {           
       event.target.parentElement.remove()
 
-      var list_item = document.getElementById(`item-card-${uid}`)
-      var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
-      list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) + cart.items[uid]
+      var stock_item = document.getElementById(`item-card-${uid}`)
+      var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
+      stock_item_quantity.innerHTML = Number(stock_item_quantity.innerHTML) + cart.items[uid]
 
       delete cart.items[uid]
     }
@@ -79,10 +79,10 @@ function addItemToCart(uid, itemname, desired_quantity) {
 
   document.getElementById("cart-empty-warning").hidden = Object.keys(cart.items).length > 0
 
-  var list_item = document.getElementById(`item-card-${uid}`)
-  var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
-  list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) - Number(desired_quantity)
-  list_item.hidden = list_item_quantity.value > 0
+  var stock_item = document.getElementById(`item-card-${uid}`)
+  var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
+  stock_item_quantity.innerHTML = Number(stock_item_quantity.innerHTML) - Number(desired_quantity)
+  stock_item.hidden = stock_item_quantity.value > 0
 
   document.getElementById("add-to-cart-background").style.display = "none"
 }
@@ -186,7 +186,7 @@ function initCallbacks() {
     cart.contact_address = validateInput(cart_contact_profile.value)
     document.getElementById("cart-submit").disabled = !cart.isReady();
   }
- }
+}
 
 if (document.readyState == "loading") {
   document.addEventListener("DOMContentLoaded", initCallbacks);
