@@ -55,7 +55,7 @@ var items_model = {
     var query = `CREATE TABLE IF NOT EXISTS items (
       uid SERIAL PRIMARY KEY NOT NULL,
       itemname VARCHAR (20) NOT NULL,
-      quantity INT NOT NULL,
+      quantity INT NOT NULL CONSTRAINT nonnegative_quantity CHECK (quantity >= 0),
       description VARCHAR (32),
       tags VARCHAR (32))`
     var result = await database.query(query)

@@ -94,7 +94,10 @@ function addItemToCart(uid, itemname, desired_quantity) {
   document.getElementById("add-to-cart-background").style.display = "none"
 }
 
-function tryAddItem(uid, itemname, max_quantity) {
+function tryAddItem(uid, itemname) {
+  const item = document.getElementById(`item-card-${uid}`)
+  const item_quantity = item.getElementsByClassName("item-card-quantity")[0]
+  const max_quantity = Number(item_quantity.innerHTML)
   if (max_quantity > 1) {
     addItemModal(uid, itemname, max_quantity);
   }
@@ -115,14 +118,15 @@ function clearCart() {
   document.getElementById("cart-submit").disabled = true;
 }
 
-function cartSubmitSuccess(data) {
+function cartSubmit() {
   alert("Your reservation has been submitted! Thanks");
   clearCart();
 }
 
-function cartSubmitFail(err) {
-  alert("Sorry, there was an error submitting your cart");
-  console.log(err)
+function cartSubmitFail(response) {
+  response.json().then((json) => {
+    alert(`Sorry, there was an error submitting your cart:\n\n${json.message}`);
+  })
 }
 
 async function submitCart() {
@@ -135,8 +139,15 @@ async function submitCart() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(cart)
   })
-  .then(data => cartSubmitSuccess(data))
-  .catch(err => cartSubmitFail(err));
+  .then(response => {
+    if (response.ok) {
+      cartSubmit()
+    }
+    return Promise.reject(response)
+  })
+  .catch((response) => {
+    cartSubmitFail(response)
+  });
 }
 
 function initCallbacks() {
