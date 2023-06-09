@@ -133,6 +133,34 @@ async function submitCart() {
 }
 
 function initCallbacks() {
+  const search_bar = document.getElementById("marketplace-item-search")
+  search_bar.addEventListener("input", () => {
+    const search_pattern = search_bar.value.toLowerCase()
+
+    const items_list = document.getElementById("marketplace-item-list")
+    const items = [... items_list.getElementsByClassName("item-card")]
+
+    var num_matches = 0
+    items.forEach((item) => {
+      const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.toLowerCase()
+      if (itemname.startsWith(search_pattern)) {
+        item.style.display = ""
+        ++num_matches
+      }
+      else {
+        item.style.display = "none"
+      }
+    })
+
+    const search_empty = document.getElementById("marketplace-search-empty")
+    if (num_matches > 0) {
+      search_empty.hidden = true
+    }
+    else {
+      search_empty.hidden = false
+    }
+  })
+
   var cart_contact_username = document.getElementById("cart-contact-username")
   var cart_contact_address = document.getElementById("cart-contact-address")
   var cart_contact_arrival = document.getElementById("cart-contact-arrival")
