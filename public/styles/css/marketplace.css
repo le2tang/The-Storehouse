@@ -7,17 +7,18 @@
 
 .marketplace-item-list-container .item-card {
   width: 50vw;
-  padding: 10px 50px 10px 50px;
+  padding: 10px 30px 10px 30px;
   margin: 10px;
 
   position: relative;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
 
   background: var(--secondary-light);
   color: var(--on-secondary-light);
-  border-radius: 10px;
+  border-radius: 2px;
 
   transition-duration: 0.5s;
 }
@@ -26,13 +27,13 @@
   width: 20%;
 }
 
-.marketplace-item-list-container .item-card span:first-of-type {
+/* .marketplace-item-list-container .item-card span:first-of-type {
   text-align: left;
 }
 
 .marketplace-item-list-container .item-card span:last-of-type {
   text-align: right;
-}
+} */
 
 .marketplace-item-list-container .item-card:hover {
   background: var(--accent-light);

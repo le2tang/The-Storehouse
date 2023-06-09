@@ -16,13 +16,13 @@
   </header>
   <div class="container">
     <h1>Manage Carts</h1>
-    <div id="admin-summary-container">
-      <div id="admin-summary-text">
-        <p>Pending: <%= summary.pending%></p>
-        <p>Packed: <%= summary.packed%></p>
-        <p>Total: <%= summary.total%></p>  
+    <div id="admin-summary-container" class="admin-summary-container">
+      <div id="admin-summary-text" class="admin-summary-text">
+        <h2>Pending: <%= summary.pending%></h2>
+        <h2>Packed: <%= summary.packed%></h2>
+        <h2>Total: <%= summary.total%></h2>  
       </div>
-      <div id="admin-summary-selectors">
+      <div id="admin-summary-selectors" class="admin-summary-selectors">
         <span>Filter by: </span>
         <select id="admin-summary-filter">
           <option value="all">All</option>
@@ -30,6 +30,7 @@
           <option value="packed">Packed</option>
         </select>
       </div>
+    </div>
     <div id="admin-cart-list" class="admin-cart-list">
       <% for (var c of carts) {%>
         <a class="cart-card" href="/admin/carts/<%= c.username%>">
