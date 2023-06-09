@@ -46,3 +46,11 @@ body {
 
   transition-duration: 0.5s;
 }
+
+.pending {
+  background-color: rgb(153, 55, 55);
+} 
+
+.packed {
+  background-color: rgb(173, 109, 25);
+} 

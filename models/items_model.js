@@ -55,9 +55,6 @@ var items_model = {
       description VARCHAR (32),
       tags VARCHAR (32))`
     var result = await database.query(query)
-
-    console.log(result)
-
     return result
   }
 }
