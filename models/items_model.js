@@ -2,20 +2,24 @@ const database = require("./database.js")
 
 var items_model = {
   async create(item) {
-    for (elem in item) {
-      if (item[elem] != null && item[elem].length == 0) {
-        item[elem] = null
+    item.tags = item.tags.toLowerCase().replace(", ", ",")
+    for (var field in item) {
+      if (item[field] != null && item[field].length == 0) {
+        item[field] = null
       }
     }
-    var query = "INSERT INTO items (itemname, quantity, description, tags) VALUES ($1, $2, $3, $4)"
-    var result = await database.query(query, [item.itemname, item.quantity, item.description, item.tags])
+
+    var query = `UPDATE items SET quantity=quantity+${item.quantity} WHERE itemname='${item.itemname}' AND description='${item.description}';
+    INSERT INTO items (itemname, quantity, description, tags) SELECT '${item.itemname}', ${item.quantity}, '${item.description}', ${item.tags}
+    WHERE NOT EXISTS (SELECT uid FROM items WHERE itemname='${item.itemname}' and description='${item.description}')`
+    var result = await database.query(query)
     return result
   },
 
   async getAll() {
     var query = "SELECT * FROM items"
     var result = await database.query(query)
-    return result.rows
+    return this.sortAlphabetical(result.rows)
   },
 
   async removeAll() {
@@ -27,7 +31,7 @@ var items_model = {
   async getItemsByUids(uids) {
     var query = `SELECT * FROM items WHERE uid IN ('${uids.join("','")}')`
     var result = await database.query(query)
-    return result.rows
+    return this.sortAlphabetical(result.rows)
   },
 
   async updateItemByUid(item) {
@@ -56,6 +60,51 @@ var items_model = {
       tags VARCHAR (32))`
     var result = await database.query(query)
     return result
+  },
+
+  async incrementQuantityByUid(increment, uid) {
+    var query = `UPDATE items SET quantity=quantity+${increment} WHERE uid=${uid}`
+    var result = await database.query(query)
+    return result
+  },
+
+  async decrementQuantityByUid(decrement, uid) {
+    var query = `UPDATE items SET quantity=quantity-${decrement} WHERE uid=${uid}`
+    var result = await database.query(query)
+    return result
+  },
+
+  sortAlphabetical(items) {
+    return items.sort((item1, item2) => {
+      const itemname1 = item1.itemname.toLowerCase()
+      const itemname2 = item2.itemname.toLowerCase()
+      if (itemname1 < itemname2) {
+        return -1
+      }
+      else if (itemname1 > itemname2) {
+        return 1
+      }
+
+      if (item1.description && item2.description) {
+        const description1 = item1.description.toLowerCase()
+        const description2 = item2.description.toLowerCase()
+        if (description1 < description2) {
+          return -1
+        }
+        else if (description1 > description2) {
+          return 1
+        }
+      }
+      else if (item1.description) {
+        return 1
+      }
+      else if (item2.description) {
+        return -1
+      }
+      
+      
+      return 0
+    })
   }
 }
 
