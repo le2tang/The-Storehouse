@@ -18,9 +18,8 @@ function initCallbacks() {
 }
 
 function parse_items(text) {
-  rows = text.split("\n")
-  
-  headers = rows[0].split(",")
+  const rows = text.split("\n")
+  const headers = rows[0].split(",")
 
   new_items = []
   for (var row = 1; row < rows.length - 1; ++row) {

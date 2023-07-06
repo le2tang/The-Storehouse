@@ -75,6 +75,14 @@ var items_model = {
   },
 
   sortAlphabetical(items) {
+    items.forEach(function (item, idx, items) {
+      if (item.description == "null") {
+        items[idx].description = ""
+      }
+      if (item.tags == "null") {
+        items[idx].tags = ""
+      }
+    })
     return items.sort((item1, item2) => {
       const itemname1 = item1.itemname.toLowerCase()
       const itemname2 = item2.itemname.toLowerCase()
@@ -85,7 +93,7 @@ var items_model = {
         return 1
       }
 
-      if (item1.description && item2.description) {
+      if (item1.description.length > 0 && item2.description.length > 0) {
         const description1 = item1.description.toLowerCase()
         const description2 = item2.description.toLowerCase()
         if (description1 < description2) {
@@ -95,14 +103,13 @@ var items_model = {
           return 1
         }
       }
-      else if (item1.description) {
+      else if (item1.description.length > 0) {
         return 1
       }
-      else if (item2.description) {
+      else if (item2.description.length > 0) {
         return -1
       }
-      
-      
+
       return 0
     })
   }
