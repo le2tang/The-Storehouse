@@ -7,6 +7,7 @@
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel="stylesheet" href="/styles/css/colors.css">
   <link rel="stylesheet" href="/styles/css/admin_items.css">
+  <script src="/scripts/admin_items.js"></script>
 </head>
 <body>
   <header>
@@ -16,6 +17,9 @@
   <div class="container">
     <h1>Manage Items</h1>
     <div id="admin-item-add-containter">
+      <h2>Upload csv</h2>
+      <input type="file" id="admin-item-add-file">
+
       <h2>Add Item</h2>
       <form class="admin-item-add-form" action="/admin/items" method="post">
         <input type="number" name="quantity" min=1 value=1>

@@ -17,15 +17,17 @@
     <div class="marketplace-item-list-container">
       <h1>Marketplace</h1>
       <div id="marketplace-item-list" class="marketplace-item-list">
+        <input type="text" id="marketplace-item-search" placeholder="Search...">
         <% for (var i of items) {%>
           <% if (i.quantity > 0) {%>
-            <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>', '<%= i.quantity%>')">
+            <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>')">
               <span class="item-card-itemname"><%= i.itemname%></span>
               <span class="item-card-quantity"><%= i.quantity%></span>
               <span class="item-card-description"><%= i.description%></span>
             </div>
           <% }%>
         <% }%>
+        <div id="marketplace-search-empty" class="warning-label" hidden>No items</div>
       </div>
     </div>
   

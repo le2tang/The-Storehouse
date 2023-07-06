@@ -69,9 +69,13 @@ function addItemToCart(uid, itemname, desired_quantity) {
     cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {           
       event.target.parentElement.remove()
 
-      var list_item = document.getElementById(`item-card-${uid}`)
-      var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
-      list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) + cart.items[uid]
+      var stock_item = document.getElementById(`item-card-${uid}`)
+      var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
+      const new_stock_quantity = Number(stock_item_quantity.innerHTML) + cart.items[uid]
+      stock_item_quantity.innerHTML = new_stock_quantity
+      if (new_stock_quantity > 0) {
+        stock_item.style.display = ""
+      }
 
       delete cart.items[uid]
     }
@@ -79,15 +83,21 @@ function addItemToCart(uid, itemname, desired_quantity) {
 
   document.getElementById("cart-empty-warning").hidden = Object.keys(cart.items).length > 0
 
-  var list_item = document.getElementById(`item-card-${uid}`)
-  var list_item_quantity = list_item.getElementsByClassName("item-card-quantity")[0]
-  list_item_quantity.innerHTML = Number(list_item_quantity.innerHTML) - Number(desired_quantity)
-  list_item.hidden = list_item_quantity.value > 0
+  var stock_item = document.getElementById(`item-card-${uid}`)
+  var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
+  const new_stock_quantity = Number(stock_item_quantity.innerHTML) - Number(desired_quantity)
+  stock_item_quantity.innerHTML = new_stock_quantity
+  if (new_stock_quantity < 1) {
+    stock_item.style.display = "none"
+  }
 
   document.getElementById("add-to-cart-background").style.display = "none"
 }
 
-function tryAddItem(uid, itemname, max_quantity) {
+function tryAddItem(uid, itemname) {
+  const item = document.getElementById(`item-card-${uid}`)
+  const item_quantity = item.getElementsByClassName("item-card-quantity")[0]
+  const max_quantity = Number(item_quantity.innerHTML)
   if (max_quantity > 1) {
     addItemModal(uid, itemname, max_quantity);
   }
@@ -108,14 +118,15 @@ function clearCart() {
   document.getElementById("cart-submit").disabled = true;
 }
 
-function cartSubmitSuccess(data) {
+function cartSubmit() {
   alert("Your reservation has been submitted! Thanks");
   clearCart();
 }
 
-function cartSubmitFail(err) {
-  alert("Sorry, there was an error submitting your cart");
-  console.log(err)
+function cartSubmitFail(response) {
+  response.json().then((json) => {
+    alert(`Sorry, there was an error submitting your cart:\n\n${json.message}`);
+  })
 }
 
 async function submitCart() {
@@ -128,11 +139,46 @@ async function submitCart() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(cart)
   })
-  .then(data => cartSubmitSuccess(data))
-  .catch(err => cartSubmitFail(err));
+  .then(response => {
+    if (response.ok) {
+      cartSubmit()
+    }
+    return Promise.reject(response)
+  })
+  .catch((response) => {
+    cartSubmitFail(response)
+  });
 }
 
 function initCallbacks() {
+  const search_bar = document.getElementById("marketplace-item-search")
+  search_bar.addEventListener("input", () => {
+    const search_pattern = search_bar.value.toLowerCase()
+
+    const items_list = document.getElementById("marketplace-item-list")
+    const items = [... items_list.getElementsByClassName("item-card")]
+
+    var num_matches = 0
+    items.forEach((item) => {
+      const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.toLowerCase()
+      if (itemname.startsWith(search_pattern)) {
+        item.style.display = ""
+        ++num_matches
+      }
+      else {
+        item.style.display = "none"
+      }
+    })
+
+    const search_empty = document.getElementById("marketplace-search-empty")
+    if (num_matches > 0) {
+      search_empty.hidden = true
+    }
+    else {
+      search_empty.hidden = false
+    }
+  })
+
   var cart_contact_username = document.getElementById("cart-contact-username")
   var cart_contact_address = document.getElementById("cart-contact-address")
   var cart_contact_arrival = document.getElementById("cart-contact-arrival")
@@ -186,7 +232,7 @@ function initCallbacks() {
     cart.contact_address = validateInput(cart_contact_profile.value)
     document.getElementById("cart-submit").disabled = !cart.isReady();
   }
- }
+}
 
 if (document.readyState == "loading") {
   document.addEventListener("DOMContentLoaded", initCallbacks);

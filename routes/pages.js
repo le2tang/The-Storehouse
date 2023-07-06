@@ -63,9 +63,16 @@ router.post("/admin/items", async function(req, res) {
     res.status(401).send({ message: "Unauthorized" })
   }
   else {
-    req.body.uid = crypto.randomBytes(8).toString("hex")
-    req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
-    items_model.create(req.body)
+    if (!Array.isArray(req.body)) {
+      items = new Array(req.body)
+    }
+    else {
+      items = req.body
+    }
+
+    for (item of items) {
+      items_model.create(item)
+    }
 
     res.redirect("/admin/items")
   }
@@ -109,6 +116,7 @@ router.post("/admin/items/:uid", async function(req, res) {
 })
 
 router.get("/admin/carts", async function(req, res) {
+  // Admin main page
   if (!req.body) {
     res.status(400).send({ message: "Invalid request" })
   }
@@ -118,25 +126,30 @@ router.get("/admin/carts", async function(req, res) {
   }
   else {
     var carts = await carts_model.getAll()
-    carts = await Promise.all(carts.map(async function(cart) {
-      cart.status = carts_model.status_msg[cart.status]
-      
-      var items_from_cart = await items_model.getItemsByUids(Object.keys(cart.items))
-      items_from_cart = await Promise.all(items_from_cart.map(async function (item) {
-        item.quantity = cart.items[item.uid]
-        return item
-      }))
-      cart.items = items_from_cart
-      
-      return cart
-    }))
-
-    res.render("admin_carts", { paths: app_config.paths, carts: carts })
+    res.render("admin_carts", { paths: app_config.paths, carts: carts, summary: carts_model.getSummary(carts) })
   }
 })
 router.post("/admin/carts", async function(req, res) {
+  // New cart submitted from the marketplace
   if (!req.body) {
     res.status(400).send({ message: "Invalid request" })
+  }
+
+  const stock_items = await items_model.getItemsByUids(Object.keys(req.body.items))
+  var out_of_stock = []
+  stock_items.forEach((item) => {
+    if (req.body.items[item.uid] > item.quantity) {
+      out_of_stock.push(item)
+    }
+  })
+
+  if (out_of_stock.length > 0) {
+    out_of_stock_message = "Out of stock: "
+    for (item of out_of_stock) {
+      out_of_stock_message += `${item.itemname}(${item.description}), `
+    }
+    res.status(400).send({ message: out_of_stock_message })
+    return
   }
   
   var carts = await carts_model.getCartsByUsername(req.body.username)
@@ -148,10 +161,8 @@ router.post("/admin/carts", async function(req, res) {
   req.body.index = index
   await carts_model.create(req.body)
 
-  var items_from_cart = await items_model.getItemsByUids(Object.keys(req.body.items))
-  items_from_cart.forEach(function(item) {
-    item.quantity -= req.body.items[item.uid]
-    items_model.updateItemByUid(item)
+  stock_items.forEach((item) => {
+    items_model.decrementQuantityByUid(req.body.items[item.uid], item.uid)
   })
 
   res.redirect("/")
@@ -167,20 +178,6 @@ router.get("/admin/carts/:username", async function(req, res) {
       res.status(404).send({ message: `No carts for ${req.params.username} found` })
     }
     else {
-      carts = await Promise.all(carts.map(async function(cart) {
-        cart.status = carts_model.status_msg[cart.status]
-        cart.contact_method = carts_model.contact_method_msg[cart.contact_method]
-
-        var items_from_cart = await items_model.getItemsByUids(Object.keys(cart.items))
-        items_from_cart = await Promise.all(items_from_cart.map(async function (item) {
-          item.quantity = cart.items[item.uid]
-          return item
-        }))
-        cart.items = items_from_cart
-
-        return cart
-      }))
-      
       res.render("admin_carts_view", { paths: app_config.paths, carts: carts })
     }
   }  
