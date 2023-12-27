@@ -35,7 +35,7 @@ var carts_model = {
   async getAll() {
     var query = "SELECT * FROM carts"
     var result = await database.query(query)
-    return await this.formatCarts(result.rows) 
+    return await this.formatCarts(result.rows)
   },
 
   async removeAll() {
@@ -47,7 +47,7 @@ var carts_model = {
   async getCartsByUsername(username) {
     var query = `SELECT * FROM carts WHERE username='${username}'`
     var result = await database.query(query)
-    return await this.formatCarts(result.rows) 
+    return await this.formatCarts(result.rows)
   },
 
   async updateCartByUsername(cart, index) {
@@ -70,7 +70,7 @@ var carts_model = {
 
   async setupCartsTable() {
     var query = `CREATE TABLE IF NOT EXISTS carts (
-      username VARCHAR(32) PRIMARY KEY NOT NULL,
+      username VARCHAR(32) NOT NULL,
       address VARCHAR(32) NOT NULL,
       arrival DATE,
       contact_method CHAR(3) NOT NULL,
@@ -112,9 +112,9 @@ var carts_model = {
       "delivered": 0,
       "total": 0
     }
-    
+
     for (var cart of carts) {
-      switch(cart.status) {
+      switch (cart.status) {
         case "Pending":
           counts.pending += 1
           break
