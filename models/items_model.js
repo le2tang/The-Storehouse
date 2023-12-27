@@ -10,9 +10,16 @@ var items_model = {
     }
 
     var query = `UPDATE items SET quantity=quantity+${item.quantity} WHERE itemname='${item.itemname}' AND description='${item.description}';
-    INSERT INTO items (itemname, quantity, description, tags) SELECT '${item.itemname}', ${item.quantity}, '${item.description}', ${item.tags}
+    INSERT INTO items (itemname, quantity, description, tags) SELECT '${item.itemname}', ${item.quantity}, '${item.description}', '${item.tags}'
     WHERE NOT EXISTS (SELECT uid FROM items WHERE itemname='${item.itemname}' and description='${item.description}')`
-    var result = await database.query(query)
+
+    try {
+      var result = await database.query(query)
+    } catch (err) {
+      console.log("Error creating item with query ", query)
+      console.log(err)
+      result = null
+    }
     return result
   },
 
