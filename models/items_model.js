@@ -2,12 +2,7 @@ const database = require("./database.js")
 
 var items_model = {
   async create(item) {
-    item.tags = item.tags.toLowerCase().replace(", ", ",")
-    for (var field in item) {
-      if (item[field] != null && item[field].length == 0) {
-        item[field] = null
-      }
-    }
+    item = this.cleanItem(item)
 
     var query = `UPDATE items SET quantity=quantity+${item.quantity} WHERE itemname='${item.itemname}' AND description='${item.description}';
     INSERT INTO items (itemname, quantity, description, tags) SELECT '${item.itemname}', ${item.quantity}, '${item.description}', '${item.tags}'
@@ -56,11 +51,8 @@ var items_model = {
   },
 
   async updateItemByUid(item) {
-    for (elem in item) {
-      if (item[elem] != null && item[elem].length == 0) {
-        item[elem] = null
-      }
-    }
+    item = this.cleanItem(item)
+
     var query = "UPDATE items SET itemname=$1, quantity=$2, description=$3, tags=$4 WHERE uid=$5"
 
     try {
@@ -159,6 +151,28 @@ var items_model = {
 
       return 0
     })
+  },
+
+  cleanItem(item) {
+    if (!("itemname" in item)) {
+      item.itemname = ""
+    }
+    else {
+      item.itemname = item.itemname.substring(0, 20).trim().toLowerCase()
+    }
+
+    if (!("description" in item) || item.description.length == 0) {
+      item.description = null
+    }
+    else {
+      item.description = item.description.substring(0, 20).trim().toLowerCase()
+    }
+
+    if (!("tags" in item) || item.tags.length == 0) {
+      item.tags = null
+    }
+
+    return item
   }
 }
 
