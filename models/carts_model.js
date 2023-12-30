@@ -27,6 +27,8 @@ var carts_model = {
   },
 
   async create(cart) {
+    cart = cleanCart(cart)
+
     var query = "INSERT INTO carts (username, address, arrival, contact_method, contact_address, items, status, index) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
     var result = await database.query(query, [cart.username, cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.status, cart.index])
     return result
@@ -128,6 +130,11 @@ var carts_model = {
       counts.total += 1
     }
     return counts
+  },
+
+  cleanCart(cart) {
+    cart = cart.substring(0, 20).trim().toLowercase()
+    return cart
   },
 
   status_msg: ["Pending", "Packed", "Delivered"],
