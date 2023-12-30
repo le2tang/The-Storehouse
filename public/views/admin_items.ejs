@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -9,10 +10,11 @@
   <link rel="stylesheet" href="/styles/css/admin_items.css">
   <script src="/scripts/admin_items.js"></script>
 </head>
+
 <body>
   <header>
     <%- include("../partials/navbar") %>
-    <%- include("../partials/admin_navbar") %>
+      <%- include("../partials/admin_navbar") %>
   </header>
   <div class="container">
     <h1>Manage Items</h1>
@@ -31,17 +33,25 @@
     </div>
     <div id="admin-item-list-container">
       <h2>Manage Items</h2>
-      <div class="admin-item-list">
+      <div id="admin-item-list" class="admin-item-list">
+        <input type="text" id="admin-item-search" placeholder="Search...">
         <% for (var i of items) {%>
           <a id="item-card-<%= i.uid%>" class="item-card" href="/admin/items/<%= i.uid%>">
-            <span><%= i.itemname%></span>
-            <span><%= i.quantity%></span>
-            <span><%= i.description%></span>
+            <span class="item-card-itemname">
+              <%= i.itemname%>
+            </span>
+            <span class="item-card-quantity">
+              <%= i.quantity%>
+            </span>
+            <span class="item-card-description">
+              <%= i.description%>
+            </span>
             <span class="item-remove">&times;</span>
           </a>
-        <% }%>
+          <% }%>
       </div>
     </div>
   </div>
 </body>
+
 </html>

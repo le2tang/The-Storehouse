@@ -1,4 +1,22 @@
 function initCallbacks() {
+  const search_bar = document.getElementById("admin-item-search")
+  search_bar.addEventListener("input", () => {
+    const search_pattern = search_bar.value.toLowerCase()
+
+    const items_list = document.getElementById("admin-item-list")
+    const items = [...items_list.getElementsByClassName("item-card")]
+
+    items.forEach((item) => {
+      const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.trim().toLowerCase()
+      if (itemname.startsWith(search_pattern)) {
+        item.style.display = ""
+      }
+      else {
+        item.style.display = "none"
+      }
+    })
+  })
+
   var file_input = document.getElementById("admin-item-add-file")
   file_input.addEventListener("change", () => {
     const [file] = file_input.files
