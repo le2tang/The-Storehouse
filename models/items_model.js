@@ -15,30 +15,44 @@ var items_model = {
 
     try {
       var result = await database.query(query)
+      return result
     } catch (err) {
       console.log("Error creating item with query ", query)
       console.log(err)
-      result = null
     }
-    return result
   },
 
   async getAll() {
     var query = "SELECT * FROM items"
-    var result = await database.query(query)
-    return this.sortAlphabetical(result.rows)
+    try {
+      var result = await database.query(query)
+      return this.sortAlphabetical(result.rows)
+    } catch (err) {
+      console.log("Error fetching all items with query ", query)
+      console.log(err)
+    }
   },
 
   async removeAll() {
     var query = "DELETE FROM items"
-    var result = await database.query(query)
-    return result
+    try {
+      var result = await database.query(query)
+      return result
+    } catch (err) {
+      console.log("Error deleting all items with query ", query)
+      console.log(err)
+    }
   },
 
   async getItemsByUids(uids) {
     var query = `SELECT * FROM items WHERE uid IN ('${uids.join("','")}')`
-    var result = await database.query(query)
-    return this.sortAlphabetical(result.rows)
+    try {
+      var result = await database.query(query)
+      return this.sortAlphabetical(result.rows)
+    } catch (err) {
+      console.log("Error selecting items with query ", query)
+      console.log(err)
+    }
   },
 
   async updateItemByUid(item) {
@@ -48,14 +62,25 @@ var items_model = {
       }
     }
     var query = "UPDATE items SET itemname=$1, quantity=$2, description=$3, tags=$4 WHERE uid=$5"
-    var result = await database.query(query, [item.itemname, item.quantity, item.description, item.tags, item.uid])
-    return result
+
+    try {
+      var result = await database.query(query, [item.itemname, item.quantity, item.description, item.tags, item.uid])
+      return result
+    } catch (err) {
+      console.log("Error updating items with query ", query)
+      console.log(err)
+    }
   },
 
   async removeItemByUid(uid) {
     var query = `DELETE FROM items WHERE uid='${uid}'`
-    var result = await database.query(query)
-    return result
+    try {
+      var result = await database.query(query)
+      return result
+    } catch (err) {
+      console.log("Error removing items with query ", query)
+      console.log(err)
+    }
   },
 
   async setupItemsTable() {
@@ -65,20 +90,35 @@ var items_model = {
       quantity INT NOT NULL CONSTRAINT nonnegative_quantity CHECK (quantity >= 0),
       description VARCHAR (32),
       tags VARCHAR (32))`
-    var result = await database.query(query)
-    return result
+    try {
+      var result = await database.query(query)
+      return result
+    } catch (err) {
+      console.log("Error creating items table ", query)
+      console.log(err)
+    }
   },
 
   async incrementQuantityByUid(increment, uid) {
     var query = `UPDATE items SET quantity=quantity+${increment} WHERE uid=${uid}`
-    var result = await database.query(query)
-    return result
+    try {
+      var result = await database.query(query)
+      return result
+    } catch (err) {
+      console.log("Error incrementing item quantity ", query)
+      console.log(err)
+    }
   },
 
   async decrementQuantityByUid(decrement, uid) {
     var query = `UPDATE items SET quantity=quantity-${decrement} WHERE uid=${uid}`
-    var result = await database.query(query)
-    return result
+    try {
+      var result = await database.query(query)
+      return result
+    } catch (err) {
+      console.log("Error decrementing item quantity ", query)
+      console.log(err)
+    }
   },
 
   sortAlphabetical(items) {
