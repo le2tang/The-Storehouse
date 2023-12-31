@@ -27,7 +27,7 @@ var carts_model = {
   },
 
   async create(cart) {
-    cart = cleanCart(cart)
+    cart = this.cleanCart(cart)
 
     var query = "INSERT INTO carts (username, address, arrival, contact_method, contact_address, items, status, index) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
     var result = await database.query(query, [cart.username, cart.address, cart.arrival, cart.contact_method, cart.contact_address, cart.items, cart.status, cart.index])
