@@ -78,10 +78,10 @@ var items_model = {
   async setupItemsTable() {
     var query = `CREATE TABLE IF NOT EXISTS items (
       uid SERIAL PRIMARY KEY NOT NULL,
-      itemname VARCHAR (20) NOT NULL,
+      itemname VARCHAR (64) NOT NULL,
       quantity INT NOT NULL CONSTRAINT nonnegative_quantity CHECK (quantity >= 0),
-      description VARCHAR (32),
-      tags VARCHAR (32))`
+      description VARCHAR (64),
+      tags VARCHAR (64))`
     try {
       var result = await database.query(query)
       return result
@@ -158,18 +158,21 @@ var items_model = {
       item.itemname = ""
     }
     else {
-      item.itemname = item.itemname.substring(0, 20).trim().toLowerCase()
+      item.itemname = item.itemname.substring(0, 64).trim().toLowerCase()
     }
 
     if (!("description" in item) || item.description.length == 0) {
-      item.description = null
+      item.description = ""
     }
     else {
-      item.description = item.description.substring(0, 20).trim().toLowerCase()
+      item.description = item.description.substring(0, 64).trim().toLowerCase()
     }
 
     if (!("tags" in item) || item.tags.length == 0) {
-      item.tags = null
+      item.tags = ""
+    }
+    else {
+      item.description = item.description.substring(0, 64).trim().toLowerCase()
     }
 
     return item

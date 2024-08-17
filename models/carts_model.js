@@ -133,7 +133,7 @@ var carts_model = {
   },
 
   cleanCart(cart) {
-    cart.username = cart.username.substring(0, 20).trim().toLowerCase()
+    cart.username = cart.username.substring(0, 32).trim().toLowerCase()
     return cart
   },
 
