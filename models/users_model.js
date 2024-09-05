@@ -1,8 +1,20 @@
 const database = require("./database.js")
 
 var users_model = {
+  async createUser(username, password_hash) {
+    var query = `INSERT INTO users (username, password_hash) VALUES ('${username}', '${password_hash}')`
+    var result = await database.query(query)
+    return result
+  },
+
   async getUserByUsername(username) {
     var query = `SELECT * FROM users WHERE username='${username}'`
+    var result = await database.query(query)
+    return result.rows[0]
+  },
+
+  async getPasswordHashbyUsername(username) {
+    var query = `SELECT password_hash FROM users WHERE username='${username}'`
     var result = await database.query(query)
     return result.rows[0]
   },

@@ -3,11 +3,48 @@ const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const users_model = require("../models/users_model.js")
 
-const crypto = require("crypto")
+const bcrypt = require("bcrypt")
 var router = require("express").Router()
 
 router.get("/", async function (req, res) {
   res.render("marketplace", { paths: app_config.paths, items: await items_model.getAll() })
+})
+
+router.post("/admin/register", async function (req, res, next) {
+  const input_username = req.body.username
+  username = input_username.replace(/\W/g, "")
+
+  if (input_username != username) {
+    return res.status(400).send("Username contains invalid characters")
+  }
+  else {
+    try {
+      const query_users = await users_model.getPasswordHashbyUsername(username)
+      if (query_users != null) {
+        return res.status(400).send("Username already exists")
+      }
+      else {
+        try {
+          const num_salt_rounds = 10
+
+          const salt = await bcrypt.genSalt(num_salt_rounds)
+          const hash = await bcrypt.hash(req.body.password, salt)
+
+          users_model.createUser(username, hash).then((result) => {
+            return res.status(200).send("Created new profile")
+          }).catch((error) => {
+            return res.status(500).send(`Writing to database failed with error ${error}`)
+          })
+        }
+        catch (error) {
+          return res.status(500).send(`bcrypt failed with error: ${error}`)
+        }
+      }
+    }
+    catch (error) {
+      return res.status(500).send(`Querying database for user failed with error: ${error}`)
+    }
+  }
 })
 
 router.get("/admin/login", function (req, res) {
@@ -18,22 +55,38 @@ router.get("/admin/login", function (req, res) {
     res.redirect("/admin/carts")
   }
 })
-router.post("/admin/login", async function (req, res) {
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
+router.post("/admin/login", async function (req, res, next) {
+  const input_username = req.body.username
+  username = input_username.replace(/\W/g, "")
 
-  var user = await users_model.getUserByUsername(req.body.username)
-  if (user == null) {
-    res.send({ message: `User ${req.body.username} does not exist` })
-  }
-  else if (req.body.password != user.password) {
-    res.send({ message: "Incorrect password" })
-  }
-  else {
-    req.session.loggedin = true
+  const input_password = req.body.password
 
-    res.redirect("/admin/carts")
+  // fetch user profile from database
+  try {
+    const query_users = await users_model.getPasswordHashbyUsername(username)
+
+    if (query_users == null) {
+      return res.status(404).send("Username not found")
+    }
+    else {
+      try {
+        const result = await bcrypt.compare(input_password, query_users.password_hash)
+
+        if (result) {
+          req.session.loggedin = true;
+          return res.redirect("/admin/carts")
+        }
+        else {
+          return res.status(400).send("Incorrect password")
+        }
+      }
+      catch (error) {
+        return res.status(500).send(`bcrypt failed with error: ${error}`)
+      }
+    }
+  }
+  catch (error) {
+    return res.status(500).send(`Querying database for user failed with error: ${error}`)
   }
 })
 
