@@ -9,7 +9,7 @@ const database = (process.env.DATABASE_URL) ?
   : new Pool({
     host: database_config.HOST,
     port: database_config.PORT,
-    database: database_config.DATABASE,        
+    database: database_config.DATABASE,
     user: database_config.USER,
     password: database_config.PASSWORD
   })
