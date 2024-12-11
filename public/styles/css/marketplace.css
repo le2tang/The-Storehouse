@@ -1,13 +1,13 @@
 .marketplace-cart-list-container {
   width: 100%;
-  
+
   background: var(--primary-light);
   color: var(--on-primary-light);
 }
 
 .marketplace-item-list-container .item-card {
   width: 50vw;
-  padding: 10px 30px 10px 30px;
+  padding: 10px 50px 10px 50px;
   margin: 10px;
 
   position: relative;
@@ -27,18 +27,18 @@
   width: 20%;
 }
 
-/* .marketplace-item-list-container .item-card span:first-of-type {
+.marketplace-item-list-container .item-card span:first-of-type {
   text-align: left;
 }
 
 .marketplace-item-list-container .item-card span:last-of-type {
   text-align: right;
-} */
+}
 
 .marketplace-item-list-container .item-card:hover {
   background: var(--accent-light);
   color: var(--on-secondary-light);
-  
+
   transform: scaleY(1.1);
   cursor: pointer;
 }
@@ -78,7 +78,7 @@
   align-items: center;
   justify-items: center;
   text-align: center;
-  
+
   margin: 10px;
 }
 
@@ -89,7 +89,9 @@
   padding: 10px;
 }
 
-.marketplace-cart-container input, .marketplace-cart-container select, .marketplace-cart-container button {
+.marketplace-cart-container input,
+.marketplace-cart-container select,
+.marketplace-cart-container button {
   padding: 8px;
   margin: 4px;
   border-radius: 10px;
@@ -100,7 +102,7 @@
   width: 100%;
 }
 
-.cart-contact-info { 
+.cart-contact-info {
   background: var(--primary-light);
   color: var(--on-primary-light);
   padding: 10px;
@@ -136,7 +138,8 @@
   border-radius: 10px;
 }
 
-.modal input, .modal button {
+.modal input,
+.modal button {
   padding: 12px;
   margin: 10px;
   border-radius: 10px;
