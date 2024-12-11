@@ -2,12 +2,30 @@ const app_config = require("../config/app_config.js")
 const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const users_model = require("../models/users_model.js")
+const skates_model = require("../models/skates_model.js")
 
 const bcrypt = require("bcrypt")
 var router = require("express").Router()
 
 router.get("/", async function (req, res) {
   res.render("marketplace", { paths: app_config.paths, items: await items_model.getAll() })
+})
+
+router.get("/skates", async function (req, res) {
+  res.render("skates_reservations")
+})
+
+router.post("/skates/reserve", async function (req, res) {
+  console.log(req.body)
+
+  try {
+    await skates_model.createReservation(req.body)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(`Querying database for skate reservations failed with error ${error}`)
+  }
+
+  res.redirect("/skates")
 })
 
 router.post("/admin/register", async function (req, res, next) {
@@ -17,33 +35,33 @@ router.post("/admin/register", async function (req, res, next) {
   if (input_username != username) {
     return res.status(400).send("Username contains invalid characters")
   }
-  else {
-    try {
-      const query_users = await users_model.getPasswordHashbyUsername(username)
-      if (query_users != null) {
-        return res.status(400).send("Username already exists")
-      }
-      else {
-        try {
-          const num_salt_rounds = 10
 
-          const salt = await bcrypt.genSalt(num_salt_rounds)
-          const hash = await bcrypt.hash(req.body.password, salt)
+  try {
+    const query_users = await users_model.getPasswordHashbyUsername(username)
+    if (query_users != null) {
+      return res.status(400).send("Username already exists")
+    }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(`Querying database for user failed with error: ${error}`)
+  }
 
-          users_model.createUser(username, hash).then((result) => {
-            return res.status(200).send("Created new profile")
-          }).catch((error) => {
-            return res.status(500).send(`Writing to database failed with error ${error}`)
-          })
-        }
-        catch (error) {
-          return res.status(500).send(`bcrypt failed with error: ${error}`)
-        }
-      }
-    }
-    catch (error) {
-      return res.status(500).send(`Querying database for user failed with error: ${error}`)
-    }
+  try {
+    const num_salt_rounds = 10
+
+    const salt = await bcrypt.genSalt(num_salt_rounds)
+    const hash = await bcrypt.hash(req.body.password, salt)
+
+    users_model.createUser(username, hash).then((result) => {
+      return res.status(200).send("Created new profile")
+    }).catch((error) => {
+      console.log(error)
+      return res.status(500).send(`Writing to database failed with error ${error}`)
+    })
+  }
+  catch (error) {
+    console.log(error)
+    return res.status(500).send(`bcrypt failed with error: ${error}`)
   }
 })
 
@@ -63,7 +81,7 @@ router.post("/admin/login", async function (req, res, next) {
 
   // fetch user profile from database
   try {
-    const query_users = await users_model.getPasswordHashbyUsername(username)
+    const query_users = await users_model.getPasswordHashByUsername(username)
 
     if (query_users == null) {
       return res.status(404).send("Username not found")

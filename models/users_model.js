@@ -1,8 +1,8 @@
-const database = require("./database.js")
+const database = require("../database/database.js")
 
 var users_model = {
   async createUser(username, password_hash) {
-    var query = `INSERT INTO users (username, password_hash) VALUES ('${username}', '${password_hash}')`
+    var query = `INSERT INTO users (username, password_hash, role) VALUES ('${username}', '${password_hash}', 'U')`
     var result = await database.query(query)
     return result
   },
@@ -13,8 +13,14 @@ var users_model = {
     return result.rows[0]
   },
 
-  async getPasswordHashbyUsername(username) {
+  async getPasswordHashByUsername(username) {
     var query = `SELECT password_hash FROM users WHERE username='${username}'`
+    var result = await database.query(query)
+    return result.rows[0]
+  },
+
+  async getRoleByUsername(username) {
+    var query = `SELECT role FROM users WHERE username='${username}'`
     var result = await database.query(query)
     return result.rows[0]
   },
@@ -22,7 +28,9 @@ var users_model = {
   async setupUsersTable(admin_username, admin_password) {
     var query = `CREATE TABLE IF NOT EXISTS users (
       username VARCHAR (32) PRIMARY KEY NOT NULL UNIQUE,
-      password VARCHAR (32) NOT NULL)`
+      password VARCHAR (32) NOT NULL,
+      role CHAR(1)
+    )`
     var result = await database.query(query)
     return result
   }

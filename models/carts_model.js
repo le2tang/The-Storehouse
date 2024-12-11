@@ -1,4 +1,4 @@
-const database = require("./database.js")
+const database = require("../database/database.js")
 
 var carts_model = {
   async getCartItems(cart) {
@@ -72,6 +72,7 @@ var carts_model = {
 
   async setupCartsTable() {
     var query = `CREATE TABLE IF NOT EXISTS carts (
+      cart_id SERIAL,
       username VARCHAR(32) NOT NULL,
       address VARCHAR(32) NOT NULL,
       arrival DATE,
@@ -79,7 +80,7 @@ var carts_model = {
       contact_address VARCHAR (32) NOT NULL,
       items JSON,
       status VARCHAR (9) DEFAULT 'Pending' NOT NULL,
-      index serial)`
+      index SERIAL)`
     var result = await database.query(query)
     return result
   },

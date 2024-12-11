@@ -1,4 +1,4 @@
-const database = require("./database.js")
+const database = require("../database/database.js")
 
 var items_model = {
   async create(item) {
@@ -78,10 +78,10 @@ var items_model = {
   async setupItemsTable() {
     var query = `CREATE TABLE IF NOT EXISTS items (
       uid SERIAL PRIMARY KEY NOT NULL,
-      itemname VARCHAR (64) NOT NULL,
+      itemname VARCHAR(64) NOT NULL,
       quantity INT NOT NULL CONSTRAINT nonnegative_quantity CHECK (quantity >= 0),
-      description VARCHAR (64),
-      tags VARCHAR (64))`
+      description VARCHAR(64),
+      tags VARCHAR(64))`
     try {
       var result = await database.query(query)
       return result
