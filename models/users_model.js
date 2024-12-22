@@ -29,7 +29,6 @@ var users_model = {
     var query = `CREATE TABLE IF NOT EXISTS users (
       username VARCHAR (32) PRIMARY KEY NOT NULL UNIQUE,
       password VARCHAR (32) NOT NULL,
-      role CHAR(1)
     )`
     var result = await database.query(query)
     return result
