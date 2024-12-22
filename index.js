@@ -6,6 +6,7 @@ const app_config = require("./config/app_config.js")
 const app = express()
 
 const pages_router = require("./routes/pages.js")
+const orders_routes = require("./routes/orders_routes.js")
 
 app.set("view engine", "ejs")
 app.use(express.static(path.join(app_config.cwd, "public")))
@@ -19,8 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
 
 app.use("", pages_router)
+app.use("/orders", orders_routes)
 app.use((req, res) => {
-  res.status(404).send("Page not found")
+	res.status(404).send("Page not found")
 })
 
 app.listen(app_config.port, () => { console.log("Listening on ", app_config.port) })

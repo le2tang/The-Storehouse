@@ -11,7 +11,6 @@ const database = (process.env.DATABASE_URL) ?
     port: database_config.PORT,
     database: database_config.DATABASE,
     user: database_config.USER,
-    password: database_config.PASSWORD
   })
 
 module.exports = database

@@ -3,5 +3,4 @@ module.exports = {
   PORT: 5432,
   DATABASE: "postgres",
   USER: "postgres",
-  PASSWORD: "ZXChadD"
 }
