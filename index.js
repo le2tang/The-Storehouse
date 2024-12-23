@@ -6,7 +6,7 @@ const app_config = require("./config/app_config.js")
 const app = express()
 
 const pages_router = require("./routes/pages.js")
-const admin_routes = require("./routes/orders_routes.js")
+const admin_routes = require("./routes/admin_routes.js")
 const orders_routes = require("./routes/orders_routes.js")
 
 app.set("view engine", "ejs")

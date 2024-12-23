@@ -3,11 +3,19 @@ const database = require("../database/database.js")
 const items_db = {
   async create(item) {
     try {
-      var result = await database.query(
-        `UPDATE items SET quantity=quantity+${item.quantity} WHERE itemname='${item.itemname}' AND description='${item.description}';
-        INSERT INTO items (itemname, quantity, description, tags) SELECT '${item.itemname}', ${item.quantity}, '${item.description}', '${item.tags}'
+      const result = await database.query(
+        `UPDATE items SET quantity=quantity+${item.quantity}
+        WHERE itemname='${item.itemname}' AND description='${item.description}';
+        INSERT INTO items (itemname, quantity, description, tags)
+        SELECT '${item.itemname}', ${item.quantity}, '${item.description}', '${item.tags}'
         WHERE NOT EXISTS (SELECT uid FROM items WHERE itemname='${item.itemname}' and description='${item.description}')`
       )
+      if (result.rowCount == 0) {
+        return {
+          status: "ERROR",
+          message: "ITEM_NOT_CREATED"
+        }
+      }
 
       return {
         status: "OK",
@@ -24,7 +32,7 @@ const items_db = {
   async getAll() {
     try {
       const result = await database.query(
-        `SELECT * FROM items SORT BY tags ASC, itemname ASC, description ASC`
+        `SELECT * FROM items ORDER BY tags ASC, itemname ASC, description ASC`
       )
       return {
         status: "OK",

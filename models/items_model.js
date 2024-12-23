@@ -3,6 +3,8 @@ const items_db = require("../database/items_db.js")
 const items_model = {
   async create(item) {
     try {
+      item = this.clean_item(item)
+
       const result = await items_db.create(item)
       if (result.status != "OK") {
         return {
@@ -35,7 +37,7 @@ const items_model = {
 
       return {
         status: 200,
-        message: result.rows
+        result: result.result
       }
     } catch (error) {
       return {
@@ -92,8 +94,9 @@ const items_model = {
   },
 
   async updateItemByUid(item) {
-    item = this.cleanItem(item)
     try {
+      item = this.cleanItem(item)
+
       const result = await items_db.updateItemByUid(item)
       if (result.status != "OK") {
         return {
@@ -116,7 +119,7 @@ const items_model = {
 
   async removeItemByUid(uid) {
     try {
-      const result = await items_db.removeItemByUid()
+      const result = await items_db.removeItemByUid(uid)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -152,7 +155,7 @@ const items_model = {
     if (!("tags" in item) || item.tags.length == 0) {
       item.tags = ""
     } else {
-      item.tags = item.tages.trim().toLowerCase()
+      item.tags = item.tags.trim().toLowerCase().replace("\r", "").replace("\n", "")
     }
 
     return item

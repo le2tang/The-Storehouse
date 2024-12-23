@@ -67,37 +67,6 @@ var users_model = {
       }
     }
   },
-
-  async setupUsersTable() {
-    try {
-      await database.query("BEGIN")
-
-      await database.query(
-        `CREATE TABLE IF NOT EXISTS users (
-          user_id SERIAL NOT NULL,
-          username VARCHAR(32) PRIMARY KEY NOT NULL UNIQUE,
-          password_hash VARCHAR(72) NOT NULL,
-          name VARCHAR(32),
-          addr_type CHAR(3),
-          addr_details VARCHAR(64),
-          contact_type CHAR(3),
-          contact_details VARCHAR(32)
-        )`
-      )
-
-      await database.query(
-        `CREATE TABLE IF NOT EXISTS admins (
-          username VARCHAR (32) PRIMARY KEY NOT NULL UNIQUE,
-          password_hash VARCHAR(72) NOT NULL
-        )`
-      )
-      await database.query("COMMIT")
-    } catch (error) {
-      await database.query("ROLLBACK")
-    }
-  }
 }
-
-users_model.setupUsersTable()
 
 module.exports = users_model

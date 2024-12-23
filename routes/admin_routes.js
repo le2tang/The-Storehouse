@@ -1,12 +1,13 @@
 const app_config = require("../config/app_config.js")
 
+const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const orders_model = require("../models/orders_model.js")
 const users_model = require("../models/users_model.js")
 
-const router = require("express").Router()
+const bcrypt = require("bcrypt")
 
-const crypto = require("crypto")
+const router = require("express").Router()
 
 router.get(
   "/login",
@@ -30,25 +31,21 @@ router.post(
     // fetch user profile from database
     try {
       const query_users = await users_model.getAdminPasswordHashByUsername(username)
-
-      if (query_users == null) {
+      if (query_users.status == 400 && query_users.message == "USERNAME_NOT_FOUND") {
         return res.status(404).send("Username not found")
       }
-      else {
-        try {
-          const result = await bcrypt.compare(input_password, query_users.password_hash)
 
-          if (result) {
-            req.session.loggedin = true;
-            return res.redirect("/admin/carts")
-          }
-          else {
-            return res.status(400).send("Incorrect password")
-          }
+      try {
+        const result = await bcrypt.compare(input_password, query_users.result.password_hash)
+        if (!result) {
+          return res.status(400).send("Incorrect password")
         }
-        catch (error) {
-          return res.status(500).send(`bcrypt failed with error: ${error}`)
-        }
+
+        req.session.loggedin = true;
+        return res.redirect("/admin/carts")
+      }
+      catch (error) {
+        return res.status(500).send(`bcrypt failed with error: ${error}`)
       }
     }
     catch (error) {
@@ -72,134 +69,182 @@ router.get("/items", async function (req, res) {
   }
   else {
     try {
-      all_items = await items_model.getAll()
-      res.render("admin_items", { paths: app_config.paths, items: all_items })
-    } catch (err) {
-      res.status(500).send({ message: err })
+      const result = await items_model.getAll()
+      if (result.status != 200) {
+        res.status(result.status).send(result.message)
+      }
+
+      items = result.result
+      res.render(
+        "admin_items",
+        {
+          paths: app_config.paths,
+          items: items
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
     }
   }
 })
-router.post("/items", async function (req, res) {
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
+router.post(
+  "/items",
+  async function (req, res) {
+    if (!req.body) {
+      return res.status(400).send({ message: "Invalid request" })
+    }
 
-  if (!req.session.loggedin) {
-    res.status(401).send({ message: "Unauthorized" })
-  }
-  else {
-    if (!Array.isArray(req.body)) {
-      items = new Array(req.body)
+    if (!req.session.loggedin) {
+      return res.status(401).send({ message: "Unauthorized" })
     }
     else {
-      items = req.body
-    }
-
-    failed_items = []
-    for (item of items) {
-      try {
-        items_model.create(item)
-      } catch (err) {
-        failed_items.push(item)
+      if (!Array.isArray(req.body)) {
+        items = new Array(req.body)
+      } else {
+        items = req.body
       }
-    }
 
-    if (failed_items.length > 0) {
-      res.status(500).send({ message: failed_items })
+      failed_items = []
+      for (item of items) {
+        try {
+          items_model.create(item)
+        } catch (error) {
+          failed_items.push(item)
+        }
+      }
+
+      if (failed_items.length > 0) {
+        return res.status(500).send({ message: failed_items })
+      }
+      res.redirect("/admin/items")
     }
-    res.redirect("/admin/items")
   }
-})
+)
 
 router.get("/items/:uid", async function (req, res) {
   if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
+    return res.status(400).send({ message: "Invalid request" })
   }
-
   if (!req.session.loggedin) {
     res.redirect("/admin/login")
   }
   else {
-    var items = await items_model.getItemsByUids([req.params.uid])
-    if (items == null) {
-      res.status(404).send({ message: "Item not found" })
+    const result = await items_model.getItemsByUids([req.params.uid])
+    if (result.status != 200) {
+      return res.send(result.status).send(result.message)
     }
-    else {
-      res.render("admin_items_edit", {
+
+    res.render(
+      "admin_items_edit",
+      {
         paths: app_config.paths,
-        item: items[0]
-      })
-    }
+        item: result.result[0]
+      }
+    )
   }
 })
 router.post("/items/:uid", async function (req, res) {
   if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
+    return res.status(400).send({ message: "Invalid request" })
   }
-
   if (!req.session.loggedin) {
-    res.status(401).send({ message: "Unauthorized" })
+    return res.status(401).send({ message: "Unauthorized" })
   }
-  else {
-    req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
-    items_model.updateItemByUid(req.body)
 
-    res.redirect(`/admin/items/${req.params.uid}`)
-  }
+  req.body.tags = req.body.tags.toLowerCase().replace(", ", ",").split(",")
+  items_model.updateItemByUid(req.body)
+
+  res.redirect(`/admin/items/${req.params.uid}`)
 })
 
-router.get("/carts", async function (req, res) {
-  // Admin main page
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
-
-  if (!req.session.loggedin) {
-    res.redirect("/admin/login")
-  }
-  else {
-    var carts = await carts_model.getAll()
-    res.render("admin_carts", { paths: app_config.paths, carts: carts, summary: carts_model.getSummary(carts) })
-  }
-})
-router.post("/carts", async function (req, res) {
-  // New cart submitted from the marketplace
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
-
-  const stock_items = await items_model.getItemsByUids(Object.keys(req.body.items))
-  var out_of_stock = []
-  stock_items.forEach((item) => {
-    if (req.body.items[item.uid] > item.quantity) {
-      out_of_stock.push(item)
+router.get(
+  "/carts",
+  async function (req, res) {
+    // Admin main page
+    if (!req.body) {
+      return res.status(400).send({ message: "Invalid request" })
     }
-  })
-
-  if (out_of_stock.length > 0) {
-    out_of_stock_message = "Out of stock: "
-    for (item of out_of_stock) {
-      out_of_stock_message += `${item.itemname}(${item.description}), `
+    if (!req.session.loggedin) {
+      return res.redirect("/admin/login")
     }
-    res.status(400).send({ message: out_of_stock_message })
-    return
+
+    try {
+      const carts = await carts_model.getAll()
+      res.render(
+        "admin_carts",
+        {
+          paths: app_config.paths,
+          carts: carts,
+          summary: carts_model.getSummary(carts)
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
+    }
   }
+)
+router.post(
+  "/carts",
+  async function (req, res) {
+    // New cart submitted from the marketplace
+    if (!req.body) {
+      res.status(400).send({ message: "Invalid request" })
+    }
 
-  var carts = await carts_model.getCartsByUsername(req.body.username)
-  var index = 0
-  if (carts != null) {
-    index = carts.length
+    try {
+      var result = await users_model.createUser(
+        req.body.username,
+        req.body.password,
+        req.body.name,
+        req.body.address_type,
+        req.body.address_details,
+        req.body.contact_type,
+        req.body.contact_details
+      )
+      result = await users_model.getUserByUsername(req.body.username)
+      result = await orders_model.create(
+        {
+          user_id: req.body.user_id,
+          items: req.body.items
+        }
+      )
+
+      res.redirect("/")
+    } catch (error) {
+      return res.status(500).send({ message: `${error}` })
+    }
+
+    // const stock_items = await items_model.getItemsByUids(Object.keys(req.body.items))
+    // var out_of_stock = []
+    // stock_items.forEach((item) => {
+    //   if (req.body.items[item.uid] > item.quantity) {
+    //     out_of_stock.push(item)
+    //   }
+    // })
+
+    // if (out_of_stock.length > 0) {
+    //   out_of_stock_message = "Out of stock: "
+    //   for (item of out_of_stock) {
+    //     out_of_stock_message += `${item.itemname}(${item.description}), `
+    //   }
+    //   res.status(400).send({ message: out_of_stock_message })
+    //   return
+    // }
+
+    // var carts = await carts_model.getCartsByUsername(req.body.username)
+    // var index = 0
+    // if (carts != null) {
+    //   index = carts.length
+    // }
+
+    // req.body.index = index
+    // await carts_model.create(req.body)
+
+    // stock_items.forEach((item) => {
+    //   items_model.decrementQuantityByUid(req.body.items[item.uid], item.uid)
+    // })
   }
-
-  req.body.index = index
-  await carts_model.create(req.body)
-
-  stock_items.forEach((item) => {
-    items_model.decrementQuantityByUid(req.body.items[item.uid], item.uid)
-  })
-
-  res.redirect("/")
-})
+)
 
 router.get("/carts/:username", async function (req, res) {
   if (!req.session.loggedin) {

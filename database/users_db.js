@@ -132,6 +132,6 @@ var users_db = {
   }
 }
 
-users_model.setupUsersTable()
+users_db.setupUsersTable()
 
 module.exports = users_db

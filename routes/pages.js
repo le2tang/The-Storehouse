@@ -2,7 +2,6 @@ const app_config = require("../config/app_config.js")
 const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 
-const crypto = require("crypto")
 var router = require("express").Router()
 
 router.get(
@@ -10,8 +9,9 @@ router.get(
   async function (req, res) {
     const result = await items_model.getAll()
     if (result.status != 200) {
-      return res.send(result.status).send(result.message)
+      return res.status(result.status).send(result.message)
     }
+    console.log(result)
 
     res.render(
       "marketplace",
