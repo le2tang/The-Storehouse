@@ -11,8 +11,6 @@ router.get(
     if (result.status != 200) {
       return res.status(result.status).send(result.message)
     }
-    console.log(result)
-
     res.render(
       "marketplace",
       {

@@ -63,7 +63,6 @@ router.get("/items", async function (req, res) {
   if (!req.body) {
     res.status(400).send({ message: "Invalid request" })
   }
-
   if (!req.session.loggedin) {
     res.redirect("/admin/login")
   }
@@ -104,10 +103,13 @@ router.post(
         items = req.body
       }
 
+      success_items = []
       failed_items = []
       for (item of items) {
         try {
-          items_model.create(item)
+          success_items.push(
+            items_model.create(item)
+          )
         } catch (error) {
           failed_items.push(item)
         }
@@ -116,7 +118,13 @@ router.post(
       if (failed_items.length > 0) {
         return res.status(500).send({ message: failed_items })
       }
-      res.redirect("/admin/items")
+
+      try {
+        await success_items.all()
+        res.redirect("/admin/items")
+      } catch (error) {
+        return res.status(500).send({ message: failed_items })
+      }
     }
   }
 )

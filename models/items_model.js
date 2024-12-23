@@ -3,7 +3,7 @@ const items_db = require("../database/items_db.js")
 const items_model = {
   async create(item) {
     try {
-      item = this.clean_item(item)
+      item = this.cleanItem(item)
 
       const result = await items_db.create(item)
       if (result.status != "OK") {
@@ -144,6 +144,9 @@ const items_model = {
       item.itemname = ""
     } else {
       item.itemname = item.itemname.trim().toLowerCase()
+      if (item.itemname.length > 0) {
+        item.itemname[0] = item.itemname[0].toUpperCase()
+      }
     }
 
     if (!("description" in item) || item.description.length == 0) {
