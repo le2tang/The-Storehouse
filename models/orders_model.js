@@ -25,7 +25,7 @@ const orders_model = {
       }
       return {
         status: 201,
-        message: ""
+        result: result.result
       }
     } catch (error) {
       return {
@@ -38,9 +38,16 @@ const orders_model = {
   async getAllOrdersInfo() {
     try {
       const result = await orders_db.getAllOrdersInfo()
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        result: result
+        result: result.result
       }
     } catch (error) {
       return {
@@ -53,9 +60,16 @@ const orders_model = {
   async getOrderByOrderId(order_id) {
     try {
       const result = await orders_db.getOrderByOrderId(order_id)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        result: result
+        result: result.result
       }
     } catch (error) {
       return {
@@ -68,9 +82,16 @@ const orders_model = {
   async getOrdersByUserId(user_id) {
     try {
       const result = await orders_db.getOrdersByUserId(user_id)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        result: result
+        result: result.result
       }
     } catch (error) {
       return {
@@ -83,9 +104,16 @@ const orders_model = {
   async removeOrderByOrderId(order_id) {
     try {
       const result = await orders_db.removeOrderByOrderId(order_id)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        message: ""
+        result: result.result
       }
     } catch (error) {
       return {
@@ -105,9 +133,16 @@ const orders_model = {
 
     try {
       const result = await orders_db.updateStatusByOrderId(order_id, status)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        message: ""
+        result: result.result
       }
     } catch (error) {
       return {
@@ -120,9 +155,16 @@ const orders_model = {
   async getOrderItemsByOrderId(order_id) {
     try {
       const result = await orders_db.getOrderItemsByOrderId(order_id)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        result: result
+        result: result.result
       }
     } catch (error) {
       return {
@@ -135,9 +177,16 @@ const orders_model = {
   async updateOrderItemsQuantity(order_id, item_id, quantity) {
     try {
       const result = await orders_db.updateOrderItemsQuantity(order_id, item_id, quantity)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
       return {
         status: 200,
-        result: result
+        result: result.result
       }
     } catch (error) {
       return {

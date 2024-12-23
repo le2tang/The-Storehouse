@@ -6,6 +6,7 @@ const app_config = require("./config/app_config.js")
 const app = express()
 
 const pages_router = require("./routes/pages.js")
+const admin_routes = require("./routes/orders_routes.js")
 const orders_routes = require("./routes/orders_routes.js")
 
 app.set("view engine", "ejs")
@@ -20,6 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json())
 
 app.use("", pages_router)
+app.use("/admin", admin_routes)
 app.use("/orders", orders_routes)
 app.use((req, res) => {
 	res.status(404).send("Page not found")
