@@ -1,6 +1,6 @@
 const items_db = require("../database/items_db.js")
 
-const items_db = {
+const items_model = {
   async create(item) {
     try {
       const result = await items_db.create(item)
@@ -158,4 +158,5 @@ const items_db = {
     return item
   }
 }
-}
+
+module.exports = items_model

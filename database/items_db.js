@@ -1,9 +1,7 @@
 const database = require("../database/database.js")
 
-var items_db = {
+const items_db = {
   async create(item) {
-    item = this.cleanItem(item)
-
     try {
       var result = await database.query(
         `UPDATE items SET quantity=quantity+${item.quantity} WHERE itemname='${item.itemname}' AND description='${item.description}';
@@ -75,7 +73,6 @@ var items_db = {
   },
 
   async updateItemByUid(item) {
-    item = this.cleanItem(item)
     try {
       var result = await database.query(
         `UPDATE items SET itemname=$1, quantity=$2, description=$3, tags=$4 WHERE uid=$5`,
@@ -104,29 +101,23 @@ var items_db = {
     }
   },
 
-  cleanItem(item) {
-    if (!("itemname" in item)) {
-      item.itemname = ""
-    } else {
-      item.itemname = item.itemname.trim().toLowerCase()
+  async setupItemsTable() {
+    try {
+      const result = await database.query(
+        `CREATE TABLE IF NOT EXISTS items (
+          uid SERIAL PRIMARY KEY NOT NULL,
+          itemname VARCHAR(64) NOT NULL,
+          quantity INT NOT NULL CONSTRAINT nonnegative_quantity CHECK (quantity >= 0),
+          description VARCHAR(64),
+          tags VARCHAR(64)
+        )`
+      )
+    } catch (error) {
+      console.log("ERROR setting up ITEMS table", error)
     }
-
-    if (!("description" in item) || item.description.length == 0) {
-      item.description = ""
-    } else {
-      item.description = item.description.trim().toLowerCase()
-    }
-
-    if (!("tags" in item) || item.tags.length == 0) {
-      item.tags = ""
-    } else {
-      item.tags = item.tages.trim().toLowerCase()
-    }
-
-    return item
   }
 }
 
-items_model.setupItemsTable()
+items_db.setupItemsTable()
 
-module.exports = items_model
+module.exports = items_db

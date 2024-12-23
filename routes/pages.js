@@ -1,8 +1,6 @@
 const app_config = require("../config/app_config.js")
 const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
-const users_model = require("../models/users_model.js")
-const skates_model = require("../models/skates_model.js")
 
 const crypto = require("crypto")
 var router = require("express").Router()
@@ -10,11 +8,16 @@ var router = require("express").Router()
 router.get(
   "/",
   async function (req, res) {
+    const result = await items_model.getAll()
+    if (result.status != 200) {
+      return res.send(result.status).send(result.message)
+    }
+
     res.render(
       "marketplace",
       {
         paths: app_config.paths,
-        items: await items_model.getAll()
+        items: result.result
       }
     )
   }
