@@ -26,6 +26,12 @@
       <p>
         <%= carts[0].contact_type%>: <%= carts[0].contact_details%>
       </p>
+      <form action="/admin/user/password/reset" method="post">
+        <label>Reset Password</label>
+        <input type="hidden" name="user_id" value="<%= carts[0].user_id%>">
+        <input type="text" placeholder="New Password" name="password" required="required">
+        <input type="submit" value="Update">
+      </form>
       <% }%>
   </div>
   <div id="cart-view-cart-list" class="cart-view-cart-list">

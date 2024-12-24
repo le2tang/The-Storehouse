@@ -1,3 +1,4 @@
+const { updatePasswordHashByUserId } = require("../models/users_model.js")
 const database = require("./database.js")
 
 var users_db = {
@@ -52,6 +53,30 @@ var users_db = {
     }
   },
 
+  async getUserByUserId(user_id) {
+    try {
+      const result = await database.query(
+        `SELECT * FROM users WHERE user_id=${user_id}`,
+      )
+      if (result.rowCount == 0) {
+        return {
+          status: "ERROR",
+          message: "USER_ID_NOT_FOUND"
+        }
+      }
+
+      return {
+        status: "OK",
+        result: result.rows[0]
+      }
+    } catch (error) {
+      return {
+        status: "ERROR",
+        message: error
+      }
+    }
+  },
+
   async getPasswordHashByUsername(username) {
     try {
       const result = await database.query(
@@ -62,6 +87,30 @@ var users_db = {
         return {
           status: "ERROR",
           message: "USERNAME_NOT_FOUND"
+        }
+      }
+
+      return {
+        status: "OK",
+        result: result.rows[0]
+      }
+    } catch (error) {
+      return {
+        status: "ERROR",
+        message: error
+      }
+    }
+  },
+
+  async updatePasswordHashByUserId(user_id, password_hash) {
+    try {
+      const result = await database.query(
+        `UPDATE users SET password_hash='${password_hash}' WHERE user_id=${user_id}`,
+      )
+      if (result.rowCount == 0) {
+        return {
+          status: "ERROR",
+          message: "USER_ID_NOT_FOUND"
         }
       }
 

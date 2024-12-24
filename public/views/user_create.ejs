@@ -20,9 +20,14 @@
       <h1>Create New Account</h1>
       <p>The information you provide is used to arrange a dropoff time and location</p>
       <form action="/user/create" method="post">
-        <input type="text" name="username" placeholder="Username" required="required">
-        <input type="password" name="password" placeholder="Password" required="required">
+        <label>Login Info</label>
         <input type="text" name="name" placeholder="Name" required="required">
+        <input type="text" name="username" placeholder="Login Username" required="required">
+        <input type="password" id="password-text" name="password" placeholder="Password" required="required">
+        <div>
+          <label for="show-password-checkbox">Show Password</label>
+          <input type="checkbox" id="show-password-checkbox">
+        </div>
 
         <label>Where will we deliver to?</label>
         <select id="address-type-select" name="address_type" required="required">
@@ -42,7 +47,7 @@
         </select>
         <input type="text" id="contact-details-text" name="contact_details" placeholder="@user_id" required="required">
 
-        <input type="submit" id="submit" value="Login">
+        <input type="submit" id="submit" value="Create">
       </form>
     </div>
   </div>

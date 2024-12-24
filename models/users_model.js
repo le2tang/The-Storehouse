@@ -47,6 +47,50 @@ var users_model = {
     }
   },
 
+  async getUserByUserId(user_id) {
+    try {
+      const result = await users_db.getUserByUserId(user_id)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
+      return {
+        status: 200,
+        result: result.result
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: error
+      }
+    }
+  },
+
+  async updatePasswordHashByUserId(user_id, password_hash) {
+    try {
+      const result = await users_db.updatePasswordHashByUserId(user_id, password_hash)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
+      return {
+        status: 200,
+        result: result.result
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: error
+      }
+    }
+  },
+
   async getAdminPasswordHashByUsername(username) {
     try {
       const result = await users_db.getAdminPasswordHashByUsername(username)

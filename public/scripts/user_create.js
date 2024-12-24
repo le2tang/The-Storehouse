@@ -50,6 +50,23 @@ function initCallbacks() {
       }
     }
   )
+
+  const show_password_checkbox = document.getElementById(
+    "show-password-checkbox",
+  )
+  const password_text = document.getElementById(
+    "password-text",
+  )
+  show_password_checkbox.addEventListener(
+    "click",
+    function () {
+      if (password_text.type == "password") {
+        password_text.type = "text"
+      } else {
+        password_text.type = "password"
+      }
+    }
+  )
 }
 
 if (document.readyState == "loading") {

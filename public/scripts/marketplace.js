@@ -29,7 +29,14 @@ function addItemModal(uid, itemname, max_quantity) {
   }
 
   confirm_modal.onclick = () => {
-    desired_quantity = document.getElementById("add-to-cart-quantity").value
+    var desired_quantity = document.getElementById("add-to-cart-quantity").value
+    if (desired_quantity < 1) {
+      desired_quantity = 1
+      alert("The item quantity cannot be less than 1")
+    } else if (desired_quantity > max_quantity) {
+      desired_quantity = max_quantity
+      alert(`The item quantity cannot be more than ${max_quantity}`)
+    }
     addItemToCart(uid, itemname, desired_quantity)
   }
 }

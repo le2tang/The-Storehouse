@@ -12,12 +12,10 @@ const router = require("express").Router()
 router.get(
   "/login",
   function (req, res) {
-    if (!req.session.loggedin) {
-      res.render("admin_login", { paths: app_config.paths })
+    if (!req.session.admin_loggedin) {
+      return res.render("admin_login", { paths: app_config.paths })
     }
-    else {
-      res.redirect("/admin/carts")
-    }
+    res.redirect("/admin/carts")
   }
 )
 router.post(
@@ -271,6 +269,42 @@ router.post(
       res.redirect(`/admin/carts/${req.params.user_id}`)
     } catch (error) {
       res.status(500).send({ message: error })
+    }
+  }
+)
+
+router.post(
+  "/user/password/reset",
+  async function (req, res) {
+    if (!req.body) {
+      return res.status(400).send({ message: "Invalid request" })
+    }
+    if (!req.session.admin_loggedin) {
+      return res.status(401).send({ message: "Unauthorized" })
+    }
+
+    try {
+      const num_salt_rounds = 10
+
+      const salt = await bcrypt.genSalt(num_salt_rounds)
+      const hash = await bcrypt.hash(req.body.password, salt)
+
+      await users_model.updatePasswordHashByUserId(
+        req.body.user_id, hash,
+      ).then((result) => {
+        if (result.status != 201) {
+          return res.status(result.status).send(result.message)
+        }
+
+        return res.status(200).redirect(`/admin/carts/${req.params.user_id}`)
+      }).catch((error) => {
+        console.log(error)
+        return res.status(500).send(`Writing to database failed with error ${error}`)
+      })
+    }
+    catch (error) {
+      console.log(error)
+      return res.status(500).send(`bcrypt failed with error: ${error}`)
     }
   }
 )
