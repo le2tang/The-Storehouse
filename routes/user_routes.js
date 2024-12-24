@@ -1,4 +1,5 @@
 const app_config = require("../config/app_config.js")
+const orders_model = require("../models/orders_model.js")
 const users_model = require("../models/users_model.js")
 
 const bcrypt = require("bcrypt")
@@ -62,6 +63,33 @@ router.post(
       }
     } catch (error) {
       res.status(500).send(error)
+    }
+  }
+)
+
+router.get(
+  "/view",
+  async function (req, res) {
+    if (!req.session.loggedin || !req.session.user_id) {
+      return res.render("login", { paths: app_config.paths })
+    }
+
+    try {
+      var result = await orders_model.getOrdersByUserId(req.session.user_id)
+      if (result.status != 200) {
+        return res.status(result.status).send({ message: result.message })
+      }
+
+      carts = result.result
+      res.render(
+        "user_carts_view",
+        {
+          paths: app_config.paths,
+          carts: carts
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
     }
   }
 )
