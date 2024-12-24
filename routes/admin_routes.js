@@ -13,7 +13,7 @@ router.get(
   "/login",
   function (req, res) {
     if (!req.session.loggedin) {
-      res.render("login", { paths: app_config.paths })
+      res.render("admin_login", { paths: app_config.paths })
     }
     else {
       res.redirect("/admin/carts")
@@ -56,7 +56,7 @@ router.post(
 
 router.get("/logout", function (req, res) {
   req.session.loggedin = false
-  res.redirect("/")
+  res.redirect("/marketplace")
 })
 
 router.get("/items", async function (req, res) {
@@ -198,26 +198,19 @@ router.post(
     if (!req.body) {
       res.status(400).send({ message: "Invalid request" })
     }
+    if (!req.session.loggedin || !req.session.user_id) {
+      res.status(401).send("Session Expired: Please Login Again")
+    }
 
     try {
-      var result = await users_model.createUser(
-        req.body.username,
-        req.body.password,
-        req.body.name,
-        req.body.address_type,
-        req.body.address_details,
-        req.body.contact_type,
-        req.body.contact_details
-      )
-      result = await users_model.getUserByUsername(req.body.username)
       result = await orders_model.create(
         {
-          user_id: req.body.user_id,
+          user_id: req.session.user_id,
           items: req.body.items
         }
       )
 
-      res.redirect("/")
+      res.redirect("/marketplace")
     } catch (error) {
       return res.status(500).send({ message: `${error}` })
     }

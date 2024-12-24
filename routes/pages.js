@@ -4,8 +4,12 @@ const items_model = require("../models/items_model.js")
 
 var router = require("express").Router()
 
+router.get("/", (req, res) => {
+  res.redirect("/users/login")
+})
+
 router.get(
-  "/",
+  "/marketplace",
   async function (req, res) {
     const result = await items_model.getAll()
     if (result.status != 200) {
@@ -20,28 +24,5 @@ router.get(
     )
   }
 )
-
-router.get("/user/:username", async function (req, res) {
-  if (!req.body) {
-    res.status(400).send({ message: "Invalid request" })
-  }
-
-  carts_model.getCartsByUsername(req.params.username).then(
-    function (carts) {
-      carts.forEach(function (cart) {
-        cart.address = null
-        cart.arrival = null
-        cart.contact_method = null
-        cart.contact_address = null
-        cart.status = null
-      })
-      res.render("user_carts_view", { paths: app_config.paths, carts: carts })
-    }
-  ).catch(
-    function (err) {
-      res.status(500).send({ message: err })
-    }
-  )
-})
 
 module.exports = router
