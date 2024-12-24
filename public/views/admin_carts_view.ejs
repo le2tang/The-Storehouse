@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -8,24 +9,31 @@
   <link rel="stylesheet" href="/styles/css/colors.css">
   <link rel="stylesheet" href="/styles/css/admin_carts_view.css">
 </head>
+
 <body>
   <header>
     <%- include("../partials/navbar") %>
-    <%- include("../partials/admin_navbar") %>
+      <%- include("../partials/admin_navbar") %>
   </header>
   <div id="cart-view-header" class="cart-view-header">
-    <% if (carts.length > 0) {%>
-      <h1><%= carts[0].username%></h1>
-      <h2><%= carts[0].address%></h2>
-      <p><%= carts[0].contact_method%>: <%= carts[0].contact_address%></p>
-    <% }%>
+    <% if (carts.length> 0) {%>
+      <h1>
+        <%= carts[0].name%>
+      </h1>
+      <h2>
+        <%= carts[0].address_type%>: <%= carts[0].contact_details%>
+      </h2>
+      <p>
+        <%= carts[0].contact_type%>: <%= carts[0].contact_details%>
+      </p>
+      <% }%>
   </div>
   <div id="cart-view-cart-list" class="cart-view-cart-list">
     <% for (var c of carts) {%>
       <div class="cart-card">
-        <h2>Cart <%= c.index%>: <%= c.status%></h2>
-        <form action="/admin/carts/<%= c.username%>" method="post">
-          <input type="hidden" name="index" value="<%= c.index%>">
+        <h2>Status: <%= c.status%>
+        </h2>
+        <form action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>" method="post">
           <select name="status" required="required">
             <option value=0>Pending</option>
             <option value=1>Packed</option>
@@ -35,14 +43,24 @@
         </form>
         <% for (var i of c.items) {%>
           <div id="item-card-<%= i.uid%>" class="item-card">
-            <span><%= i.itemname%></span>
-            <span><%= i.quantity%></span>
-            <span><%= i.description%></span>
+            <span>
+              <%= i.itemname%>
+            </span>
+            <span>
+              <%= i.quantity%>
+            </span>
+            <span>
+              <%= i.description%>
+            </span>
+            <span>
+              <%= i.tags%>
+            </span>
             <input type="checkbox">
           </div>
-        <% }%>
+          <% }%>
       </div>
-    <% }%>
+      <% }%>
   </div>
 </body>
+
 </html>

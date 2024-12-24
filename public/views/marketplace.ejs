@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -9,6 +10,7 @@
   <link rel="stylesheet" href="/styles/css/marketplace.css">
   <script src="/scripts/marketplace.js"></script>
 </head>
+
 <body>
   <header>
     <%- include("../partials/navbar") %>
@@ -19,33 +21,28 @@
       <div id="marketplace-item-list" class="marketplace-item-list">
         <input type="text" id="marketplace-item-search" placeholder="Search...">
         <% for (var i of items) {%>
-          <% if (i.quantity > 0) {%>
+          <% if (i.quantity> 0) {%>
             <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>')">
-              <span class="item-card-itemname"><%= i.itemname%></span>
-              <span class="item-card-quantity"><%= i.quantity%></span>
-              <span class="item-card-description"><%= i.description%></span>
+              <span class="item-card-itemname">
+                <%= i.itemname%>
+              </span>
+              <span class="item-card-quantity">
+                <%= i.quantity%>
+              </span>
+              <span class="item-card-description">
+                <%= i.description%>
+              </span>
             </div>
-          <% }%>
-        <% }%>
-        <div id="marketplace-search-empty" class="warning-label" hidden>No items</div>
+            <% }%>
+              <% }%>
+                <div id="marketplace-search-empty" class="warning-label" hidden>No items</div>
       </div>
     </div>
-  
+
     <div class="marketplace-cart-container">
       <div id="marketplace-cart-info" class="marketplace-cart-info">
         <h1>Reservation</h1>
         <div id="cart-contact-info" class="cart-contact-info">
-          <input id="cart-contact-username" type="text" name="username" placeholder="Name" required="required" maxlength=20>
-          <input id="cart-contact-address" type="text" name="address" placeholder="Address" maxlength=20>
-          <label>When do You Arrive?</label>
-          <input id="cart-contact-arrival" type="date" name="arrival">
-          <select id="cart-contact-method-select" name="contact-method" required="required">
-            <option value="wha">WhatsApp</option>
-            <option value="txt">Text</option>
-            <option value="fcb">Facebook</option>
-            <option value="eml">Email</option>
-          </select>
-          <input id="cart-contact-profile" type="text" name="contact-address" placeholder="Phone Number" required="required" maxlength=20>
           <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
         </div>
       </div>
@@ -55,7 +52,7 @@
       </div>
     </div>
   </div>
-  
+
   <div id="add-to-cart-background" class="modal-background">
     <div id="add-to-cart-modal" class="modal">
       <span id="add-to-cart-close" class="modal-close">&times;</span>
@@ -65,4 +62,5 @@
     </div>
   </div>
 </body>
+
 </html>

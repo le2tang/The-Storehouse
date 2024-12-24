@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Skates</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="/styles/css/colors.css">
+  <link rel="stylesheet" href="/styles/css/skates_reservations.css">
+  <script src="/scripts/skates_reservations.js"></script>
+</head>
+
+<body>
+  <header>
+    <%- include("../partials/navbar") %>
+  </header>
+  <div class="container">
+    <div class="marketplace-item-list-container">
+      <h1>Skates</h1>
+      <div>Info</div>
+
+      <label for="skate-start-date">From</label>
+      <input type="date" id="skate-start-date" name="start_date">
+
+      <label for="skate-end-date">To</label>
+      <input type="date" id="skate-end-date" name="end_date">
+
+      <label for="skate-tag-num">Skate Tag #</label>
+      <input type="number" id="skate-tag-num" name="tag_num">
+
+      <label for="skate-size-type">Size</label>
+      <select id="skate-size-type" name="size_type">
+        <option value="usm">US Men's</option>
+        <option value="usw">US Women's</option>
+        <option value="eum">EU Men's</option>
+        <option value="euw">EU Women's</option>
+      </select>
+
+      <select type="number" id="skate-size" name="skate_size">
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+      </select>
+
+      <button>Submit</button>
+    </div>
+  </div>
+</body>
+
+</html>

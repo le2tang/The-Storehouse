@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -9,18 +10,22 @@
   <link rel="stylesheet" href="/styles/css/admin_carts.css">
   <script src="/scripts/admin_carts.js"></script>
 </head>
+
 <body>
   <header>
     <%- include("../partials/navbar") %>
-    <%- include("../partials/admin_navbar") %>
+      <%- include("../partials/admin_navbar") %>
   </header>
   <div class="container">
     <h1>Manage Carts</h1>
     <div id="admin-summary-container" class="admin-summary-container">
       <div id="admin-summary-text" class="admin-summary-text">
-        <h2>Pending: <%= summary.pending%></h2>
-        <h2>Packed: <%= summary.packed%></h2>
-        <h2>Total: <%= summary.total%></h2>  
+        <h2>Pending: <%= summary.pending%>
+        </h2>
+        <h2>Packed: <%= summary.packed%>
+        </h2>
+        <h2>Total: <%= summary.total%>
+        </h2>
       </div>
       <div id="admin-summary-selectors" class="admin-summary-selectors">
         <span>Filter by: </span>
@@ -33,16 +38,25 @@
     </div>
     <div id="admin-cart-list" class="admin-cart-list">
       <% for (var c of carts) {%>
-        <a class="cart-card" href="/admin/carts/<%= c.username%>">
-          <h2><%= c.username%>: Cart <%= c.index%></h2>
-          <% if (c.status == "Pending") {%>
-            <p class="pending" ><%= c.status%></p>
-          <% } else if (c.status == "Packed") {%>
-            <p class="packed" ><%= c.status%></p>
-          <% }%>
+        <a class="cart-card" href="/admin/carts/<%= c.user_id%>">
+          <h2>
+            <%= c.name%>:
+          </h2>
+          <% if (c.status=="Pending" ) {%>
+            <p class="pending">
+              <%= c.status%>
+            </p>
+            <% } else if (c.status=="Packed" ) {%>
+              <p class="packed">
+                <%= c.status%>
+              </p>
+              <% } else {%>
+                <p class="delivered"></p>
+                <% }%>
         </a>
-      <% }%>
+        <% }%>
     </div>
   </div>
 </body>
+
 </html>

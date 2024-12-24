@@ -1,18 +1,28 @@
-const items_db = require("../database/items_db.js")
+const orders_db = require("../database/orders_db.js")
 
-const items_model = {
-  async create(item) {
+const orders_model = {
+  async create(order) {
+    if (!("user_id" in order)) {
+      return {
+        status: 400,
+        message: "Missing USER_ID"
+      }
+    }
+    if (!("items" in order)) {
+      return {
+        status: 400,
+        message: "Missing ITEMS"
+      }
+    }
+
     try {
-      item = this.cleanItem(item)
-
-      const result = await items_db.create(item)
+      const result = await orders_db.create(order)
       if (result.status != "OK") {
         return {
           status: 400,
           message: result.message
         }
       }
-
       return {
         status: 201,
         result: result.result
@@ -25,9 +35,9 @@ const items_model = {
     }
   },
 
-  async getAll() {
+  async getAllOrdersInfo() {
     try {
-      const result = await items_db.getAll()
+      const result = await orders_db.getAllOrdersInfo()
       if (result.status != "OK") {
         return {
           status: 400,
@@ -47,9 +57,9 @@ const items_model = {
     }
   },
 
-  async getRemaining() {
+  async getOrderByOrderId(order_id) {
     try {
-      const result = await items_db.getRemaining()
+      const result = await orders_db.getOrderByOrderId(order_id)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -69,9 +79,9 @@ const items_model = {
     }
   },
 
-  async removeAll() {
+  async getOrdersByUserId(user_id) {
     try {
-      const result = await items_db.removeAll()
+      const result = await orders_db.getOrdersByUserId(user_id)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -91,11 +101,9 @@ const items_model = {
     }
   },
 
-  async getItemsByUids(uids) {
+  async removeOrderByOrderId(order_id) {
     try {
-      const result = await items_db.getItemsByUids(
-        uids
-      )
+      const result = await orders_db.removeOrderByOrderId(order_id)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -115,11 +123,16 @@ const items_model = {
     }
   },
 
-  async updateItemByUid(item) {
-    try {
-      item = this.cleanItem(item)
+  async updateStatusByOrderId(order_id, status) {
+    if (status < 0 || status >= Object.keys(orders_db.status_text).length) {
+      return {
+        status: 400,
+        message: "Invalid STATUS"
+      }
+    }
 
-      const result = await items_db.updateItemByUid(item)
+    try {
+      const result = await orders_db.updateStatusByOrderId(order_id, status)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -139,9 +152,9 @@ const items_model = {
     }
   },
 
-  async removeItemByUid(uid) {
+  async getOrderItemsByOrderId(order_id) {
     try {
-      const result = await items_db.removeItemByUid(uid)
+      const result = await orders_db.getOrderItemsByOrderId(order_id)
       if (result.status != "OK") {
         return {
           status: 400,
@@ -161,30 +174,52 @@ const items_model = {
     }
   },
 
-  cleanItem(item) {
-    if (!("itemname" in item)) {
-      item.itemname = ""
-    } else {
-      item.itemname = item.itemname.trim().toLowerCase()
-      if (item.itemname.length > 0) {
-        item.itemname[0] = item.itemname[0].toUpperCase()
+  async updateOrderItemsQuantity(order_id, item_id, quantity) {
+    try {
+      const result = await orders_db.updateOrderItemsQuantity(order_id, item_id, quantity)
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
+      return {
+        status: 200,
+        result: result.result
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: error
       }
     }
+  },
 
-    if (!("description" in item) || item.description.length == 0) {
-      item.description = ""
-    } else {
-      item.description = item.description.trim().toLowerCase()
+  getSummary(orders) {
+    var counts = {
+      "pending": 0,
+      "packed": 0,
+      "delivered": 0,
+      "total": 0
     }
 
-    if (!("tags" in item) || item.tags.length == 0) {
-      item.tags = ""
-    } else {
-      item.tags = item.tags.trim().toLowerCase().replace("\r", "").replace("\n", "")
+    for (var order of orders) {
+      switch (order.status) {
+        case "Pending":
+          counts.pending += 1
+          break
+        case "Packed":
+          counts.packed += 1
+          break
+        case "Delivered":
+          counts.delivered += 1
+          break
+      }
+      counts.total += 1
     }
-
-    return item
+    return counts
   }
 }
 
-module.exports = items_model
+module.exports = orders_model

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+  <title>Create User</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel="stylesheet" href="/styles/css/colors.css">
+  <link rel="stylesheet" href="/styles/css/login.css">
+  <script src="/scripts/user_create.js"></script>
+</head>
+
+<body>
+  <header>
+    <%- include("../partials/navbar") %>
+  </header>
+  <div class="container">
+    <div class="login-container">
+      <h1>Create New Account</h1>
+      <p>The information you provide is used to arrange a dropoff time and location</p>
+      <form action="/user/create" method="post">
+        <input type="text" name="username" placeholder="Username" required="required">
+        <input type="password" name="password" placeholder="Password" required="required">
+        <input type="text" name="name" placeholder="Name" required="required">
+
+        <label>Where will we deliver to?</label>
+        <select id="address-type-select" name="address_type" required="required">
+          <option value="clv">Columbia Lake Village (CLV)</option>
+          <option value="uwp">University of Waterloo Place (UWP)</option>
+          <option value="abb">Off-Campus (Air BnB)</option>
+        </select>
+        <input type="text" id="address-details-text" name="address_details" placeholder="Unit Number"
+          required="required">
+
+        <label>How can we contact you?</label>
+        <select id="contact-type-select" name="contact_type" required="required">
+          <option value="tgm">Telegram</option>
+          <option value="wha">WhatsApp</option>
+          <option value="txt">Text</option>
+          <option value="eml">Email</option>
+        </select>
+        <input type="text" id="contact-details-text" name="contact_details" placeholder="@user_id" required="required">
+
+        <input type="submit" id="submit" value="Login">
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
