@@ -8,6 +8,8 @@ router.get("/", (req, res) => {
   res.redirect("/user/login")
 })
 
+router.get("/favicon.ico", (req, res) => { res.status(204) })
+
 router.get(
   "/marketplace",
   async function (req, res) {
