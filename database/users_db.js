@@ -108,9 +108,9 @@ var users_db = {
 
       await database.query(
         `CREATE TABLE IF NOT EXISTS users (
-          user_id SERIAL NOT NULL,
-          username VARCHAR(32) PRIMARY KEY NOT NULL UNIQUE,
-          password_hash VARCHAR(72) NOT NULL,
+          user_id SERIAL PRIMARY KEY NOT NULL,
+          username VARCHAR(32) NOT NULL UNIQUE,
+          password_hash VARCHAR(60) NOT NULL,
           name VARCHAR(32) NOT NULL,
           address_type CHAR(3),
           address_details VARCHAR(64),
@@ -122,7 +122,7 @@ var users_db = {
       await database.query(
         `CREATE TABLE IF NOT EXISTS admins (
           username VARCHAR (32) PRIMARY KEY NOT NULL UNIQUE,
-          password_hash VARCHAR(72) NOT NULL
+          password_hash VARCHAR(60) NOT NULL
         )`
       )
       await database.query("COMMIT")

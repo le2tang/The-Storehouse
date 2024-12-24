@@ -47,6 +47,28 @@ const items_model = {
     }
   },
 
+  async getRemaining() {
+    try {
+      const result = await items_db.getRemaining()
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
+      return {
+        status: 200,
+        result: result.result
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: error
+      }
+    }
+  },
+
   async removeAll() {
     try {
       const result = await items_db.removeAll()

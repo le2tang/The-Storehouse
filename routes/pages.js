@@ -5,13 +5,13 @@ const items_model = require("../models/items_model.js")
 var router = require("express").Router()
 
 router.get("/", (req, res) => {
-  res.redirect("/users/login")
+  res.redirect("/user/login")
 })
 
 router.get(
   "/marketplace",
   async function (req, res) {
-    const result = await items_model.getAll()
+    const result = await items_model.getRemaining()
     if (result.status != 200) {
       return res.status(result.status).send(result.message)
     }

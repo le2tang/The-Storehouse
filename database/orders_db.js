@@ -2,9 +2,9 @@ const database = require("./database.js")
 
 var orders_db = {
   async create(order) {
-    const curr_time = new Date().toISOString().split('T')[0]
-
     try {
+      const curr_time = new Date().toISOString()
+
       await database.query("BEGIN");
 
       var result = await database.query(
@@ -15,7 +15,7 @@ var orders_db = {
         await database.query("ROLLBACK")
         return {
           status: "ERROR",
-          error: "ORDER_NOT_CREATED"
+          message: "ORDER_NOT_CREATED"
         }
       }
 
@@ -27,7 +27,7 @@ var orders_db = {
         await database.query("ROLLBACK")
         return {
           status: "ERROR",
-          error: "ORDER_ID_NOT_FOUND"
+          message: "ORDER_ID_NOT_FOUND"
         }
       }
       order_id = result.rows[0].max
@@ -60,11 +60,12 @@ var orders_db = {
         result: confirmed_items
       }
     } catch (error) {
+      console.log(error)
       await database.query("ROLLBACK")
 
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -72,7 +73,11 @@ var orders_db = {
   async getAllOrdersInfo() {
     try {
       const result = await database.query(
-        `SELECT * FROM orders ORDER BY user_id, status ASC, modified DESC`
+        `SELECT o.order_id, o.user_id, u.name, u.address_type, u.address_details, u.contact_type, u.contact_details, o.status, o.created, o.modified
+        FROM orders o
+        LEFT JOIN users u
+        ON o.user_id=u.user_id
+        ORDER BY o.modified DESC, o.user_id, o.status ASC`
       )
       orders_info = result.rows
 
@@ -87,7 +92,7 @@ var orders_db = {
     } catch (error) {
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -95,13 +100,18 @@ var orders_db = {
   async getOrderByOrderId(order_id) {
     try {
       var result = await database.query(
-        `SELECT * FROM orders WHERE order_id=$1 ORDER BY modified DESC`,
+        `SELECT o.order_id, o.user_id, u.name, u.address_type, u.address_details, u.contact_type, u.contact_details, o.status, o.created, o.modified
+        FROM orders o
+        LEFT JOIN users u
+        ON o.user_id=u.user_id
+        WHERE order_id=$1
+        ORDER BY modified DESC`,
         [order_id]
       )
       if (result.rowCount == 0) {
         return {
           status: "ERROR",
-          error: "ORDER_ID_NOT_FOUND"
+          message: "ORDER_ID_NOT_FOUND"
         }
       }
       order = result.rows[0]
@@ -113,13 +123,12 @@ var orders_db = {
         FROM order_items oit
         LEFT JOIN items it
         ON oit.item_id = it.uid
-        WHERE oit.order_id=$1`,
-        [order_id]
+        WHERE oit.order_id=${order_id}`,
       )
       if (result.rowCount == 0) {
         return {
           status: "ERROR",
-          error: "ITEM_NOT_FOUND"
+          message: "ITEM_NOT_FOUND"
         }
       }
       order.items = result.rows
@@ -131,7 +140,7 @@ var orders_db = {
     } catch (error) {
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -139,13 +148,17 @@ var orders_db = {
   async getOrdersByUserId(user_id) {
     try {
       var result = await database.query(
-        `SELECT * FROM orders WHERE user_id=$1 ORDER BY modified DESC`,
-        [user_id]
+        `SELECT o.order_id, o.user_id, u.name, u.address_type, u.address_details, u.contact_type, u.contact_details, o.status, o.created, o.modified
+        FROM orders o
+        LEFT JOIN users u
+        ON o.user_id=u.user_id
+        WHERE o.user_id=${user_id}
+        ORDER BY o.modified DESC, o.user_id, o.status ASC`
       )
       if (result.rowCount == 0) {
         return {
           status: "ERROR",
-          error: "USER_ID_NOT_FOUND"
+          message: "USER_ID_NOT_FOUND"
         }
       }
       orders_info = result.rows
@@ -166,7 +179,7 @@ var orders_db = {
       if (result.rowCount == 0) {
         return {
           status: "ERROR",
-          error: "ITEM_NOT_FOUND"
+          message: "ITEM_NOT_FOUND"
         }
       }
       orders_items = result.rows
@@ -177,7 +190,7 @@ var orders_db = {
         order.items = orders_items.filter(
           (item) => { return item.order_id == order.order_id }
         )
-        order.items = orders_items.map(
+        order.items = order.items.map(
           (item) => {
             return {
               uid: item.uid,
@@ -198,7 +211,7 @@ var orders_db = {
     } catch (error) {
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -220,7 +233,7 @@ var orders_db = {
         await database.query("ROLLBACK")
         return {
           status: "ERROR",
-          error: "ORDER_ID_NOT_FOUND"
+          message: "ORDER_ID_NOT_FOUND"
         }
       }
 
@@ -234,14 +247,15 @@ var orders_db = {
 
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
 
   async updateStatusByOrderId(order_id, status) {
-    const curr_time = new Date().toISOString().split('T')[0]
     try {
+      const curr_time = new Date().toISOString()
+
       const result = await database.query(
         `UPDATE orders SET status=$1, modified=$2 WHERE order_id=$3`,
         [status, curr_time, order_id]
@@ -253,7 +267,7 @@ var orders_db = {
     } catch (error) {
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -273,14 +287,15 @@ var orders_db = {
     } catch (error) {
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
 
   async updateOrderItemQuantity(order_id, item_id, quantity) {
-    const curr_time = new Date().toISOString().split('T')[0]
     try {
+      const curr_time = new Date().toISOString()
+
       await database.query("BEGIN")
 
       var result = await database.query(
@@ -302,8 +317,8 @@ var orders_db = {
       )
 
       result = await database.query(
-        `UPDATE orders SET status=$1 WHERE order_id=$1`,
-        [order_id]
+        `UPDATE orders SET modified=$1 WHERE order_id=$2`,
+        [curr_time, order_id]
       )
 
       await database.query("COMMIT")
@@ -317,45 +332,41 @@ var orders_db = {
 
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
 
   async setupOrdersTable() {
     try {
-      const result = await database.query(
+      await database.query("BEGIN")
+
+      var result = await database.query(
         `CREATE TABLE IF NOT EXISTS orders (
-          order_id SERIAL PRIMARY KEY NOT NULL,
-          user_id SERIAL REFERENCES users(uid),
+          order_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+          user_id SERIAL REFERENCES users(user_id),
           status INT,
           created TIMESTAMP,
           modified TIMESTAMP
         )`
       )
-      return { status: "OK" }
-    } catch (error) {
-      return {
-        status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
-      }
-    }
-  },
 
-  async setupOrderItemsTable() {
-    try {
-      const result = await database.query(
+      result = await database.query(
         `CREATE TABLE IF NOT EXISTS order_items (
           order_id SERIAL REFERENCES orders(order_id),
           item_id SERIAL REFERENCES items(uid),
           quantity INT NOT NULL CHECK (quantity >= 0)
         )`
       )
+
+      await database.query("COMMIT")
       return { status: "OK" }
     } catch (error) {
+      console.log("Could not setup table", error)
+      await database.query("ROLLBACK")
       return {
         status: "ERROR",
-        error: error.code in orders_db.error_codes ? orders_db.error_codes[error.code] : error.code
+        message: error
       }
     }
   },
@@ -372,6 +383,5 @@ var orders_db = {
 }
 
 orders_db.setupOrdersTable()
-orders_db.setupOrderItemsTable()
 
 module.exports = orders_db

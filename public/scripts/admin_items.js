@@ -22,12 +22,25 @@ function initCallbacks() {
     const [file] = file_input.files
     if (file && file.type == "text/csv") {
       const reader = new FileReader()
-      reader.addEventListener("load", () => {
+      reader.addEventListener("load", async () => {
         new_items = parse_items(reader.result)
-        fetch("/admin/items", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(new_items)
+        await fetch(
+          "/admin/items",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(new_items)
+          }
+        ).then(
+          (response) => {
+            if (response.ok) {
+              alert("File successfully uploaded")
+            } else {
+              alert("Failed to upload file")
+            }
+          }
+        ).catch((response) => {
+          alert("Something went wrong uploading the file")
         })
       })
       reader.readAsText(file)

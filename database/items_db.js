@@ -46,6 +46,26 @@ const items_db = {
     }
   },
 
+  async getRemaining() {
+    try {
+      const result = await database.query(
+        `SELECT items.uid, items.itemname, items.quantity-COALESCE(SUM(order_items.quantity), 0) as quantity, items.description, items.tags
+        FROM items LEFT JOIN order_items ON (items.uid=order_items.item_id)
+        GROUP BY items.uid
+        ORDER BY tags ASC, itemname ASC, description ASC`
+      )
+      return {
+        status: "OK",
+        result: result.rows
+      }
+    } catch (error) {
+      return {
+        status: "ERROR",
+        message: error
+      }
+    }
+  },
+
   async removeAll() {
     try {
       const result = await database.query(
@@ -66,7 +86,7 @@ const items_db = {
   async getItemsByUids(uids) {
     try {
       var result = await database.query(
-        `SELECT * FROM items WHERE uid IN ('${uids.join("','")}')  SORT BY tags ASC, itemname ASC, description ASC`
+        `SELECT * FROM items WHERE uid IN ('${uids.join("','")}')  ORDER BY tags ASC, itemname ASC, description ASC`
       )
       return {
         status: "OK",
@@ -86,7 +106,10 @@ const items_db = {
         `UPDATE items SET itemname=$1, quantity=$2, description=$3, tags=$4 WHERE uid=$5`,
         [item.itemname, item.quantity, item.description, item.tags, item.uid]
       )
-      return result
+      return {
+        status: "OK",
+        result: result.rows
+      }
     } catch (error) {
       return {
         status: "ERROR",

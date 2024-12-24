@@ -1,15 +1,14 @@
 function initCallbacks() {
   const selector = document.getElementById("admin-summary-filter")
   selector.addEventListener("change", () => {
-    console.log(selector.value)
     filterCarts(selector.value)
   })
 }
 
 function filterCarts(select_filter) {
   const carts_list = document.getElementById("admin-cart-list")
-  const carts = [... carts_list.children]
- 
+  const carts = [...carts_list.children]
+
   carts.forEach((cart) => {
     cart.style.display = "none"
   })

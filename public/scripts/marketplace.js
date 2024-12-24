@@ -1,18 +1,9 @@
-var cart = {
-  username: null,
-  address: null,
-  arrival: null,
-  contact_method: null,
-  contact_address: null,
-  items: {},
-  status: 0,
 
-  isReady() {
-    return (this.username != null) &&
-           (this.contact_method != null) &&
-           (this.contact_address != null) &&
-           Object.values(this.items).length > 0
-  }
+
+var items = {}
+
+function isReady() {
+  return Object.values(items).length > 0
 }
 
 function addItemModal(uid, itemname, max_quantity) {
@@ -45,43 +36,45 @@ function addItemModal(uid, itemname, max_quantity) {
 
 function addItemToCart(uid, itemname, desired_quantity) {
   desired_quantity = Number(desired_quantity)
-  if (uid in cart.items) {
-    cart.items[uid] += desired_quantity
+  if (uid in items) {
+    items[uid] += desired_quantity
 
     var cart_item = document.getElementById(`cart-item-${uid}`)
-    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = cart.items[uid]
+    cart_item.getElementsByClassName("cart-item-quantity")[0].innerHTML = items[uid]
   }
   else {
-    cart.items[uid] = desired_quantity
+    items[uid] = desired_quantity
 
-    var cart_item = document.createElement("div")  
+    var cart_item = document.createElement("div")
     cart_item.classList.add("cart-item")
     cart_item.id = `cart-item-${uid}`
-    
+
     var cart_item_contents = `
       <span class="cart-item-uid" hidden>${uid}</span>
-      <span class="cart-item-quantity">${cart.items[uid]}</span>
+      <span class="cart-item-quantity">${items[uid]}</span>
       <span class="cart-item-itemname">${itemname}</span>
       <button class="cart-item-remove">&times;</button>`
     cart_item.innerHTML = cart_item_contents
     document.getElementById("marketplace-cart-list").append(cart_item)
 
-    cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {           
+    cart_item.getElementsByClassName("cart-item-remove")[0].onclick = (event) => {
       event.target.parentElement.remove()
 
       var stock_item = document.getElementById(`item-card-${uid}`)
       var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
-      const new_stock_quantity = Number(stock_item_quantity.innerHTML) + cart.items[uid]
+      const new_stock_quantity = Number(stock_item_quantity.innerHTML) + items[uid]
       stock_item_quantity.innerHTML = new_stock_quantity
       if (new_stock_quantity > 0) {
         stock_item.style.display = ""
       }
 
-      delete cart.items[uid]
+      delete items[uid]
+
+      document.getElementById("cart-submit").disabled = !isReady()
     }
   }
 
-  document.getElementById("cart-empty-warning").hidden = Object.keys(cart.items).length > 0
+  document.getElementById("cart-empty-warning").hidden = Object.keys(items).length > 0
 
   var stock_item = document.getElementById(`item-card-${uid}`)
   var stock_item_quantity = stock_item.getElementsByClassName("item-card-quantity")[0]
@@ -92,6 +85,8 @@ function addItemToCart(uid, itemname, desired_quantity) {
   }
 
   document.getElementById("add-to-cart-background").style.display = "none"
+
+  document.getElementById("cart-submit").disabled = !isReady()
 }
 
 function tryAddItem(uid, itemname) {
@@ -107,7 +102,7 @@ function tryAddItem(uid, itemname) {
 }
 
 function clearCart() {
-  cart.items = {}
+  items = {}
 
   let cart_list = document.getElementById("marketplace-cart-list");
   while (cart_list.childElementCount > 0) {
@@ -130,108 +125,67 @@ function cartSubmitFail(response) {
 }
 
 async function submitCart() {
-  if (!cart.isReady()) {
-    return
+  if (!isReady()) {
+    alert(`Sorry, you cannot submit an empty cart`)
   }
-
-  await fetch("/admin/carts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cart)
-  })
-  .then(response => {
-    if (response.ok) {
-      cartSubmit()
-    }
-    return Promise.reject(response)
-  })
-  .catch((response) => {
-    cartSubmitFail(response)
-  });
+  else {
+    await fetch(
+      "/admin/carts",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(items)
+      }
+    )
+      .then(
+        (response) => {
+          if (response.ok) {
+            cartSubmit()
+          }
+          else {
+            cartSubmitFail(response)
+          }
+        }
+      )
+      .catch(
+        (response) => {
+          cartSubmitFail(response)
+        }
+      );
+  }
 }
 
 function initCallbacks() {
   const search_bar = document.getElementById("marketplace-item-search")
-  search_bar.addEventListener("input", () => {
-    const search_pattern = search_bar.value.toLowerCase()
+  search_bar.addEventListener(
+    "input",
+    () => {
+      const search_pattern = search_bar.value.toLowerCase()
 
-    const items_list = document.getElementById("marketplace-item-list")
-    const items = [... items_list.getElementsByClassName("item-card")]
+      const items_list = document.getElementById("marketplace-item-list")
+      const items = [...items_list.getElementsByClassName("item-card")]
 
-    var num_matches = 0
-    items.forEach((item) => {
-      const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.toLowerCase()
-      if (itemname.startsWith(search_pattern)) {
-        item.style.display = ""
-        ++num_matches
+      var num_matches = 0
+      items.forEach((item) => {
+        const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.toLowerCase()
+        if (itemname.startsWith(search_pattern)) {
+          item.style.display = ""
+          ++num_matches
+        }
+        else {
+          item.style.display = "none"
+        }
+      })
+
+      const search_empty = document.getElementById("marketplace-search-empty")
+      if (num_matches > 0) {
+        search_empty.hidden = true
       }
       else {
-        item.style.display = "none"
+        search_empty.hidden = false
       }
-    })
-
-    const search_empty = document.getElementById("marketplace-search-empty")
-    if (num_matches > 0) {
-      search_empty.hidden = true
     }
-    else {
-      search_empty.hidden = false
-    }
-  })
-
-  var cart_contact_username = document.getElementById("cart-contact-username")
-  var cart_contact_address = document.getElementById("cart-contact-address")
-  var cart_contact_arrival = document.getElementById("cart-contact-arrival")
-  var cart_contact_method = document.getElementById("cart-contact-method-select")
-  var cart_contact_profile = document.getElementById("cart-contact-profile")
-
-  function validateInput(val) {
-    if (val && val.length > 0) {
-      return val;
-    }
-    else {
-      return null;
-    }
-  }
-
-  cart_contact_username.oninput = () => {
-    cart.username = validateInput(cart_contact_username.value);
-    document.getElementById("cart-submit").disabled = !cart.isReady(cart);
-  }
-  cart_contact_address.oninput = () => {
-    cart.address = validateInput(cart_contact_address.value);
-    document.getElementById("cart-submit").disabled = !cart.isReady();
-  }
-  cart_contact_arrival.oninput = () => {
-    cart.arrival = validateInput(cart_contact_arrival.value);
-    document.getElementById("cart-submit").disabled = !cart.isReady();
-  }
-  cart_contact_method.oninput = () => {
-    if (cart_contact_method.value == "fcb") {
-      cart_contact_profile.placeholder = "Facebook Profile Name"
-    }
-    else if (cart_contact_method.value == "wha") {
-      cart_contact_profile.placeholder = "Phone Number"
-    }
-    else if (cart_contact_method.value == "txt") {
-      cart_contact_profile.placeholder = "Text Number"
-    }
-    else if (cart_contact_method.value == "eml") {
-      cart_contact_profile.placeholder = "Email Address"
-    }
-
-    cart.contact_method = validateInput(cart_contact_method.value);
-    
-    cart_contact_address.value = "";
-    cart.contact_address = null;
-
-    document.getElementById("cart-submit").disabled = !cart.isReady();
-  }
-  cart_contact_profile.oninput = () => {
-    cart.contact_method = validateInput(cart_contact_method.value)
-    cart.contact_address = validateInput(cart_contact_profile.value)
-    document.getElementById("cart-submit").disabled = !cart.isReady();
-  }
+  )
 }
 
 if (document.readyState == "loading") {

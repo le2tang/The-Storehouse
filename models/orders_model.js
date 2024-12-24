@@ -20,7 +20,7 @@ const orders_model = {
       if (result.status != "OK") {
         return {
           status: 400,
-          message: result.error
+          message: result.message
         }
       }
       return {
@@ -194,6 +194,31 @@ const orders_model = {
         message: error
       }
     }
+  },
+
+  getSummary(orders) {
+    var counts = {
+      "pending": 0,
+      "packed": 0,
+      "delivered": 0,
+      "total": 0
+    }
+
+    for (var order of orders) {
+      switch (order.status) {
+        case "Pending":
+          counts.pending += 1
+          break
+        case "Packed":
+          counts.packed += 1
+          break
+        case "Delivered":
+          counts.delivered += 1
+          break
+      }
+      counts.total += 1
+    }
+    return counts
   }
 }
 

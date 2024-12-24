@@ -38,8 +38,19 @@ router.post(
         const salt = await bcrypt.genSalt(num_salt_rounds)
         const hash = await bcrypt.hash(req.body.password, salt)
 
-        users_model.createUser(username, hash).then((result) => {
-          return res.redirect("/marketplace")
+        users_model.createUser(
+          username, hash,
+          req.body.name,
+          req.body.address_type,
+          req.body.address_details,
+          req.body.contact_type,
+          req.body.contact_details
+        ).then((result) => {
+          if (result.status != 201) {
+            return res.status(result.status).send(result.message)
+          }
+
+          return res.redirect("/user/login")
         }).catch((error) => {
           console.log(error)
           return res.status(500).send(`Writing to database failed with error ${error}`)
@@ -104,6 +115,10 @@ router.post(
   }
 )
 
+router.get("/logout", function (req, res) {
+  req.session.loggedin = false
+  res.redirect("/")
+})
 
 
 module.exports = router
