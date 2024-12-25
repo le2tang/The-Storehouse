@@ -32,7 +32,11 @@ const items_db = {
   async getAll() {
     try {
       const result = await database.query(
-        `SELECT * FROM items ORDER BY tags ASC, itemname ASC, description ASC`
+        `SELECT items.*, items.quantity-COALESCE(SUM(order_items.quantity), 0) AS inventory, COALESCE(SUM(order_items.quantity), 0) AS reserved
+        FROM items LEFT JOIN order_items
+        ON (items.uid=order_items.item_id)
+        GROUP BY items.uid
+        ORDER BY tags ASC, itemname ASC, description ASC`
       )
       return {
         status: "OK",
