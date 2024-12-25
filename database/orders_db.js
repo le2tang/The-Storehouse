@@ -77,7 +77,7 @@ var orders_db = {
         FROM orders o
         LEFT JOIN users u
         ON o.user_id=u.user_id
-        ORDER BY o.modified DESC, o.user_id, o.status ASC`
+        ORDER BY o.modified ASC, o.user_id, o.status ASC`
       )
       orders_info = result.rows
 
