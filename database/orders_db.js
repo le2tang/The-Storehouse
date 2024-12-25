@@ -105,7 +105,7 @@ var orders_db = {
         LEFT JOIN users u
         ON o.user_id=u.user_id
         WHERE order_id=$1
-        ORDER BY modified DESC`,
+        ORDER BY modified ASC`,
         [order_id]
       )
       if (result.rowCount == 0) {
@@ -153,7 +153,7 @@ var orders_db = {
         LEFT JOIN users u
         ON o.user_id=u.user_id
         WHERE o.user_id=${user_id}
-        ORDER BY o.modified DESC, o.user_id, o.status ASC`
+        ORDER BY o.modified ASC, o.user_id, o.status ASC`
       )
       if (result.rowCount == 0) {
         return {
