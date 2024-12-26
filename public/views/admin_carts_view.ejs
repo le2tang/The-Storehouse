@@ -39,6 +39,10 @@
       <div class="cart-card">
         <h2>Status: <%= c.status%>
         </h2>
+        <h3>Created: <%= new Date(c.created).toDateString()%>, <%= new Date(c.created).getHours()%>:<%= new
+                Date(c.created).getMinutes()%>
+        </h3>
+
         <form action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>" method="post">
           <select name="status" required="required">
             <option value=0>Pending</option>
