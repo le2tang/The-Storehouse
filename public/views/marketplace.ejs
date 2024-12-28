@@ -24,9 +24,15 @@
       <h1>Marketplace</h1>
       <div id="marketplace-item-list" class="marketplace-item-list">
         <input type="text" id="marketplace-item-search" placeholder="Search...">
+        <label for="marketplace-tags-select">Filter By: </label>
+        <select id="marketplace-tags-select">
+          <option value="all">All</option>
+        </select>
         <% for (var i of items) {%>
           <% if (i.quantity> 0) {%>
-            <div id="item-card-<%= i.uid%>" class="item-card" onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>')">
+            <div id="item-card-<%= i.uid%>" class="item-card" itemname="<%= i.itemname%>" quantity="<%= i.quantity%>"
+              description="<%= i.description%>" tags="<%= i.tags%>"
+              onclick="tryAddItem('<%= i.uid%>', '<%= i.itemname%>')">
               <span class="item-card-itemname">
                 <%= i.itemname%>
               </span>
@@ -35,6 +41,9 @@
               </span>
               <span class="item-card-description">
                 <%= i.description%>
+              </span>
+              <span class="item-card-tags" display="none">
+                <%= i.tags%>
               </span>
             </div>
             <% }%>

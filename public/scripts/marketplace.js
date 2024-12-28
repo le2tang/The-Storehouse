@@ -162,20 +162,108 @@ async function submitCart() {
   }
 }
 
+function levenshteinDistance(x, y) {
+  prev_distance = Array(y.length + 1).fill(0)
+  next_distance = Array(y.length + 1).fill(0)
+
+  prev_distance = prev_distance.map(
+    (val, idx) => {
+      return idx
+    }
+  )
+
+  for (var idx = 0; idx < x.length; ++idx) {
+    next_distance[0] = idx + 1
+
+    for (var jdx = 0; jdx < y.length; ++jdx) {
+      delete_cost = prev_distance[jdx + 1] + 1
+      insert_cost = next_distance[jdx] + 1
+
+      if (x[idx] == y[jdx]) {
+        sub_cost = prev_distance[jdx]
+      } else {
+        sub_cost = prev_distance[jdx] + 1
+      }
+
+      next_distance[jdx + 1] = Math.min(delete_cost, insert_cost, sub_cost)
+    }
+
+    prev_distance = next_distance.map(
+      (val, idx) => {
+        return val
+      }
+    )
+  }
+
+  return prev_distance[y.length]
+}
+
 function initCallbacks() {
+  const items_list = document.getElementById("marketplace-item-list")
+  const items = [...items_list.getElementsByClassName("item-card")]
+
   const search_bar = document.getElementById("marketplace-item-search")
   search_bar.addEventListener(
     "input",
     () => {
       const search_pattern = search_bar.value.toLowerCase()
 
-      const items_list = document.getElementById("marketplace-item-list")
-      const items = [...items_list.getElementsByClassName("item-card")]
+      var num_matches = 0
+      items.forEach((item) => {
+        const itemname = item.getAttribute("itemname").toLowerCase()
+
+        const match_percentage = search_pattern.length > 0 ? 1 - (levenshteinDistance(search_pattern, itemname.slice(0, search_pattern.length)) / search_pattern.length) : 1
+        if (match_percentage > 0.75) {
+          item.style.display = ""
+          ++num_matches
+        }
+        else {
+          item.style.display = "none"
+        }
+      })
+
+      const search_empty = document.getElementById("marketplace-search-empty")
+      if (num_matches > 0) {
+        search_empty.hidden = true
+      }
+      else {
+        search_empty.hidden = false
+      }
+    }
+  )
+
+  const all_items_tags = items.map(
+    (item) => {
+      return item.getAttribute("tags").toLowerCase()
+    }
+  )
+  const items_tags = all_items_tags.filter(
+    (tag, idx, arr) => {
+      return arr.indexOf(tag) === idx
+    }
+  )
+
+  const tags_select = document.getElementById("marketplace-tags-select")
+  items_tags.forEach(
+    (tag, idx) => {
+      if (tag.length > 0) {
+        const option = document.createElement("option")
+        option.value = tag
+        option.text = tag.charAt(0).toUpperCase() + tag.slice(1)
+
+        tags_select.add(option)
+      }
+    }
+  )
+  tags_select.addEventListener(
+    "change",
+    () => {
+      const filter_tag = tags_select.value.toLowerCase()
 
       var num_matches = 0
       items.forEach((item) => {
-        const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.toLowerCase()
-        if (itemname.startsWith(search_pattern)) {
+        item_tag = item.getAttribute("tags")
+        if (item_tag == filter_tag || filter_tag == "all") {
           item.style.display = ""
           ++num_matches
         }
