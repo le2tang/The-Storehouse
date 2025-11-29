@@ -1,4 +1,3 @@
-const { updatePasswordHashByUserId } = require("../models/users_model.js")
 const database = require("./database.js")
 
 var users_db = {

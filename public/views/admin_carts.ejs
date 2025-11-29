@@ -13,11 +13,12 @@
 
 <body>
   <header>
-    <%- include("../partials/navbar") %>
-      <%- include("../partials/admin_navbar") %>
+    <%- include("../partials/admin_navbar") %>
   </header>
   <div class="container">
-    <h1>Manage Carts</h1>
+    <div id="admin-carts-header" class="admin-carts-header">
+      <h1>Manage Carts</h1>
+    </div>
     <div id="admin-summary-container" class="admin-summary-container">
       <div id="admin-summary-text" class="admin-summary-text">
         <h2>Pending: <%= summary.pending%>
@@ -28,32 +29,46 @@
         </h2>
       </div>
       <div id="admin-summary-selectors" class="admin-summary-selectors">
-        <span>Filter by: </span>
-        <select id="admin-summary-filter">
+        <span>Filter by Status: </span>
+        <select id="admin-summary-filter-status">
           <option value="all">All</option>
           <option value="pending">Pending</option>
           <option value="packed">Packed</option>
+          <option value="delivered">Delivered</option>
+        </select>
+        <span>Filter by Location: </span>
+        <select id="admin-summary-filter-location">
+          <option value="all">All</option>
+          <option value="clv">CLV</option>
+          <option value="uwp">UWP</option>
+          <option value="wcri">WCRI</option>
+          <option value="abb">Other</option>
         </select>
       </div>
     </div>
     <div id="admin-cart-list" class="admin-cart-list">
       <% for (var c of carts) {%>
-        <a class="cart-card" href="/admin/carts/<%= c.user_id%>">
-          <h2>
-            <%= c.name%>:
-          </h2>
-          <% if (c.status=="Pending" ) {%>
-            <p class="pending">
-              <%= c.status%>
-            </p>
-            <% } else if (c.status=="Packed" ) {%>
-              <p class="packed">
+        <div id="cart-card-<%= c.order_id%>" class="cart-card" order_id="<%= c.order_id%>" user_id="<%= c.user_id%>"
+          address_type="<%= c.address_type%>" address_details="<%= c.address_details%>"
+          contact_type="<%= c.contact_type%>" contact_details="<%= c.contact_details%>" status="<%= c.status%>"
+          created="<%= c.created%>">
+          <a class="cart-card" href="/admin/carts/<%= c.user_id%>">
+            <h2>
+              <%= c.name%>
+            </h2>
+            <% if (c.status=="Pending" ) {%>
+              <p class="pending">
                 <%= c.status%>
               </p>
-              <% } else {%>
-                <p class="delivered"></p>
-                <% }%>
-        </a>
+              <% } else if (c.status=="Packed" ) {%>
+                <p class="packed">
+                  <%= c.status%>
+                </p>
+                <% } else {%>
+                  <p class="delivered"></p>
+                  <% }%>
+          </a>
+        </div>
         <% }%>
     </div>
   </div>

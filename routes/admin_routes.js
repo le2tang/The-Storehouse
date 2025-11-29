@@ -261,9 +261,20 @@ router.post(
     }
 
     try {
-      const result = await orders_model.updateStatusByOrderId(req.params.order_id, req.body.status)
-      if (result.status != 200) {
-        return res.status(result.status).send({ message: result.message })
+      const updated_status = req.body.status
+      if (updated_status == 3) {
+        const result = await orders_model.removeOrderByOrderId(req.params.order_id)
+
+        if (result.status != 200) {
+          return res.status(result.status).send({ message: result.message })
+        }
+      }
+      else {
+        const result = await orders_model.updateStatusByOrderId(req.params.order_id, updated_status)
+
+        if (result.status != 200) {
+          return res.status(result.status).send({ message: result.message })
+        }
       }
 
       res.redirect(`/admin/carts/${req.params.user_id}`)

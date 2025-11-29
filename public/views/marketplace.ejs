@@ -14,20 +14,22 @@
 <body>
   <header>
     <%- include("../partials/navbar") %>
-
-      <h1>Logged in as <%= name%> (<%= username%>)</a>
-            <a class="navbar-link-button" href="/user/view">View Orders</a>
-            <a class="navbar-link-button" href="/user/logout">Logout</a>
   </header>
   <div class="container">
     <div class="marketplace-item-list-container">
-      <h1>Marketplace</h1>
+      <div class="marketplace-item-list-header">
+        <h1 class="marketplace-item-list-title">Marketplace</h1>
+        <div id="marketplace-item-filter-container" class="marketplace-item-filter-container">
+          <input type="text" id="marketplace-item-search" placeholder="Search...">
+          <div class="marketplace-item-filter-tags">
+            <label for="marketplace-tags-select">Filter By: </label>
+            <select id="marketplace-tags-select">
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div id="marketplace-item-list" class="marketplace-item-list">
-        <input type="text" id="marketplace-item-search" placeholder="Search...">
-        <label for="marketplace-tags-select">Filter By: </label>
-        <select id="marketplace-tags-select">
-          <option value="all">All</option>
-        </select>
         <% for (var i of items) {%>
           <% if (i.quantity> 0) {%>
             <div id="item-card-<%= i.uid%>" class="item-card" itemname="<%= i.itemname%>" quantity="<%= i.quantity%>"
@@ -55,8 +57,8 @@
     <div class="marketplace-cart-container">
       <div id="marketplace-cart-info" class="marketplace-cart-info">
         <h1>Reservation</h1>
-        <div id="cart-contact-info" class="cart-contact-info">
-          <button id="cart-submit" onclick="submitCart()" disabled>Submit</button>
+        <div id="cart-submit-container" class="marketplace-cart-submit-container">
+          <button id="cart-submit" disabled>Submit</button>
         </div>
       </div>
       <div class="marketplace-cart-list-container">

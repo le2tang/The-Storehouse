@@ -35,9 +35,10 @@ const items_model = {
         }
       }
 
+      items = result.result.map((item) => this.formatItem(item))
       return {
         status: 200,
-        result: result.result
+        result: items
       }
     } catch (error) {
       return {
@@ -57,11 +58,13 @@ const items_model = {
         }
       }
 
+      items = result.result.map((item) => this.formatItem(item))
       return {
         status: 200,
-        result: result.result
+        result: items
       }
     } catch (error) {
+      console.log(error)
       return {
         status: 500,
         message: error
@@ -103,9 +106,10 @@ const items_model = {
         }
       }
 
+      items = result.result.map((item) => this.formatItem(item))
       return {
         status: 200,
-        result: result.result
+        result: items
       }
     } catch (error) {
       return {
@@ -127,9 +131,10 @@ const items_model = {
         }
       }
 
+      items = result.result.map((item) => this.formatItem(item))
       return {
         status: 200,
-        result: result.result
+        result: items
       }
     } catch (error) {
       return {
@@ -182,6 +187,36 @@ const items_model = {
     } else {
       item.tags = item.tags.trim().toLowerCase().replace("\r", "").replace("\n", "")
     }
+
+    return item
+  },
+
+  toTitleCase(text) {
+    function wordTitleCase(word) {
+      firstLetterIdx = Array.from(word).findIndex((letter, idx) => letter.match(/[a-z]/i))
+      if (firstLetterIdx < 0) {
+        return word
+      }
+
+      word = String(word)
+
+      prefix = word.slice(0, firstLetterIdx)
+      firstLetter = word.charAt(firstLetterIdx).toUpperCase()
+      suffix = word.slice(firstLetterIdx + 1)
+
+      return prefix + firstLetter + suffix
+    }
+
+    words = text.split(" ")
+    words = words.map((word, idx) => (idx == 0) || (word.length > 2) ? wordTitleCase(word) : word)
+
+    return words.join(" ")
+  },
+
+  formatItem(item) {
+    item.itemname = this.toTitleCase(item.itemname)
+    item.description = this.toTitleCase(item.description)
+    item.tags = item.tags.split(",")
 
     return item
   }

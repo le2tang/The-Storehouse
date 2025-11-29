@@ -7,41 +7,62 @@
   <title>View Cart</title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
   <link rel="stylesheet" href="/styles/css/colors.css">
-  <link rel="stylesheet" href="/styles/css/admin_carts_view.css">
+  <link rel="stylesheet" href="/styles/css/user_carts_view.css">
+  <script>
+    function initCallbacks() {
+      const navbar_list = document.getElementById("navbar-links")
+      user_links = `
+        <a class="navbar-link-button" href="/user/view">View Orders</a>
+        <a class="navbar-link-button" href="/user/logout">Logout</a>`
+      navbar_list.innerHTML += user_links
+    }
+
+    if (document.readyState == "loading") {
+      document.addEventListener("DOMContentLoaded", initCallbacks);
+    }
+    else {
+      initCallbacks();
+    }
+  </script>
 </head>
 
 <body>
   <header>
     <%- include("../partials/navbar") %>
   </header>
-  <div id="cart-view-header" class="cart-view-header">
-    <h1>
-      <%= carts[0].name%>
-    </h1>
-  </div>
-  <div id="cart-view-cart-list" class="cart-view-cart-list">
-    <% for (var c of carts) {%>
-      <div class="cart-card">
-        <h1>Status: <%= c.status%>
-        </h1>
-        <h2>Created: <%= new Date(c.created).toDateString()%>
-        </h2>
-        <% for (var i of c.items) {%>
-          <div id="item-card-<%= i.uid%>" class="item-card">
-            <span>
-              <%= i.itemname%>
-            </span>
-            <span>
-              <%= i.quantity%>
-            </span>
-            <span>
-              <%= i.description%>
-            </span>
+  <div class="container">
+    <div id="cart-view-header" class="cart-view-header">
+      <h1>
+        <%= carts[0].name%>
+      </h1>
+    </div>
+    <div id="cart-view-cart-list" class="cart-view-cart-list">
+      <% for (var c of carts) {%>
+        <div class="cart-card">
+          <div class="cart-card-info">
+            <h1>Created: <%= new Date(c.created).toDateString()%>
+            </h1>
+            <h1>Status: <%= c.status%>
+            </h1>
           </div>
-          <% }%>
-      </div>
-      <% }%>
-  </div>
+          <div class="cart-card-items-list">
+            <% for (var i of c.items) {%>
+              <div id="item-card-<%= i.uid%>" class="item-card">
+                <span>
+                  <%= i.itemname%>
+                </span>
+                <span>
+                  <%= i.quantity%>
+                </span>
+                <span>
+                  <%= i.description%>
+                </span>
+              </div>
+              <% }%>
+          </div>
+        </div>
+        <% }%>
+    </div>
 </body>
 
 </html>

@@ -12,64 +12,68 @@
 
 <body>
   <header>
-    <%- include("../partials/navbar") %>
-      <%- include("../partials/admin_navbar") %>
+    <%- include("../partials/admin_navbar") %>
   </header>
-  <div id="cart-view-header" class="cart-view-header">
-    <% if (carts.length> 0) {%>
-      <h1>
-        <%= carts[0].name%>
-      </h1>
-      <h2>
-        <%= carts[0].address_type%>: <%= carts[0].address_details%>
-      </h2>
-      <p>
-        <%= carts[0].contact_type%>: <%= carts[0].contact_details%>
-      </p>
-      <form action="/admin/user/password/reset" method="post">
-        <label>Reset Password</label>
-        <input type="hidden" name="user_id" value="<%= carts[0].user_id%>">
-        <input type="text" placeholder="New Password" name="password" required="required">
-        <input type="submit" value="Update">
-      </form>
-      <% }%>
-  </div>
-  <div id="cart-view-cart-list" class="cart-view-cart-list">
-    <% for (var c of carts) {%>
-      <div class="cart-card">
-        <h2>Status: <%= c.status%>
+  <div class="container">
+    <div id="admin-carts-view-header" class="admin-carts-view-header">
+      <% if (carts.length> 0) {%>
+        <h1>
+          <%= carts[0].name%>
+        </h1>
+        <h2>
+          <%= carts[0].address_type%>: <%= carts[0].address_details%>
         </h2>
-        <h3>Created: <%= new Date(c.created).toDateString()%>, <%= new Date(c.created).getHours()%>:<%= new
-                Date(c.created).getMinutes()%>
-        </h3>
-
-        <form action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>" method="post">
-          <select name="status" required="required">
-            <option value=0>Pending</option>
-            <option value=1>Packed</option>
-            <option value=2>Delivered</option>
-          </select>
+        <h2>
+          <%= carts[0].contact_type%>: <%= carts[0].contact_details%>
+        </h2>
+        <form action="/admin/user/password/reset" method="post">
+          <label>Reset Password</label>
+          <input type="hidden" name="user_id" value="<%= carts[0].user_id%>">
+          <input type="text" placeholder="New Password" name="password" required="required">
           <input type="submit" value="Update">
         </form>
-        <% for (var i of c.items) {%>
-          <div id="item-card-<%= i.uid%>" class="item-card">
-            <span>
-              <%= i.itemname%>
-            </span>
-            <span>
-              <%= i.quantity%>
-            </span>
-            <span>
-              <%= i.description%>
-            </span>
-            <span>
-              <%= i.tags%>
-            </span>
-            <input type="checkbox">
+        <% }%>
+    </div>
+    <div id="admin-carts-view-list" class="admin-carts-view-list">
+      <% for (var c of carts) {%>
+        <div class="cart-card">
+          <div class="cart-card-header">
+            <h2>Created: <%= new Date(c.created).toDateString()%>, <%= new Date(c.created).getHours()%>:<%= new
+                    Date(c.created).getMinutes()%>:<%= new Date(c.created).getSeconds()%>
+            </h2>
+            <form action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>" method="post">
+              <select name="status" required="required">
+                <option value=0>Pending</option>
+                <option value=1>Packed</option>
+                <option value=2>Delivered</option>
+                <option value=3>Deleted</option>
+              </select>
+              <input type="submit" value="Update">
+            </form>
           </div>
-          <% }%>
-      </div>
-      <% }%>
+          <div class="cart-card-item-list">
+            <% for (var i of c.items) {%>
+              <div id="cart-cart-item-<%= i.uid%>" class="cart-card-item" item_id="<%= i.uid%>"
+                quantity="<%= i.quantity%>" description="<%= i.description%>">
+                <span>
+                  <%= i.quantity%>
+                </span>
+                <span>
+                  <%= i.itemname%>
+                </span>
+                <span>
+                  <%= i.description%>
+                </span>
+                <span>
+                  <%= i.tags%>
+                </span>
+                <input type="checkbox">
+              </div>
+              <% }%>
+          </div>
+        </div>
+        <% }%>
+    </div>
   </div>
 </body>
 

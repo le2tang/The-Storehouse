@@ -131,11 +131,16 @@ function cartSubmitFail(response) {
   })
 }
 
-async function submitCart() {
+async function submitCart(event) {
+  console.log("Cart submitted", event)
   if (!isReady()) {
     alert(`Sorry, you cannot submit an empty cart`)
   }
   else {
+    submit_btn = document.getElementById("cart-submit")
+    submit_btn.disabled = true
+    submit_btn.removeEventListener("click", submitCart)
+
     await fetch(
       "/admin/carts",
       {
@@ -157,6 +162,12 @@ async function submitCart() {
       .catch(
         (response) => {
           cartSubmitFail(response)
+        }
+      )
+      .finally(
+        () => {
+          submit_btn.disabled = false
+          submit_btn.addEventListener("click", submitCart)
         }
       );
   }
@@ -199,6 +210,12 @@ function levenshteinDistance(x, y) {
 }
 
 function initCallbacks() {
+  const navbar_list = document.getElementById("navbar-links")
+  user_links = `
+    <a class="navbar-link-button" href="/user/view">View Orders</a>
+    <a class="navbar-link-button" href="/user/logout">Logout</a>`
+  navbar_list.innerHTML += user_links
+
   const items_list = document.getElementById("marketplace-item-list")
   const items = [...items_list.getElementsByClassName("item-card")]
 
@@ -281,6 +298,9 @@ function initCallbacks() {
       }
     }
   )
+
+  const submit_btn = document.getElementById("cart-submit")
+  submit_btn.addEventListener("click", submitCart)
 }
 
 if (document.readyState == "loading") {

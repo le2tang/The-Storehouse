@@ -220,13 +220,11 @@ var orders_db = {
       await database.query("BEGIN")
 
       var result = await database.query(
-        `DELETE FROM order_items WHERE order_id=$1`
-        [order_id]
+        `DELETE FROM order_items WHERE order_id=${order_id}`
       )
 
       result = await database.query(
-        `DELETE FROM orders WHERE order_id=$1`,
-        [order_id]
+        `DELETE FROM orders WHERE order_id=${order_id}`
       )
       if (result.rowCount == 0) {
         await database.query("ROLLBACK")
@@ -377,7 +375,8 @@ var orders_db = {
   status_text: {
     "0": "Pending",
     "1": "Packed",
-    "2": "Delivered"
+    "2": "Delivered",
+    "3": "Deleted"
   }
 }
 
