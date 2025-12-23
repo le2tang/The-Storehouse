@@ -1,6 +1,5 @@
 const app_config = require("../config/app_config.js")
 
-const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const orders_model = require("../models/orders_model.js")
 const users_model = require("../models/users_model.js")
