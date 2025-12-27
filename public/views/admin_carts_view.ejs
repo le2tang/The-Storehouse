@@ -43,10 +43,27 @@
             </h2>
             <form action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>" method="post">
               <select name="status" required="required">
-                <option value=0>Pending</option>
-                <option value=1>Packed</option>
-                <option value=2>Delivered</option>
-                <option value=3>Deleted</option>
+                <% if (c.status=="Pending" ) {%>
+                  <option value=0 selected>Pending</option>
+                  <option value=1>Packed</option>
+                  <option value=2>Delivered</option>
+                  <option value=3>Deleted</option>
+                  <% } else if (c.status=="Packed" ) {%>
+                    <option value=0>Pending</option>
+                    <option value=1 selected>Packed</option>
+                    <option value=2>Delivered</option>
+                    <option value=3>Deleted</option>
+                    <% } else if (c.status=="Delivered" ) {%>
+                      <option value=0>Pending</option>
+                      <option value=1>Packed</option>
+                      <option value=2 selected>Delivered</option>
+                      <option value=3>Deleted</option>
+                      <% } else {%>
+                        <option value=0>Pending</option>
+                        <option value=1>Packed</option>
+                        <option value=2 selected>Delivered</option>
+                        <option value=3>Deleted</option>
+                        <% }%>
               </select>
               <input type="submit" value="Update">
             </form>

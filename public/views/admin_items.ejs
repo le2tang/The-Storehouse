@@ -16,8 +16,7 @@
     <%- include("../partials/admin_navbar") %>
   </header>
   <div class="container">
-    <h1>Manage Items</h1>
-    <div id="admin-item-add-containter">
+    <div id="admin-item-add-containter" class="admin-item-add-container">
       <h2>Upload csv</h2>
       <input type="file" id="admin-item-add-file">
 
@@ -30,8 +29,8 @@
         <input type="submit" value="Submit">
       </form>
     </div>
-    <div id="admin-item-list-container">
-      <h2>Manage Items</h2>
+    <div id="admin-item-list-container" class="admin-item-list-container">
+      <h1>Manage Items</h1>
       <div id="admin-item-list" class="admin-item-list">
         <input type="text" id="admin-item-search" placeholder="Search...">
         <% for (var i of items) {%>

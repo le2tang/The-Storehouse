@@ -1,8 +1,26 @@
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-items: center;
+.container {
+  padding: 10px;
+}
+
+.admin-item-add-container {
+  width: 100%;
+
+  background: var(--primary-dark);
+
+  padding-top: 10px;
+  padding-bottom: 5px;
+
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
+  text-align: center;
+}
+
+.admin-item-list-container {
+  width: 100%;
+
+  background: #FFFCF2;
+
   text-align: center;
 }
 
@@ -75,7 +93,7 @@ body {
 
   background: var(--secondary-dark);
   color: var(--accent-light);
-  
+
   text-align: center;
   font-weight: bold;
   border-radius: 50%;
