@@ -8,7 +8,7 @@ function initCallbacks() {
 
     items.forEach((item) => {
       const itemname = item.getElementsByClassName("item-card-itemname")[0].innerHTML.trim().toLowerCase()
-      if (itemname.startsWith(search_pattern)) {
+      if (itemname.includes(search_pattern)) {
         item.style.display = ""
       }
       else {
