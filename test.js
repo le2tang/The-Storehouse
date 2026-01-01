@@ -1,5 +1,6 @@
 const database = require("./database/database.js")
 const orders_db = require("./database/orders_db.js")
+const deliveries_db = require("./database/deliveries_db.js")
 
 async function prepare_tests() {
   await database.query(

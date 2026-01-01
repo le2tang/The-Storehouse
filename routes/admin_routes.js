@@ -1,9 +1,9 @@
 const app_config = require("../config/app_config.js")
 
-const carts_model = require("../models/carts_model.js")
 const items_model = require("../models/items_model.js")
 const orders_model = require("../models/orders_model.js")
 const users_model = require("../models/users_model.js")
+const deliveries_model = require("../models/deliveries_model.js")
 
 const bcrypt = require("bcrypt")
 
@@ -319,5 +319,271 @@ router.post(
     }
   }
 )
+
+router.get(
+  "/deliveries",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) {
+      return res.redirect("/admin/login")
+    }
+
+    try {
+      const result = await deliveries_model.getAll()
+      if (result.status != 200) {
+        return res.status(result.status).send({ message: result.message })
+      }
+
+      deliveries = result.result
+
+      let pendingDeliveriesCount = deliveries.filter(d => d.status === 'Pending' || d.status === '0').length
+      let deliveredDeliveriesCount = deliveries.filter(d => d.status === 'Delivered' || d.status === '3').length
+      res.render(
+        "admin_deliveries",
+        {
+          paths: app_config.paths,
+          deliveries: deliveries,
+          pendingDeliveriesCount,
+          deliveredDeliveriesCount
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
+    }
+  }
+)
+
+router.get(
+  "/deliveries/:delivery_id",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) {
+      return res.redirect("/admin/login")
+    }
+
+    try {
+      const result = await deliveries_model.getDeliveryByDeliveryId(req.params.delivery_id)
+      if (result.status != 200) {
+        return res.status(result.status).send({ message: result.message })
+      }
+
+      delivery = result.result
+      res.render(
+        "admin_delivery_details",
+        {
+          paths: app_config.paths,
+          delivery: delivery
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
+    }
+  }
+)
+
+// JSON endpoint for delivery details (used by calendar UI)
+router.get(
+  "/deliveries/:delivery_id/json",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) {
+      return res.status(401).send({ message: "Unauthorized" })
+    }
+
+    try {
+      const result = await deliveries_model.getDeliveryByDeliveryId(req.params.delivery_id)
+      if (result.status != 200) {
+        return res.status(result.status).send({ message: result.message })
+      }
+
+      return res.status(200).json({ result: result.result })
+    } catch (error) {
+      return res.status(500).send({ message: error })
+    }
+  }
+)
+
+// Edit delivery form
+router.get(
+  "/deliveries/:delivery_id/edit",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) {
+      return res.redirect("/admin/login")
+    }
+
+    try {
+      const dRes = await deliveries_model.getDeliveryByDeliveryId(req.params.delivery_id)
+      if (dRes.status != 200) {
+        return res.status(dRes.status).send({ message: dRes.message })
+      }
+
+      // fetch available orders (status=1) to allow adding
+      const ordersRes = await orders_model.getAllOrdersInfo()
+      const availableOrders = ordersRes.status == 200 ? ordersRes.result : []
+
+      res.render("admin_delivery_edit", { paths: app_config.paths, delivery: dRes.result, availableOrders })
+    } catch (error) {
+      res.status(500).send({ message: error })
+    }
+  }
+)
+
+// Submit delivery edits
+router.post(
+  "/deliveries/:delivery_id/edit",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) return res.redirect("/admin/login")
+
+    const { description, long_desc, date, time, order_ids } = req.body
+    if (!description || !date || !time) {
+      return res.redirect(`/admin/deliveries/${req.params.delivery_id}/edit?error=missing_fields`)
+    }
+
+    const orderIds = order_ids ? (Array.isArray(order_ids) ? order_ids : [order_ids]) : []
+
+    try {
+      function combineDateAndTime(dateStr, timeStr) {
+        const [y, m, d] = dateStr.split('-').map(Number)
+        const [hh, mm] = timeStr.split(':').map(Number)
+        const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0)
+        const pad = n => String(n).padStart(2, '0')
+        return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`
+      }
+
+      const datetime = combineDateAndTime(date, time)
+
+      const upd = await deliveries_model.update({
+        delivery_id: req.params.delivery_id,
+        description,
+        long_desc: long_desc || null,
+        date: datetime,
+        status: 0,
+        order_ids: orderIds
+      })
+
+      if (upd.status !== 200) {
+        return res.redirect(`/admin/deliveries/${req.params.delivery_id}/edit?error=update_failed`)
+      }
+
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}`)
+    } catch (error) {
+      console.error(error)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}/edit?error=update_failed`)
+    }
+  }
+)
+
+// Delete delivery
+router.post(
+  "/deliveries/:delivery_id/delete",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) return res.redirect("/admin/login")
+    try {
+      const del = await deliveries_model.deleteDelivery(req.params.delivery_id)
+      if (del.status !== 200) {
+        return res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=delete_failed`)
+      }
+      res.redirect('/admin/deliveries')
+    } catch (error) {
+      console.error(error)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=delete_failed`)
+    }
+  }
+)
+
+// Mark as completed
+router.post(
+  "/deliveries/:delivery_id/mark-complete",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) return res.redirect("/admin/login")
+    try {
+      const m = await deliveries_model.markComplete(req.params.delivery_id)
+      if (m.status !== 200) {
+        return res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)
+      }
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}`)
+    } catch (error) {
+      console.error(error)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)
+    }
+  }
+)
+
+router.get(
+  "/new-delivery",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) {
+      return res.redirect("/admin/login")
+    }
+
+    try {
+      const result = await orders_model.getAllOrdersInfo()
+      if (result.status != 200) {
+        return res.status(result.status).send({ message: result.message })
+      }
+
+      const orders = result.result
+      res.render(
+        "admin_new_delivery",
+        {
+          paths: app_config.paths,
+          orders: orders
+        }
+      )
+    } catch (error) {
+      res.status(500).send({ message: error })
+    }
+  }
+)
+
+router.post("/new-delivery", async function (req, res) {
+  if (!req.session.admin_loggedin) {
+    return res.redirect("/admin/login")
+  }
+
+  const { description, long_desc, date, time, order_ids } = req.body
+  if (!description || !date || !time || !order_ids) {
+    return res.redirect("/admin/new-delivery?error=missing_fields")
+  }
+
+  const orderIds = Array.isArray(order_ids) ? order_ids : [order_ids]
+
+  try {
+    // combine date and time into a timestamp string (local) usable by Postgres
+    function combineDateAndTime(dateStr, timeStr) {
+      // dateStr expected 'YYYY-MM-DD', timeStr expected 'HH:MM' (24h)
+      const [y, m, d] = dateStr.split('-').map(Number)
+      const [hh, mm] = timeStr.split(':').map(Number)
+      // construct a local Date then format as 'YYYY-MM-DD HH:MM:SS'
+      const dt = new Date(y, m - 1, d, hh || 0, mm || 0, 0)
+      const pad = n => String(n).padStart(2, '0')
+      return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`
+    }
+
+    const datetime = combineDateAndTime(date, time)
+    console.log("Date:", date, "Time:", time)
+    console.log("Creating delivery:", { description, long_desc, datetime, orderIds })
+
+    // Use deliveries_model to handle everything
+    const deliveryResult = await deliveries_model.create({
+      description,
+      long_desc: long_desc || null,
+      date: datetime,
+      status: 0, // default status: Pending
+      order_ids: orderIds
+    })
+
+    if (deliveryResult.status !== 201) {
+      console.error("Delivery creation failed:", deliveryResult.message)
+      return res.redirect("/admin/new-delivery?error=transaction_failed")
+    }
+
+    // Successfully created delivery
+    res.redirect("/admin/deliveries")
+
+  } catch (error) {
+    console.error("Unexpected error creating delivery:", error)
+    res.redirect("/admin/new-delivery?error=transaction_failed")
+  }
+})
+
+
 
 module.exports = router

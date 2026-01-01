@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Edit Delivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/css/colors.css" />
+    <link rel="stylesheet" href="/styles/css/navbar.css" />
+    <link rel="stylesheet" href="/styles/css/admin_new_delivery.css" />
+  </head>
+  <body>
+    <header><%- include("../partials/admin_navbar") %></header>
+    <div class="container">
+      <a href="/admin/deliveries">&larr; Back to Calendar</a>
+      <h1>Edit Delivery</h1>
+
+      <form
+        id="edit-delivery-form"
+        method="POST"
+        action="/admin/deliveries/<%= delivery.delivery_id %>/edit"
+        class="delivery-form"
+      >
+        <div class="form-column left-column">
+          <div class="orders-section">
+            <div class="section-header">
+              <h2>Available Orders</h2>
+            </div>
+            <div class="orders-container">
+              <% const currentOrderIds = (delivery.orders || []).map(o =>
+              String(o.order_id)); const avail = availableOrders || []; %> <% if
+              (delivery.orders && delivery.orders.length > 0) { %> <%
+              delivery.orders.forEach(function(o){ %>
+              <div class="order-card" data-location="<%= o.address_type %>">
+                <div class="order-checkbox">
+                  <input
+                    type="checkbox"
+                    id="order-<%= o.order_id %>"
+                    name="order_ids"
+                    value="<%= o.order_id %>"
+                    checked
+                  />
+                  <label for="order-<%= o.order_id %>">
+                    <strong><%= o.name %></strong><br />
+                    <span class="order-id">Order #<%= o.order_id %></span>
+                  </label>
+                </div>
+                <div class="order-info">
+                  <p class="phone"><%= o.contact_details %></p>
+                  <p class="address"><%= o.address_details %></p>
+                </div>
+              </div>
+              <% }) %> <% } %> <% avail.forEach(function(o){ %> <% if
+              (!currentOrderIds.includes(String(o.order_id))) { %>
+              <div class="order-card" data-location="<%= o.address_type %>">
+                <div class="order-checkbox">
+                  <input
+                    type="checkbox"
+                    id="order-<%= o.order_id %>"
+                    name="order_ids"
+                    value="<%= o.order_id %>"
+                  />
+                  <label for="order-<%= o.order_id %>">
+                    <strong><%= o.name %></strong><br />
+                    <span class="order-id">Order #<%= o.order_id %></span>
+                  </label>
+                </div>
+                <div class="order-info">
+                  <p class="phone"><%= o.contact_details %></p>
+                  <p class="address"><%= o.address_details %></p>
+                </div>
+              </div>
+              <% } %> <% }) %> <% if ((!delivery.orders ||
+              delivery.orders.length === 0) && avail.length === 0) { %>
+              <p class="no-orders">No orders available</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-column right-column">
+          <div class="details-section">
+            <h2>Delivery Details</h2>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                rows="2"
+                maxlength="20"
+                required
+              >
+<%= delivery.description %></textarea
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="long_desc">Long Description</label>
+              <textarea
+                id="long_desc"
+                name="long_desc"
+                rows="5"
+                maxlength="300"
+              >
+<%= delivery.long_desc || '' %></textarea
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="date">Delivery Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                required
+                value="<%= new Date(delivery.date).toISOString().split('T')[0] %>"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="time">Delivery Time</label>
+              <input
+                type="time"
+                id="time"
+                name="time"
+                required
+                value="<%= new Date(delivery.date).toTimeString().slice(0,5) %>"
+              />
+            </div>
+
+            <div class="selected-orders-info">
+              <p>Selected Orders</p>
+              <p class="selected-count"><span id="selected-count">0</span></p>
+            </div>
+
+            <button type="submit" class="btn-submit">Save Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      // update selected count
+      function updateSelectedCount() {
+        const selected = document.querySelectorAll(
+          'input[name="order_ids"]:checked'
+        ).length;
+        document.getElementById("selected-count").textContent = selected;
+      }
+      document
+        .querySelectorAll('input[name="order_ids"]')
+        .forEach((cb) => cb.addEventListener("change", updateSelectedCount));
+      updateSelectedCount();
+    </script>
+  </body>
+</html>

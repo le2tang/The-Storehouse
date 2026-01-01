@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Deliveries</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/css/colors.css" />
+    <link rel="stylesheet" href="/styles/css/navbar.css" />
+    <link rel="stylesheet" href="/styles/css/admin_deliveries_calendar.css" />
+  </head>
+
+  <body>
+    <header><%- include("../partials/admin_navbar") %></header>
+    <div class="container">
+      <div class="header">
+        <div class="title-section">
+          <h1>Manage Deliveries</h1>
+          <div class="counts">
+            <span class="pending-deliveries-count"
+              >Pending: <%= pendingDeliveriesCount %></span
+            >
+            <span>|</span>
+            <span class="delivered-deliveries-count"
+              >Delivered: <%= deliveredDeliveriesCount %></span
+            >
+          </div>
+        </div>
+
+        <a href="/admin/new-delivery" class="new-delivery">+ New Delivery</a>
+      </div>
+
+      <!-- Calendar Section -->
+      <div id="calendar">
+        <div class="calendar-controls">
+          <div class="view-switcher">
+            <button class="view-btn" data-view="day">Day</button>
+            <button class="view-btn" data-view="week">Week</button>
+            <button class="view-btn active" data-view="month">Month</button>
+          </div>
+          <div class="date-navigation">
+            <button id="prev-btn" class="nav-btn">← Previous</button>
+            <span id="current-date" class="current-date"></span>
+            <button id="next-btn" class="nav-btn">Next →</button>
+            <button id="today-btn" class="nav-btn-today">Today</button>
+          </div>
+        </div>
+        <div id="calendar-grid" class="calendar-grid"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeDeliveriesCalendar } from "/scripts/admin_deliveries.js";
+      const deliveries = <%- JSON.stringify(deliveries) %>;
+
+      initializeDeliveriesCalendar(deliveries);
+    </script>
+  </body>
+</html>

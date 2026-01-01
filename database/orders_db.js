@@ -77,7 +77,8 @@ var orders_db = {
         FROM orders o
         LEFT JOIN users u
         ON o.user_id=u.user_id
-        ORDER BY o.status ASC, o.created ASC, o.user_id`
+        WHERE o.status = 1
+        ORDER BY o.created ASC, o.user_id`
       )
       orders_info = result.rows
 
@@ -344,7 +345,8 @@ var orders_db = {
           user_id SERIAL REFERENCES users(user_id),
           status INT,
           created TIMESTAMP,
-          modified TIMESTAMP
+          modified TIMESTAMP,
+          delivery_id INT REFERENCES deliveries(delivery_id)
         )`
       )
 
@@ -376,7 +378,8 @@ var orders_db = {
     "0": "Pending",
     "1": "Packed",
     "2": "Delivered",
-    "3": "Deleted"
+    "3": "Scheduled",
+    "4": "Deleted"
   }
 }
 

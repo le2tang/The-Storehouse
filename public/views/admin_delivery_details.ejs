@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Delivery Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/css/colors.css" />
+    <link rel="stylesheet" href="/styles/css/navbar.css" />
+    <link rel="stylesheet" href="/styles/css/admin_deliveries.css" />
+    <link rel="stylesheet" href="/styles/css/admin_delivery_details.css" />
+  </head>
+  <body>
+    <header><%- include("../partials/admin_navbar") %></header>
+    <div class="container">
+      <a href="/admin/deliveries" class="back-btn">&larr; Back to Calendar</a>
+      <h1 class="delivery-desc"><%= delivery.description %></h1>
+      <p class="delivery-long-desc"><%= delivery.long_desc %></p>
+      <div class="top-actions">
+        <form
+          method="GET"
+          action="/admin/deliveries/<%= delivery.delivery_id %>/edit"
+        >
+          <button type="submit" class="btn btn-edit">Edit</button>
+        </form>
+        <form
+          method="POST"
+          action="/admin/deliveries/<%= delivery.delivery_id %>/mark-complete"
+        >
+          <button type="submit" class="btn btn-complete">Mark Complete</button>
+        </form>
+        <form
+          method="POST"
+          action="/admin/deliveries/<%= delivery.delivery_id %>/delete"
+          onsubmit="return confirm('Delete this delivery?')"
+        >
+          <button type="submit" class="btn btn-delete">Delete</button>
+        </form>
+        <div class="status-container">
+          <span
+            class="status-badge <%= (delivery.status || '').toString().toLowerCase() %>"
+            ><%= delivery.status %></span
+          >
+        </div>
+      </div>
+
+      <div class="summary-cards">
+        <div class="card">
+          <div>Total Orders</div>
+          <div class="card-value">
+            <%= delivery.orders ? delivery.orders.length : 0 %>
+          </div>
+        </div>
+        <div class="card">
+          <div>Distinct Users</div>
+          <div class="card-value">
+            <%= delivery.orders ? new Set(delivery.orders.map(o =>
+            o.user_id)).size : 0 %>
+          </div>
+        </div>
+        <div class="card">
+          <div>Scheduled Date & Time</div>
+          <div></div>
+          <div class="card-date">
+            <%= new
+            Date(delivery.date).toLocaleDateString(undefined,{month:'short',day:'numeric'})
+            %>, <%= new Date(delivery.date).toLocaleTimeString([],
+            {hour:'2-digit',minute:'2-digit'}) %>
+          </div>
+        </div>
+      </div>
+
+      <section class="orders-list">
+        <h2>Orders in this Delivery</h2>
+        <% if (delivery.orders && delivery.orders.length>0) {
+        delivery.orders.forEach(function(order){ %>
+        <div class="order-item">
+          <div class="order-meta">
+            <div class="order-name"><%= order.name %></div>
+            <div class="order-id">Order #<%= order.order_id %></div>
+            <div class="order-contact">📞 <%= order.contact_details %></div>
+            <div class="order-address">📍 <%= order.address_details %></div>
+          </div>
+          <span
+            class="status-badge <%= (delivery.status || '').toString().toLowerCase() %>"
+            ><%= delivery.status %></span
+          >
+        </div>
+        <% }) %> <% } else { %>
+        <p>No orders found for this delivery.</p>
+        <% } %>
+      </section>
+    </div>
+  </body>
+</html>
