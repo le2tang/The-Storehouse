@@ -1,0 +1,147 @@
+.container {
+    padding: 10px;
+}
+
+.delivery-desc {
+  font-size: 32px;
+  margin:5 10px;
+  color: #fff;
+}
+
+.delivery-long-desc {
+  font-size: 20px;
+  color: #d5d5d5;
+  margin:0 10px 20px 0;
+}
+
+.back-btn {
+    display: inline-block;
+    color: #d5d5d5;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+ 
+}
+
+
+.summary-cards {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0;
+}
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  min-width: 140px;
+}
+.orders-list {
+  margin-top: 18px;
+}
+.order-item {
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.order-meta {
+  flex: 1;
+}
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-edit {
+  background: #fff;
+  border: 2px solid #ddd;
+  color: #6c6c6c;
+  font-weight: 600;
+}
+.btn-complete {
+  background: #e6ffed;
+  border: 2px solid #c6f0d0;
+  color: #208738;
+  font-weight: 600;
+}
+.btn-delete {
+  background: #fff0f0;
+  border: 2px solid #f1c6c6;
+  color: #aa2b38;
+    font-weight: 600;
+}
+
+.status-container {
+  margin-left: auto;
+}
+
+.card-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+.card-date {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 24px;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+.order-name {
+  font-weight: 700;
+}
+.order-id {
+  color: #888;
+}
+.order-contact, .order-address, .order-package {
+  color: #666;
+  margin-top: 8px;
+}
+
+.status-badge {
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-weight: 600;
+}
+.status-badge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+.status-badge.packed {
+  background: #cfe2ff;
+  color: #084298;
+}
+.status-badge.arranged {
+  background: #d1ecf1;
+  color: #0b7285;
+}
+.status-badge.delivered {
+  background: #d4edda;
+  color: #155724;
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>New Delivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/css/colors.css" />
+    <link rel="stylesheet" href="/styles/css/navbar.css" />
+    <link rel="stylesheet" href="/styles/css/admin_new_delivery.css" />
+  </head>
+
+  <body>
+    <header><%- include("../partials/admin_navbar") %></header>
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1>Create Delivery</h1>
+          <p class="desc">Select orders and schedule a new delivery</p>
+        </div>
+      </div>
+
+      <form
+        id="new-delivery-form"
+        method="POST"
+        action="/admin/new-delivery"
+        class="delivery-form"
+      >
+        <!-- Left Column: Available Orders -->
+        <div class="form-column left-column">
+          <div class="orders-section">
+            <div class="section-header">
+              <div class="available">
+                <h2>Available Orders</h2>
+                <span class="available-count"
+                  ><%= orders ? orders.length : 0 %> orders</span
+                >
+              </div>
+              <div class="filter-badges">
+                <button type="button" class="filter-badge" data-filter="clv">
+                  CLV
+                </button>
+                <button type="button" class="filter-badge" data-filter="uwp">
+                  UWP
+                </button>
+                <button type="button" class="filter-badge" data-filter="abb">
+                  ABB
+                </button>
+              </div>
+            </div>
+
+            <div id="orders-container" class="orders-container">
+              <% if (orders && orders.length > 0) { %> <%
+              orders.forEach(function(order) { %>
+              <div
+                class="order-card"
+                data-location="<%= order.address_type.toLowerCase() %>"
+              >
+                <div class="order-checkbox">
+                  <input
+                    type="checkbox"
+                    id="order-<%= order.order_id %>"
+                    name="order_ids"
+                    value="<%= order.order_id %>"
+                  />
+                  <label for="order-<%= order.order_id %>">
+                    <strong><%= order.name %></strong><br />
+                    <span class="order-id">Order #<%= order.order_id %></span>
+                  </label>
+                </div>
+                <div class="order-info">
+                  <p class="phone"><%= order.phone %></p>
+                  <p class="address"><%= order.address_details %></p>
+                  <div class="order-meta">
+                    <span class="status <%= order.status.toLowerCase() %>"
+                      ><%= order.status %></span
+                    >
+                    <span class="location"><%= order.address_type %></span>
+                  </div>
+                  <p class="package-info"><%= order.items %></p>
+                </div>
+              </div>
+              <% }); %> <% } else { %>
+              <p class="no-orders">No orders available</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Delivery Details -->
+        <div class="form-column right-column">
+          <div class="details-section">
+            <h2>Delivery Details</h2>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                name="description"
+                placeholder="eg. UWP Only"
+                rows="2"
+                required
+                maxlength="20"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="long_desc">Long Description</label>
+              <textarea
+                id="long_desc"
+                name="long_desc"
+                placeholder="Optional longer description (max 300 chars)"
+                rows="5"
+                maxlength="300"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="date">Delivery Date</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+
+            <div class="form-group">
+              <label for="time">Delivery Time</label>
+              <input type="time" id="time" name="time" required />
+            </div>
+
+            <div class="selected-orders-info">
+              <p>Selected Orders</p>
+              <p class="selected-count"><span id="selected-count">0</span></p>
+            </div>
+
+            <button type="submit" class="btn-submit">Create Delivery</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="/scripts/admin_new_delivery.js"></script>
+  </body>
+</html>
