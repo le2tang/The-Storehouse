@@ -1,4 +1,23 @@
-// Location filter functionality
+// Search by name functionality
+const searchInput = document.getElementById('admin-order-search')
+
+searchInput.addEventListener('input', function () {
+  const query = this.value.toLowerCase().trim()
+  const orderCards = document.querySelectorAll('.order-card')
+
+  orderCards.forEach(card => {
+    const orderName = card.getAttribute('data-name')
+
+    if (orderName.includes(query)) {
+      card.style.display = 'block'
+    } else {
+      card.style.display = 'none'
+    }
+  })
+})
+
+
+// Location Type filter functionality
 document.querySelectorAll('.filter-badge').forEach(badge => {
   badge.addEventListener('click', function(e) {
     e.preventDefault()

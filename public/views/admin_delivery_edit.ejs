@@ -12,7 +12,7 @@
   <body>
     <header><%- include("../partials/admin_navbar") %></header>
     <div class="container">
-      <a href="/admin/deliveries">&larr; Back to Calendar</a>
+      <a class="back-btn" href="/admin/deliveries">&larr; Back to Calendar</a>
       <h1>Edit Delivery</h1>
 
       <form
@@ -24,14 +24,40 @@
         <div class="form-column left-column">
           <div class="orders-section">
             <div class="section-header">
-              <h2>Available Orders</h2>
+              <div class="available">
+                <h2>Available Orders</h2>
+                <span class="available-count"
+                  ><%= availableOrders ? availableOrders.length : 0 %>
+                  orders</span
+                >
+              </div>
+              <input
+                type="text"
+                id="admin-order-search"
+                placeholder="Search by name..."
+              />
+              <div class="filter-badges">
+                <button type="button" class="filter-badge" data-filter="clv">
+                  CLV
+                </button>
+                <button type="button" class="filter-badge" data-filter="uwp">
+                  UWP
+                </button>
+                <button type="button" class="filter-badge" data-filter="abb">
+                  ABB
+                </button>
+              </div>
             </div>
             <div class="orders-container">
               <% const currentOrderIds = (delivery.orders || []).map(o =>
               String(o.order_id)); const avail = availableOrders || []; %> <% if
               (delivery.orders && delivery.orders.length > 0) { %> <%
               delivery.orders.forEach(function(o){ %>
-              <div class="order-card" data-location="<%= o.address_type %>">
+              <div
+                class="order-card"
+                data-location="<%= o.address_type %>"
+                data-name="<%= o.name.toLowerCase() %>"
+              >
                 <div class="order-checkbox">
                   <input
                     type="checkbox"
@@ -52,7 +78,11 @@
               </div>
               <% }) %> <% } %> <% avail.forEach(function(o){ %> <% if
               (!currentOrderIds.includes(String(o.order_id))) { %>
-              <div class="order-card" data-location="<%= o.address_type %>">
+              <div
+                class="order-card"
+                data-location="<%= o.address_type %>"
+                data-name="<%= o.name.toLowerCase() %>"
+              >
                 <div class="order-checkbox">
                   <input
                     type="checkbox"
@@ -140,18 +170,6 @@
       </form>
     </div>
 
-    <script>
-      // update selected count
-      function updateSelectedCount() {
-        const selected = document.querySelectorAll(
-          'input[name="order_ids"]:checked'
-        ).length;
-        document.getElementById("selected-count").textContent = selected;
-      }
-      document
-        .querySelectorAll('input[name="order_ids"]')
-        .forEach((cb) => cb.addEventListener("change", updateSelectedCount));
-      updateSelectedCount();
-    </script>
+    <script src="/scripts/admin_delivery_edit.js"></script>
   </body>
 </html>

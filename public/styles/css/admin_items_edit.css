@@ -11,6 +11,17 @@ body {
   color: var(--on-secondary-light);
 }
 
+.back-btn {
+    display: inline-block;
+    color: #d5d5d5;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+}
+
 .container form {
   display: flex;
   flex-direction: row;

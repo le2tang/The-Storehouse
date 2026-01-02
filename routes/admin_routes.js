@@ -417,6 +417,7 @@ router.get(
       // fetch available orders (status=1) to allow adding
       const ordersRes = await orders_model.getAllOrdersInfo()
       const availableOrders = ordersRes.status == 200 ? ordersRes.result : []
+      availableOrders.sort((a, b) => a.name.localeCompare(b.name))
 
       res.render("admin_delivery_edit", { paths: app_config.paths, delivery: dRes.result, availableOrders })
     } catch (error) {
@@ -520,6 +521,7 @@ router.get(
       }
 
       const orders = result.result
+      orders.sort((a, b) => a.name.localeCompare(b.name))
       res.render(
         "admin_new_delivery",
         {

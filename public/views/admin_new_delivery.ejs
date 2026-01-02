@@ -15,6 +15,9 @@
     <div class="container">
       <div class="page-header">
         <div>
+          <a class="back-btn" href="/admin/deliveries"
+            >&larr; Back to Calendar</a
+          >
           <h1>Create Delivery</h1>
           <p class="desc">Select orders and schedule a new delivery</p>
         </div>
@@ -36,6 +39,11 @@
                   ><%= orders ? orders.length : 0 %> orders</span
                 >
               </div>
+              <input
+                type="text"
+                id="admin-order-search"
+                placeholder="Search by name..."
+              />
               <div class="filter-badges">
                 <button type="button" class="filter-badge" data-filter="clv">
                   CLV
@@ -55,6 +63,7 @@
               <div
                 class="order-card"
                 data-location="<%= order.address_type.toLowerCase() %>"
+                data-name="<%= order.name.toLowerCase() %>"
               >
                 <div class="order-checkbox">
                   <input

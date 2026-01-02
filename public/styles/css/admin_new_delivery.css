@@ -9,6 +9,17 @@ h1 {
   color: #fff;
 }
 
+.back-btn {
+    display: inline-block;
+    color: #d5d5d5;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.back-btn:hover {
+    transform: scale(1.1);
+}
+
 .page-header {
   margin-bottom: 30px;
 }
