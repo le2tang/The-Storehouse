@@ -57,6 +57,28 @@ const orders_model = {
     }
   },
 
+  async getAllOrdersPacked() {
+    try {
+      const result = await orders_db.getAllOrdersPacked()
+      if (result.status != "OK") {
+        return {
+          status: 400,
+          message: result.message
+        }
+      }
+
+      return {
+        status: 200,
+        result: result.result
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: error
+      }
+    }
+  },
+
   async getOrderByOrderId(order_id) {
     try {
       const result = await orders_db.getOrderByOrderId(order_id)
