@@ -78,7 +78,7 @@
                   </label>
                 </div>
                 <div class="order-info">
-                  <p class="phone"><%= order.phone %></p>
+                  <p class="phone"><%= order.contact_details %></p>
                   <p class="address"><%= order.address_details %></p>
                   <div class="order-meta">
                     <span class="status <%= order.status.toLowerCase() %>"
@@ -86,7 +86,6 @@
                     >
                     <span class="location"><%= order.address_type %></span>
                   </div>
-                  <p class="package-info"><%= order.items %></p>
                 </div>
               </div>
               <% }); %> <% } else { %>

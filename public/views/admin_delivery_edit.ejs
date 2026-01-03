@@ -74,6 +74,12 @@
                 <div class="order-info">
                   <p class="phone"><%= o.contact_details %></p>
                   <p class="address"><%= o.address_details %></p>
+                  <div class="order-meta">
+                    <span class="status <%= order.status.toLowerCase() %>"
+                      ><%= order.status %></span
+                    >
+                    <span class="location"><%= order.address_type %></span>
+                  </div>
                 </div>
               </div>
               <% }) %> <% } %> <% avail.forEach(function(o){ %> <% if
@@ -98,6 +104,12 @@
                 <div class="order-info">
                   <p class="phone"><%= o.contact_details %></p>
                   <p class="address"><%= o.address_details %></p>
+                  <div class="order-meta">
+                    <span class="status <%= order.status.toLowerCase() %>"
+                      ><%= order.status %></span
+                    >
+                    <span class="location"><%= order.address_type %></span>
+                  </div>
                 </div>
               </div>
               <% } %> <% }) %> <% if ((!delivery.orders ||

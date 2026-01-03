@@ -44,17 +44,41 @@
               action="/admin/carts/<%=c.user_id%>/<%= c.order_id%>"
               method="post"
             >
+              <% if (c.status === "Packed") { %>
               <select name="status" required="required">
                 <option value="0">Pending</option>
+                <option value="1" selected="selected">Packed</option>
+                <option value="2">Delivered</option>
+                <option value="3">Deleted</option>
+              </select>
+              <% }%> <% if (c.status === "Pending") { %>
+              <select name="status" required="required">
+                <option value="0" selected="selected">Pending</option>
                 <option value="1">Packed</option>
                 <option value="2">Delivered</option>
                 <option value="3">Deleted</option>
               </select>
+              <% }%>
               <input type="submit" value="Update" />
             </form>
           </div>
           <div class="cart-card-item-list">
-            <% for (var i of c.items) {%>
+            <% if (c.status === "Packed") { %><% for (var i of c.items) {%>
+            <div
+              id="cart-cart-item-<%= i.uid%>"
+              class="cart-card-item"
+              item_id="<%= i.uid%>"
+              quantity="<%= i.quantity%>"
+              description="<%= i.description%>"
+            >
+              <span> <%= i.quantity%> </span>
+              <span> <%= i.itemname%> </span>
+              <span> <%= i.description%> </span>
+              <span> <%= i.tags%> </span>
+              <input type="checkbox" checked />
+            </div>
+            <% }%><% }%> <% if (c.status === "Pending") { %><% for (var i of
+            c.items) {%>
             <div
               id="cart-cart-item-<%= i.uid%>"
               class="cart-card-item"
@@ -68,7 +92,7 @@
               <span> <%= i.tags%> </span>
               <input type="checkbox" />
             </div>
-            <% }%>
+            <% }%><% }%>
           </div>
         </div>
         <% }%>
