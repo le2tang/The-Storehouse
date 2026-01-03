@@ -77,6 +77,33 @@ var orders_db = {
         FROM orders o
         LEFT JOIN users u
         ON o.user_id=u.user_id
+        ORDER BY o.created ASC, o.user_id`
+      )
+      orders_info = result.rows
+
+      for (const order_info in orders_info) {
+        orders_info[order_info].status = orders_db.status_text[orders_info[order_info].status]
+      }
+
+      return {
+        status: "OK",
+        result: orders_info
+      }
+    } catch (error) {
+      return {
+        status: "ERROR",
+        message: error
+      }
+    }
+  },
+
+  async getAllOrdersPacked() {
+    try {
+      const result = await database.query(
+        `SELECT o.order_id, o.user_id, u.name, u.address_type, u.address_details, u.contact_type, u.contact_details, o.status, o.created, o.modified
+        FROM orders o
+        LEFT JOIN users u
+        ON o.user_id=u.user_id
         WHERE o.status = 1
         ORDER BY o.created ASC, o.user_id`
       )

@@ -415,7 +415,7 @@ router.get(
       }
 
       // fetch available orders (status=1) to allow adding
-      const ordersRes = await orders_model.getAllOrdersInfo()
+      const ordersRes = await orders_model.getAllOrdersPacked()
       const availableOrders = ordersRes.status == 200 ? ordersRes.result : []
       availableOrders.sort((a, b) => a.name.localeCompare(b.name))
 
@@ -515,7 +515,7 @@ router.get(
     }
 
     try {
-      const result = await orders_model.getAllOrdersInfo()
+      const result = await orders_model.getAllOrdersPacked()
       if (result.status != 200) {
         return res.status(result.status).send({ message: result.message })
       }
