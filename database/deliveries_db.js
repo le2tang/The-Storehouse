@@ -1,6 +1,7 @@
 const database = require("./database.js")
 
 var deliveries_db = {
+
   async create(delivery) {
     try {
       const curr_time = new Date().toISOString()
@@ -54,6 +55,8 @@ var deliveries_db = {
 
     }
   },
+
+
 
   async updateDeliveryByDeliveryId(delivery) {
     try {
@@ -149,10 +152,12 @@ var deliveries_db = {
       const ordersRes = await database.query(`SELECT order_id FROM delivery_orders WHERE delivery_id=$1`, [delivery_id])
       const orderIds = ordersRes.rows.map(r => r.order_id)
 
+      // mark orders as packed but not scheduled (status = 1)
       for (const order_id of orderIds) {
         await database.query(`UPDATE orders SET status = 1, delivery_id = NULL, modified = $1 WHERE order_id = $2`, [curr_time, order_id])
       }
 
+      // delete from delivery_orders and deliveries tables
       await database.query(`DELETE FROM delivery_orders WHERE delivery_id=$1`, [delivery_id])
 
       const delRes = await database.query(`DELETE FROM deliveries WHERE delivery_id=$1`, [delivery_id])
@@ -175,6 +180,7 @@ var deliveries_db = {
       const curr_time = new Date().toISOString()
       await database.query("BEGIN")
 
+      // mark delivery as delivered (status = 3)
       const res1 = await database.query(`UPDATE deliveries SET status=3, modified=$1 WHERE delivery_id=$2`, [curr_time, delivery_id])
       if (res1.rowCount === 0) {
         await database.query("ROLLBACK")
@@ -198,6 +204,7 @@ var deliveries_db = {
       const curr_time = new Date().toISOString()
       await database.query("BEGIN")
 
+      // mark delivery as pending (status = 0)
       const res1 = await database.query(`UPDATE deliveries SET status=0, modified=$1 WHERE delivery_id=$2`, [curr_time, delivery_id])
       if (res1.rowCount === 0) {
         await database.query("ROLLBACK")

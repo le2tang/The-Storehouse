@@ -69,7 +69,7 @@ export function initializeDeliveriesCalendar(deliveries) {
 
     let html = '<div class="week-view"><div class="week-grid">'
 
-    // Each day is a single column with header above the cell
+    
     for (let i = 0; i < 7; i++) {
       const day = new Date(weekStart)
       day.setDate(day.getDate() + i)
@@ -242,13 +242,12 @@ export function initializeDeliveriesCalendar(deliveries) {
       'delivered': '#d1e7dd'
     }
 
-    // Some codepaths may send numeric status codes (e.g. 3 = delivered)
     if (s === '3') return colors['delivered']
 
     return colors[s] || '#f0f0f0'
   }
 
-  // Add click handlers to delivery elements
+  // Add click handlers to delivery to route to delivery detail page
   function addDeliveryClickHandlers() {
     document.querySelectorAll('[data-id]').forEach(element => {
       element.addEventListener('click', async function(e) {
@@ -260,7 +259,8 @@ export function initializeDeliveriesCalendar(deliveries) {
     })
   }
 
-  // Event listeners
+  // EVENT LISTENERS  
+  // toggle between day, week and month views
   document.querySelectorAll('.view-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'))
@@ -270,17 +270,22 @@ export function initializeDeliveriesCalendar(deliveries) {
     })
   })
 
+  // "Previous" button functionality
   document.getElementById('prev-btn').addEventListener('click', function() {
+    // If in day view go to previous day
     if (currentView === 'day') {
       currentDate.setDate(currentDate.getDate() - 1)
+    // If in week view go to previous week
     } else if (currentView === 'week') {
       currentDate.setDate(currentDate.getDate() - 7)
+    // If in month view go to previous month
     } else {
       currentDate.setMonth(currentDate.getMonth() - 1)
     }
     renderCalendar()
   })
 
+  // "Next" button functionality (same logic as previous)
   document.getElementById('next-btn').addEventListener('click', function() {
     if (currentView === 'day') {
       currentDate.setDate(currentDate.getDate() + 1)
@@ -292,6 +297,7 @@ export function initializeDeliveriesCalendar(deliveries) {
     renderCalendar()
   })
 
+  // "Today" button functionality (Show current date)
   document.getElementById('today-btn').addEventListener('click', function() {
     currentDate = new Date()
     renderCalendar()

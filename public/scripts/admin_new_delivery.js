@@ -39,6 +39,7 @@ document.querySelectorAll('.filter-badge').forEach(badge => {
   })
 })
 
+// Helper function for location type functionality
 function applyLocationFilters() {
   const orderCards = document.querySelectorAll('.order-card')
 
