@@ -23,12 +23,24 @@
         >
           <button type="submit" class="btn btn-edit">Edit</button>
         </form>
+        <% if (delivery.status !== 'Delivered') { %>
         <form
           method="POST"
           action="/admin/deliveries/<%= delivery.delivery_id %>/mark-complete"
         >
           <button type="submit" class="btn btn-complete">Mark Complete</button>
         </form>
+        <% } else { %>
+        <form
+          method="POST"
+          action="/admin/deliveries/<%= delivery.delivery_id %>/mark-uncomplete"
+        >
+          <button type="submit" class="btn btn-uncomplete">
+            Mark Uncomplete
+          </button>
+        </form>
+        <% } %>
+
         <form
           method="POST"
           action="/admin/deliveries/<%= delivery.delivery_id %>/delete"
@@ -91,5 +103,6 @@
         <% } %>
       </section>
     </div>
+    <script src="/scripts/admin_delivery_details.js" defer></script>
   </body>
 </html>

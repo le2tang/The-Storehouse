@@ -78,12 +78,28 @@
 .cart-card p {
   padding: 10px;
   border-radius: 4px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+
+
+.packed {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.scheduled {
+  background: #cfe2ff;
+  color: #084298;
+}
+
+.delivered {
+  background: #d4edda;
+  color: #155724;
 }
 
 .pending {
-  background-color: rgb(180, 55, 55);
-}
-
-.packed {
-  background-color: rgb(173, 109, 25);
+  background: #f8d7da;
+  color: #721c24;
 }

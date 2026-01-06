@@ -193,6 +193,29 @@ var deliveries_db = {
     }
   },
 
+  async markDeliveryAsUndelivered(delivery_id) {
+    try {
+      const curr_time = new Date().toISOString()
+      await database.query("BEGIN")
+
+      const res1 = await database.query(`UPDATE deliveries SET status=0, modified=$1 WHERE delivery_id=$2`, [curr_time, delivery_id])
+      if (res1.rowCount === 0) {
+        await database.query("ROLLBACK")
+        return { status: "ERROR", message: "DELIVERY_NOT_FOUND" }
+      }
+
+      // mark orders as undelivered (status = 0)
+      await database.query(`UPDATE orders SET status = 0, modified = $1 WHERE delivery_id = $2`, [curr_time, delivery_id])
+
+      await database.query("COMMIT")
+      return { status: "OK", result: true }
+    } catch (error) {
+      console.log(error)
+      await database.query("ROLLBACK")
+      return { status: "ERROR", message: error }
+    }
+  },
+
   async getDeliveriesByDateRange(start_date, end_date) {
     try {
       var result = await database.query(
@@ -252,7 +275,7 @@ var deliveries_db = {
       delivery_info.status = deliveries_db.status_text[delivery_info.status]
 
       result = await database.query(
-        `SELECT d.delivery_id, d.order_id, o.user_id, u.name, u.contact_type, u.contact_details, u.address_type, u.address_details
+        `SELECT d.delivery_id, d.order_id, o.user_id,o.status, u.name, u.contact_type, u.contact_details, u.address_type, u.address_details
         FROM delivery_orders d
         LEFT JOIN orders o
         ON d.order_id = o.order_id
@@ -261,6 +284,9 @@ var deliveries_db = {
         WHERE d.delivery_id=${delivery_id}
         ORDER BY u.address_type ASC, u.name ASC`
       )
+
+
+      
       if (result.rowCount == 0) {
         return {
           status: "ERROR",
@@ -268,6 +294,10 @@ var deliveries_db = {
         }
       }
       delivery_info.orders = result.rows
+      for (const order_info in delivery_info.orders) {
+      delivery_info.orders[order_info].status = deliveries_db.order_status_text[delivery_info.orders[order_info].status]
+      }
+
 
       return {
         status: "OK",
@@ -344,6 +374,14 @@ var deliveries_db = {
     "1": "Packed",
     "2": "Arranged",
     "3": "Delivered",
+  },
+
+  order_status_text: {
+    "0": "Pending",
+    "1": "Packed",
+    "2": "Delivered",
+    "3": "Scheduled",
+    "4": "Deleted"
   }
 }
 

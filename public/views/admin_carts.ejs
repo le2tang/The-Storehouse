@@ -1,77 +1,75 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Carts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles/css/colors.css" />
+    <link rel="stylesheet" href="/styles/css/admin_carts.css" />
+    <script src="/scripts/admin_carts.js"></script>
+  </head>
 
-<head>
-  <meta charset='utf-8'>
-  <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-  <title>Carts</title>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <link rel="stylesheet" href="/styles/css/colors.css">
-  <link rel="stylesheet" href="/styles/css/admin_carts.css">
-  <script src="/scripts/admin_carts.js"></script>
-</head>
-
-<body>
-  <header>
-    <%- include("../partials/admin_navbar") %>
-  </header>
-  <div class="container">
-    <div id="admin-carts-header" class="admin-carts-header">
-      <h1>Manage Carts</h1>
-    </div>
-    <div id="admin-summary-container" class="admin-summary-container">
-      <div id="admin-summary-text" class="admin-summary-text">
-        <h2>Pending: <%= summary.pending%>
-        </h2>
-        <h2>Packed: <%= summary.packed%>
-        </h2>
-        <h2>Total: <%= summary.total%>
-        </h2>
+  <body>
+    <header><%- include("../partials/admin_navbar") %></header>
+    <div class="container">
+      <div id="admin-carts-header" class="admin-carts-header">
+        <h1>Manage Carts</h1>
       </div>
-      <div id="admin-summary-selectors" class="admin-summary-selectors">
-        <span>Filter by Status: </span>
-        <select id="admin-summary-filter-status">
-          <option value="all">All</option>
-          <option value="pending">Pending</option>
-          <option value="packed">Packed</option>
-          <option value="delivered">Delivered</option>
-        </select>
-        <span>Filter by Location: </span>
-        <select id="admin-summary-filter-location">
-          <option value="all">All</option>
-          <option value="clv">CLV</option>
-          <option value="uwp">UWP</option>
-          <option value="wcri">WCRI</option>
-          <option value="abb">Other</option>
-        </select>
+      <div id="admin-summary-container" class="admin-summary-container">
+        <div id="admin-summary-text" class="admin-summary-text">
+          <h2>Pending: <%= summary.pending%></h2>
+          <h2>Packed: <%= summary.packed%></h2>
+          <h2>Total: <%= summary.total%></h2>
+        </div>
+        <div id="admin-summary-selectors" class="admin-summary-selectors">
+          <span>Filter by Status: </span>
+          <select id="admin-summary-filter-status">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="packed">Packed</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="delivered">Delivered</option>
+          </select>
+          <span>Filter by Location: </span>
+          <select id="admin-summary-filter-location">
+            <option value="all">All</option>
+            <option value="clv">CLV</option>
+            <option value="uwp">UWP</option>
+            <option value="wcr">WCRI</option>
+            <option value="abb">Other</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <div id="admin-cart-list" class="admin-cart-list">
-      <% for (var c of carts) {%>
-        <div id="cart-card-<%= c.order_id%>" class="cart-card" order_id="<%= c.order_id%>" user_id="<%= c.user_id%>"
-          address_type="<%= c.address_type%>" address_details="<%= c.address_details%>"
-          contact_type="<%= c.contact_type%>" contact_details="<%= c.contact_details%>" status="<%= c.status%>"
-          created="<%= c.created%>">
+      <div id="admin-cart-list" class="admin-cart-list">
+        <% for (var c of carts) {%>
+        <div
+          id="cart-card-<%= c.order_id%>"
+          class="cart-card"
+          order_id="<%= c.order_id%>"
+          user_id="<%= c.user_id%>"
+          address_type="<%= c.address_type%>"
+          address_details="<%= c.address_details%>"
+          contact_type="<%= c.contact_type%>"
+          contact_details="<%= c.contact_details%>"
+          status="<%= c.status%>"
+          created="<%= c.created%>"
+        >
           <a class="cart-card" href="/admin/carts/<%= c.user_id%>">
-            <h2>
-              <%= c.name%>
-            </h2>
+            <h2><%= c.name%></h2>
             <% if (c.status=="Pending" ) {%>
-              <p class="pending">
-                <%= c.status%>
-              </p>
-              <% } else if (c.status=="Packed" ) {%>
-                <p class="packed">
-                  <%= c.status%>
-                </p>
-                <% } else {%>
-                  <p class="delivered"></p>
-                  <% }%>
+            <p class="pending"><%= c.status%></p>
+            <% } else if (c.status=="Packed" ) {%>
+            <p class="packed"><%= c.status%></p>
+            <% } else if (c.status=="Scheduled" ) {%>
+            <p class="scheduled"><%= c.status%></p>
+            <% } else {%>
+            <p class="delivered"><%= c.status%></p>
+            <% }%>
           </a>
         </div>
         <% }%>
+      </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>

@@ -17,6 +17,8 @@ function initCallbacks() {
           break
         case "abb":
           address_details_input.placeholder = "Address"
+        case "wcr":
+          address_details_input.placeholder = "Address"
         default:
           break
       }

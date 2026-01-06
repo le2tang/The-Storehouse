@@ -379,7 +379,6 @@ router.get(
   }
 )
 
-// JSON endpoint for delivery details (used by calendar UI)
 router.get(
   "/deliveries/:delivery_id/json",
   async function (req, res) {
@@ -418,7 +417,6 @@ router.get(
       const ordersRes = await orders_model.getAllOrdersPacked()
       const availableOrders = ordersRes.status == 200 ? ordersRes.result : []
       availableOrders.sort((a, b) => a.name.localeCompare(b.name))
-
       res.render("admin_delivery_edit", { paths: app_config.paths, delivery: dRes.result, availableOrders })
     } catch (error) {
       res.status(500).send({ message: error })
@@ -463,7 +461,7 @@ router.post(
         return res.redirect(`/admin/deliveries/${req.params.delivery_id}/edit?error=update_failed`)
       }
 
-      res.redirect(`/admin/deliveries/${req.params.delivery_id}`)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?success=updated`)
     } catch (error) {
       console.error(error)
       res.redirect(`/admin/deliveries/${req.params.delivery_id}/edit?error=update_failed`)
@@ -481,7 +479,8 @@ router.post(
       if (del.status !== 200) {
         return res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=delete_failed`)
       }
-      res.redirect('/admin/deliveries')
+      res.redirect('/admin/deliveries?success=deleted')
+
     } catch (error) {
       console.error(error)
       res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=delete_failed`)
@@ -499,7 +498,25 @@ router.post(
       if (m.status !== 200) {
         return res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)
       }
-      res.redirect(`/admin/deliveries/${req.params.delivery_id}`)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?success=completed`)
+    } catch (error) {
+      console.error(error)
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)
+    }
+  }
+)
+
+// Mark as Uncompleted
+router.post(
+  "/deliveries/:delivery_id/mark-uncomplete",
+  async function (req, res) {
+    if (!req.session.admin_loggedin) return res.redirect("/admin/login")
+    try {
+      const m = await deliveries_model.markUncomplete(req.params.delivery_id)
+      if (m.status !== 200) {
+        return res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)
+      }
+      res.redirect(`/admin/deliveries/${req.params.delivery_id}?success=uncompleted`)
     } catch (error) {
       console.error(error)
       res.redirect(`/admin/deliveries/${req.params.delivery_id}?error=mark_failed`)

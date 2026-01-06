@@ -43,6 +43,9 @@
                 <button type="button" class="filter-badge" data-filter="uwp">
                   UWP
                 </button>
+                <button type="button" class="filter-badge" data-filter="wcr">
+                  WCRI
+                </button>
                 <button type="button" class="filter-badge" data-filter="abb">
                   ABB
                 </button>
@@ -75,10 +78,10 @@
                   <p class="phone"><%= o.contact_details %></p>
                   <p class="address"><%= o.address_details %></p>
                   <div class="order-meta">
-                    <span class="status <%= order.status.toLowerCase() %>"
-                      ><%= order.status %></span
+                    <span class="status <%= o.status.toLowerCase() %>"
+                      ><%= o.status %></span
                     >
-                    <span class="location"><%= order.address_type %></span>
+                    <span class="location"><%= o.address_type %></span>
                   </div>
                 </div>
               </div>
@@ -105,10 +108,10 @@
                   <p class="phone"><%= o.contact_details %></p>
                   <p class="address"><%= o.address_details %></p>
                   <div class="order-meta">
-                    <span class="status <%= order.status.toLowerCase() %>"
-                      ><%= order.status %></span
+                    <span class="status <%= o.status.toLowerCase() %>"
+                      ><%= o.status %></span
                     >
-                    <span class="location"><%= order.address_type %></span>
+                    <span class="location"><%= o.address_type %></span>
                   </div>
                 </div>
               </div>
@@ -182,6 +185,6 @@
       </form>
     </div>
 
-    <script src="/scripts/admin_delivery_edit.js"></script>
+    <script src="/scripts/admin_delivery_edit.js" defer></script>
   </body>
 </html>

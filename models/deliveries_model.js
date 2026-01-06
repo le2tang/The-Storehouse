@@ -118,6 +118,18 @@ const deliveries_model = {
     }
   },
 
+  async markUncomplete(delivery_id) {
+    try {
+      const result = await deliveries_db.markDeliveryAsUndelivered(delivery_id)
+      if (result.status != "OK") {
+        return { status: 400, message: result.message }
+      }
+      return { status: 200, result: result.result }
+    } catch (error) {
+      return { status: 500, message: error }
+    }
+  },
+
   async getAll() {
     try {
       const result = await deliveries_db.getAll()

@@ -1,4 +1,17 @@
-// Search by name functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+
+  console.log(params.get('success')); // debug log
+
+  if (params.get("success") === "updated") {
+    alert("Delivery updated successfully!");
+    // remove query param so refresh doesn't re-alert
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+});
+
+
+
 // Search by name functionality
 const searchInput = document.getElementById('admin-order-search')
 
@@ -17,19 +30,45 @@ searchInput.addEventListener('input', function () {
   })
 })
 
-// Location Type Filter Functionality
+// Location Type filter functionality
+const activeLocations = new Set()
+
 document.querySelectorAll('.filter-badge').forEach(badge => {
-  badge.addEventListener('click', function(e) {
+  badge.addEventListener('click', function (e) {
     e.preventDefault()
+
     const location = this.getAttribute('data-filter')
-    const orderCards = document.querySelectorAll('.order-card')
-    
-    orderCards.forEach(card => {
-      const cardLocation = card.getAttribute('data-location')
-      card.style.display = cardLocation === location ? 'block' : 'none'
-    })
+
+    // Toggle active state
+    if (activeLocations.has(location)) {
+      activeLocations.delete(location)
+      this.classList.remove('active')
+    } else {
+      activeLocations.add(location)
+      this.classList.add('active')
+    }
+
+    applyLocationFilters()
   })
 })
+
+function applyLocationFilters() {
+  const orderCards = document.querySelectorAll('.order-card')
+
+  orderCards.forEach(card => {
+    const cardLocation = card.getAttribute('data-location')
+
+    // Show all if no filters selected
+    if (activeLocations.size === 0) {
+      card.style.display = 'block'
+      return
+    }
+
+    card.style.display = activeLocations.has(cardLocation)
+      ? 'block'
+      : 'none'
+  })
+}
 
 // update selected orders count on edit form
 function updateSelectedCount() {

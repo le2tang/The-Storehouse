@@ -92,13 +92,26 @@ h1 {
   border: 1px solid #ddd;
   border-radius: 16px;
   background: white;
-  color: #666;
+  color: #3d3d3d;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   text-transform: uppercase;
 }
+
+.filter-badge.active {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.filter-badge.active:hover {
+  background-color: #0056b3;
+  color: #fff;
+  border-color: #0056b3;
+}
+
 
 .filter-badge:hover {
   border-color: #999;
@@ -267,12 +280,12 @@ h1 {
   white-space: nowrap;
 }
 
-.status.pending {
+.status.packed {
   background: #fff3cd;
   color: #856404;
 }
 
-.status.packed {
+.status.scheduled {
   background: #cfe2ff;
   color: #084298;
 }
@@ -282,7 +295,7 @@ h1 {
   color: #155724;
 }
 
-.status.deleted {
+.status.pending {
   background: #f8d7da;
   color: #721c24;
 }
