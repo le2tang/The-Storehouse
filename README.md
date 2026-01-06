@@ -83,6 +83,16 @@ A comprehensive administrative module for managing deliveries and scheduling ord
 | `0`  | **Pending**   | Delivery is scheduled but not yet processed. |
 | `1`  | **Packed**    | Items are ready for transport.               |
 | `2`  | **Arranged**  | Logistics/Route is finalized.                |
-| `3`  | **Delivered** | Successfully reached the customer.           |
+| `3`  | **Delivered** | Successfully reached the exchanger.          |
+
+## 📊 Order Status Definitions
+
+| Code | Status        | Description                                                    |
+| :--- | :------------ | :------------------------------------------------------------- |
+| `0`  | **Pending**   | Order submitted but not yet packed                             |
+| `1`  | **Packed**    | Order packed and ready to be delivered                         |
+| `2`  | **Delivered** | Order has been delivered to exchanger                          |
+| `3`  | **Scheduled** | Delivery for the order has been arranged but not yet delivered |
+| `4`  | **Deleted**   | Order removed and no longer reflected in system                |
 
 ---
